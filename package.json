@@ -1,0 +1,30 @@
+{
+  "name": "coursemanager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "backend-api",
+    "frontend"
+  ],
+  "scripts": {
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:backend": "npm start --workspace=backend-api",
+    "start:frontend": "npm start --workspace=frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baobinh27/CourseManager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/baobinh27/CourseManager/issues"
+  },
+  "homepage": "https://github.com/baobinh27/CourseManager#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
