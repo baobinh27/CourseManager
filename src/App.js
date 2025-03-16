@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from "react";
 import './App.css';
 import Home from "./frontend/Home.js";
+import MyCourses from "./frontend/MyCourses.js";
 import NotFound from "./frontend/NotFound.js";
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />}/>
+        <Route path="/my-courses" element={<MyCourses />}/>
         <Route path="*" element={<NotFound />}/>
       </Routes>
     </BrowserRouter>
