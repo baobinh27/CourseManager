@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../elements/Header";
-import error404 from "./assets/404-not-found.jpg"
+import error404 from "../assets/404-not-found.jpg"
 
 function NotFound() {
     return <div>
