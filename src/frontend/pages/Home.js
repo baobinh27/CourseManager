@@ -1,10 +1,10 @@
 // import { Link } from "react-router-dom";
 import React from "react";
-import Header from "./elements/Header";
+import Header from "../elements/Header";
 import banner from "./assets/home-banner.png";
 import styles from "./Home.module.css";
 // import ItemCard from "./elements/ItemCard";
-import ScrollList from "./elements/ScrollList";
+import ScrollList from "../elements/ScrollList";
 
 const scrollListItems = [
     {
