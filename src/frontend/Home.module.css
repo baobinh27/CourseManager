@@ -1,0 +1,11 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    background-color: #f7fff7;
+}
+
+.banner {
+    width: 90%;
+    margin: 0 5%;
+}
+
