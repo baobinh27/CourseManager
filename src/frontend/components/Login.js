@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa';
 import './Login.css';
 
 const Login = () => {
@@ -8,6 +9,7 @@ const Login = () => {
         password: ''
     });
     const [error, setError] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -16,6 +18,10 @@ const Login = () => {
             ...prevState,
             [name]: value
         }));
+    };
+
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
     };
 
     const handleSubmit = async (e) => {
@@ -57,32 +63,57 @@ const Login = () => {
 
     return (
         <div className="login-container">
+            <div className="login-background"></div>
             <div className="login-box">
+                <div className="login-header">
+                    <Link to="/" className="back-home">
+                        <FaArrowLeft /> Quay lại trang chủ
+                    </Link>
+                </div>
+
                 <h2 className="login-title">Đăng nhập</h2>
                 <form className="login-form" onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="Nhập email của bạn"
-                            required
-                        />
+                        <div className="input-field">
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                placeholder="Nhập email của bạn"
+                                required
+                            />
+                        </div>
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Mật khẩu</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="Nhập mật khẩu"
-                            required
-                        />
+                        <div className="input-field">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                placeholder="Nhập mật khẩu"
+                                required
+            
+                            />
+                            <button
+                                type="button"
+                                className="toggle-password"
+                                onClick={togglePasswordVisibility}
+                            >
+                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                            </button>
+                            
+                        </div>
+                        
+                    </div>
+        
+                    <div className="forgot-password">
+                        <Link to="/forgot-password">Quên mật khẩu?</Link>
                     </div>
                     {error && <div className="error-message">{error}</div>}
                     <button type="submit" className="button login-button">
@@ -101,16 +132,12 @@ const Login = () => {
                     <img 
                         src="https://img.icons8.com/?size=100&id=17949&format=png&color=000000" 
                         alt="Google logo"
-                    />
+                    />{' '}
                     Đăng nhập với Google
                 </button>
 
                 <Link to="/register" className="button register-button">
                     Đăng ký tài khoản mới
-                </Link>
-
-                <Link to="/" className="button home-button">
-                    Quay lại trang chủ
                 </Link>
             </div>
         </div>
