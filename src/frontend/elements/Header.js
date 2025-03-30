@@ -5,7 +5,15 @@ import styles from "./Header.module.css";
 function Header() {
     return <header className={styles.header}> 
         <Link to="/"><button className={styles["nav-btn"]}>Trang chủ</button></Link>
-        <Link to="/explore"><button className={styles["nav-btn"]}>Khám phá</button></Link>
+        <div className={styles["explore-box"]}>
+            <Link to="/explore"><button className={`${styles["nav-btn"]} ${styles.explore}`}>Khám phá</button></Link>
+            <ul type="none" className={styles["explore-menu"]}>
+                <li>Python</li>
+                <li>Javascript</li>
+            </ul>
+        </div>
+        
+
         <div id={styles["search-box"]}>
             <input type="text" id={styles["search-bar"]} placeholder="Tìm kiếm bất kỳ thứ gì..."></input>
             <button id={styles["search-btn"]} style={{display: "flex", justifyItems: "center", alignItems: "center"}}>

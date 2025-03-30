@@ -5,8 +5,8 @@ const processTags = (tags) => {
     return (tags.length > 2 ? ([...tags.slice(0, 2), `+${tags.length - 2}`]) : tags);
 }
 
-const TagsList = ({tags}) => {
-    const processedTags = processTags(tags);
+const TagsList = ({tags, shorten = true}) => {
+    const processedTags = shorten ? processTags(tags) : tags;
     return <div className={styles["tags-list"]}>
         {processedTags ? processedTags.map((tag) => 
             <TagChip tag={tag} />
