@@ -36,3 +36,10 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  background-color: #eef7ee;
+  background-blend-mode:multiply;
+  background-size: 33vw;
+  background-image: url("./frontend/assets/bg-pattern.avif");
+}

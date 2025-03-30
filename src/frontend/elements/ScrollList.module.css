@@ -1,0 +1,73 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.2vw;
+    margin-bottom: 5vw;
+}
+
+.list {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 0 7.5vw;
+    padding: 1.5vw 0;
+    width: 84vw;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.title {
+    font-size: 2vw;
+    font-weight: 700;
+    padding: 0 8vw;
+}
+
+.carousel-track {
+    display: flex;
+    /* gap: 1vw; */
+    flex-direction: row;
+    transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); /* Hiệu ứng chuyển động */
+}
+
+.prev, .next {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 3vw;
+    height: 3vw;
+    cursor: pointer;
+    font-size: 1.5vw;
+    z-index: 1;
+}
+
+.prev:disabled, .next:disabled {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.prev {
+    left: 4vw;
+    /* margin: 0 0vw 0 3vw; */
+}
+.next {
+    right: 4vw;
+    /* margin: 0 3vw 0 0vw; */
+}
+
+.link {
+    text-decoration: none;
+}
+
+.link:link {
+    color: black;
+}
+
+.link:visited {
+    color: black;
+}
