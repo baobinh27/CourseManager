@@ -1,13 +1,21 @@
 const express = require("express");
 const cors = require("cors");
-const api = require('./api');
-const app = express();
-const PORT = 5000;
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 
-app.use(express.json()); // Xử lý JSON body
+// const api = require('./api');
+
+dotenv.config();
+
+connectDB();
+
+const app = express();
+app.use(express.json()); 
 app.use(cors());
 
-app.use('/api', api)
+// Routes
+app.use("/api/user", require("./routes/UserAPI"));
 
 // Khởi động server
-app.listen(PORT, () => console.log(`Server chạy trên cổng ${PORT}`));
+const PORT = process.env.PORT;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
