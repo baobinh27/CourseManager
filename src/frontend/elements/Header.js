@@ -1,6 +1,7 @@
 import {Link} from "react-router-dom";
 import React from "react";
 import styles from "./Header.module.css";
+import {FaAngleRight} from "react-icons/fa";
 
 function Header() {
     return <header className={styles.header}> 
@@ -17,10 +18,11 @@ function Header() {
         <div id={styles["search-box"]}>
             <input type="text" id={styles["search-bar"]} placeholder="Tìm kiếm bất kỳ thứ gì..."></input>
             <button id={styles["search-btn"]} style={{display: "flex", justifyItems: "center", alignItems: "center"}}>
-                <svg height={50} width={50} xmlns="http://www.w3.org/2000/svg">
+                <FaAngleRight className={styles.icon} />
+                {/* <svg height={50} width={50} xmlns="http://www.w3.org/2000/svg">
                     <line x1="17" y1="12" x2="32" y2="27" style={{ stroke: "forestgreen", strokeWidth: 5}}/>
                     <line x1="17" y1="38" x2="32" y2="24" style={{ stroke: "forestgreen", strokeWidth: 5}}/>
-                </svg>
+                </svg> */}
             </button>
         </div>
         <Link to="/teaching"><button className={styles["nav-btn"]}>Giảng dạy</button></Link> 

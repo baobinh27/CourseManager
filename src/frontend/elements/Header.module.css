@@ -111,3 +111,9 @@
 #search-btn:active {
     background-color: #aaccaa;
 }
+
+.icon {
+    color: forestgreen;
+    height: 2.5vw;
+    width: 2.5vw;
+}
