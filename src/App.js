@@ -8,6 +8,7 @@ import NotFound from "./frontend/pages/NotFound.js";
 import CourseDetail from "./frontend/pages/CourseDetail.js";
 import Login from "./frontend/pages/Login.js";
 import Header from "./frontend/elements/Header.js";
+import SearchResult from "./frontend/pages/SearchResult.js";
 
 function App() {
   return <>
@@ -28,6 +29,10 @@ function App() {
           <Header />
           <CourseDetail />
         </>}/>
+        <Route path="/search" element={<>
+          <Header />
+          <SearchResult />
+        </>} />
         <Route path="*" element={<>
           <Header />
           <NotFound />
