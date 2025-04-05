@@ -17,5 +17,5 @@ app.use(cors());
 app.use("/api/user", require("./routes/UserAPI"));
 
 // Khởi động server
-const PORT = process.env.PORT;
+const PORT = process.env.PORT_BE;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
