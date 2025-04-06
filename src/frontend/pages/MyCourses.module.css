@@ -7,32 +7,36 @@
 
 .content {
     flex: 1;
-    width: 80%;
+    width: 90%;
+    max-width: 1200px;
     margin: 2rem auto;
-    padding: 2rem;
+    padding: 1rem;
 }
 
 .section {
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     background-color: white;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .sectionTitle {
     color: #2e7d32;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #2e7d32;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .courseGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
-    margin-top: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.courseItem {
+    width: 100%;
 }
 
 .courseLink {
@@ -46,14 +50,27 @@
 }
 
 .emptyState {
-    padding: 3rem;
+    padding: 2rem;
     text-align: center;
     background-color: #f8f9fa;
     border-radius: 8px;
+    margin: 1rem 0;
 }
 
 .emptyMessage {
     color: #666;
-    font-size: 1.2rem;
+    font-size: 1rem;
     margin: 0;
+}
+
+@media (max-width: 768px) {
+    .content {
+        width: 95%;
+        padding: 0.5rem;
+    }
+
+    .courseGrid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
 }
