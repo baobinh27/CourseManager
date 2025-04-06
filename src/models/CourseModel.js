@@ -6,7 +6,7 @@ const CourseSchema = new Schema({
     author: String,
     tags: Array,
     description: String,
-    content: Array,
+    content: Array(Array({videoId: String, title: String, duration: String})),
     ratings: Array,
     enrolCount: Number,
     price: Number,

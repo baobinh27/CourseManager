@@ -81,7 +81,7 @@
     background-color: honeydew;
     color:forestgreen;
     padding: 1vw;
-    /* margin: 1.2vw 0; */
+    margin: 1.2vw 0;
     font-size: 1vw;
     font-weight: bold;
     border-radius: 0.5vw;
@@ -110,6 +110,11 @@
 
 #search-btn:active {
     background-color: #aaccaa;
+}
+
+#search-btn:disabled {
+    background-color: #aaccaa;
+    cursor: not-allowed;
 }
 
 .icon {

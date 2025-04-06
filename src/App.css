@@ -43,3 +43,36 @@ body {
   background-size: 33vw;
   background-image: url("./frontend/assets/bg-pattern.avif");
 }
+
+.h1 {
+  font-size: 2vw;
+  font-weight: bold;
+}
+
+.h2 {
+  font-size: 1.75vw;
+  font-weight: bold;
+}
+
+.h3 {
+  font-size: 1.5vw;
+  font-weight: bold;
+}
+
+.h4 {
+  font-size: 1.25vw;
+}
+
+.h5 {
+  font-size: 1vw;
+  font-weight: normal;
+}
+
+.h6 {
+  font-size: 0.75vw;
+  font-weight: normal;
+}
+
+img {
+  display: block;
+}

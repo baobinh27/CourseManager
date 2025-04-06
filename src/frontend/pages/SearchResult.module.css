@@ -1,0 +1,35 @@
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.gap {
+    gap: 1vw;
+}
+
+.search-header {
+    margin: 4vw 5vw 2vw;
+}
+
+.page {
+    width: 84vw;
+    margin: 0 8vw 4vw;
+    align-items: flex-start;
+    gap: 2vw;
+}
+
+.left-box {
+    width: 65vw;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1vw;
+}
+
+.right-box {
+    position: sticky;
+    top: 2vw;
+    background-color: white;
+    width: 17vw;
+    padding: 1vw;
+    border-radius: 1vw;
+}

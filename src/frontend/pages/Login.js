@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa';
-import './Login.css';
+import styles from './Login.module.css';
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -62,20 +62,20 @@ const Login = () => {
     };
 
     return (
-        <div className="login-container">
-            <div className="login-background"></div>
-            <div className="login-box">
-                <div className="login-header">
-                    <Link to="/" className="back-home">
+        <div className={styles["login-container"]}>
+            <div className={styles["login-background"]}></div>
+            <div className={styles["login-box"]}>
+                <div className={styles["login-header"]}>
+                    <Link to="/" className={styles["back-home"]}>
                         <FaArrowLeft /> Quay lại trang chủ
                     </Link>
                 </div>
 
-                <h2 className="login-title">Đăng nhập</h2>
-                <form className="login-form" onSubmit={handleSubmit}>
-                    <div className="form-group">
+                <h2 className={styles["login-title"]}>Đăng nhập</h2>
+                <form className={styles["login-form"]} onSubmit={handleSubmit}>
+                    <div className={styles["form-group"]}>
                         <label htmlFor="email">Email</label>
-                        <div className="input-field">
+                        <div className={styles["input-field"]}>
                             <input
                                 type="email"
                                 id="email"
@@ -87,9 +87,9 @@ const Login = () => {
                             />
                         </div>
                     </div>
-                    <div className="form-group">
+                    <div className={styles["form-group"]}>
                         <label htmlFor="password">Mật khẩu</label>
-                        <div className="input-field">
+                        <div className={styles["input-field"]}>
                             <input
                                 type={showPassword ? "text" : "password"}
                                 id="password"
@@ -102,7 +102,7 @@ const Login = () => {
                             />
                             <button
                                 type="button"
-                                className="toggle-password"
+                                className={styles["toggle-password"]}
                                 onClick={togglePasswordVisibility}
                             >
                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -112,21 +112,21 @@ const Login = () => {
                         
                     </div>
         
-                    <div className="forgot-password">
+                    <div className={styles["forgot-password"]}>
                         <Link to="/forgot-password">Quên mật khẩu?</Link>
                     </div>
-                    {error && <div className="error-message">{error}</div>}
-                    <button type="submit" className="button login-button">
+                    {error && <div className={styles["error-message"]}>{error}</div>}
+                    <button type="submit" className={`${styles["button"]} ${styles["login-button"]}`}>
                         Đăng nhập
                     </button>
                 </form>
 
-                <div className="divider">
+                <div className={styles["divider"]}>
                     <span>HOẶC</span>
                 </div>
 
                 <button 
-                    className="button google-login"
+                    className={`${styles["button"]} ${styles["google-login"]}`}
                     onClick={handleGoogleLogin}
                 >
                     <img 
@@ -136,7 +136,7 @@ const Login = () => {
                     Đăng nhập với Google
                 </button>
 
-                <Link to="/register" className="button register-button">
+                <Link to="/register" className={`${styles["button"]} ${styles["register-button"]}`}>
                     Đăng ký tài khoản mới
                 </Link>
             </div>

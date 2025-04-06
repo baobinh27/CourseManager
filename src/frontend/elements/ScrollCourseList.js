@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import ItemCard from "./ItemCard";
-import styles from "./ScrollList.module.css";
+import styles from "./ScrollCourseList.module.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 
 const ScrollList = ({title, items}) => {
     const visibleCount = 4;
@@ -34,17 +33,9 @@ const ScrollList = ({title, items}) => {
             <div className={styles.list}>
             <div className={styles["carousel-track"]} style={{ transform: `translateX(-${currentIndex/items.length * 100}%)`}}>
                 {items.map((item) => 
-                    <Link to={`/course/${item._id}`} className={styles.link}>
                     <ItemCard 
-                        img={item.banner}
-                        name={item.name}
-                        tags={item.tags}
-                        ratings={item.ratings}
-                        price={item.price}
-                        discountedPrice={item.discountedPrice}
-                        enrolCount={item.enrolCount}
+                        course={item}
                     />
-                    </Link>
                 )}
             </div>
         </div>
