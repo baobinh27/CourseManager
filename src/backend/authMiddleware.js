@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const User = require("../models/UserModel");
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({ message: "Unauthorized" });
@@ -10,8 +11,11 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, "SECRET_KEY");
-    // Gán userId vào req.user để các API sau có thể truy cập
-    req.user = { userId: decoded.userId };
+    const user = await User.findById(decoded.userId).select("-password");
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+    req.user = user; // Gán toàn bộ thông tin người dùng vào req.user
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
