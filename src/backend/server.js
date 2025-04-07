@@ -15,7 +15,10 @@ app.use(cors());
 
 // Routes
 app.use("/api/user", require("./routes/UserAPI"));
+app.use("/api/draftCourse", require("./routes/DraftCourseAPI"));
+app.use("/api/course", require("./routes/CourseAPI"));
 
-// Khởi động server
+
+
 const PORT = process.env.PORT_BE;
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`));
