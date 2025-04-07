@@ -1,0 +1,41 @@
+
+
+.page-select {
+    border: 0;
+    /* background-color: transparent; */
+    /* background-color: #ffe89b; */
+    width: 2vw;
+    height: 2vw;
+    border-radius: 0.5vw;
+}
+
+.page-bar {
+    display: flex;
+    justify-content: center;
+}
+
+.page-scroll {
+    border: 0;
+    background-color: forestgreen;
+    fill: white;
+    width: 2vw;
+    height: 2vw;
+    margin: 0 1vw;
+    border-radius: 0.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.page-scroll:hover {
+    background-color: rgb(26, 105, 26);
+}
+
+.page-scroll:active {
+    background-color: rgb(24, 95, 24);
+}
+
+.page-scroll:disabled {
+    background-color: rgb(134, 214, 134);
+}

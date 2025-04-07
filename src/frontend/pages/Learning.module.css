@@ -1,0 +1,82 @@
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.learning-header {
+    background-color: forestgreen;
+    padding: 1vw;
+}
+
+.course-name {
+    color: honeydew;
+    font-weight: bold;
+    margin-left: 3vw;
+}
+
+.back-btn {
+    border: 0;
+    background-color: transparent;
+    color: honeydew;
+    cursor: pointer;
+    padding: 0.5vw 0.75vw 0.5vw 0.4vw;
+    border-radius: 0.5vw;
+    gap: 0.5vw;
+}
+
+.back-icon-box {
+    height: 1.5vw;
+    display: flex;
+    align-items: center;
+}
+
+.back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+.content-list {
+    width: 25vw;
+    /* padding-left: 5vw; */
+    background-color: white;
+    overflow: auto;
+    scrollbar-color: #d3ddd3 #eee;
+    height: calc(100vh - 4.5vw);
+}
+
+.nav-section {
+    background-color: #efe;
+    padding: 0.5vw 0.5vw 0.5vw 1vw;
+}
+
+.nav-content {
+    padding: 0.5vw 0.5vw 0.5vw 2vw;
+}
+
+.nav-content:hover {
+    background-color: #eee;
+}
+
+.video-box {
+    width: 70vw;
+    height: calc(100vh - 4.5vw);
+    padding: 0 2.5vw;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+}
+
+.video-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

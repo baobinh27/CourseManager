@@ -4,64 +4,94 @@ const User = require("../../models/UserModel");
 
 const router = express.Router();
 
-// Đăng ký 
-router.post("/signup", async (req, res) => {
+// API USER:  /api/user
+// signup: POST /signup (username, password, description)
+// change-password: POST /change-password (username, oldPassword, newPassword)
+// login: POST /login (username, password)
+
+// Sign up
+router.post("/sign-up", async (req, res) => {
     try {
         const { username, password, description } = req.body;
-
-        // Kiểm tra dữ liệu đầu vào 
+ 
         if (!username || !password || !description) {
-            return res.status(400).json({ message: "Tất cả các trường là bắt buộc!" });
+            return res.status(400).json({ message: "All is required" });
         }
         if (password.length < 6) {
-            return res.status(400).json({ message: "Mật khẩu phải có ít nhất 6 ký tự!" });
+            return res.status(400).json({ message: "Password required at least 6 characters" });
         }
 
-        // Kiểm tra username đã tồn tại chưa
         const existingUser = await User.findOne({ username });
-        if (existingUser) return res.status(400).json({ message: "Username đã tồn tại!" });
+        if (existingUser) return res.status(400).json({ message: "Username is existed!" });
 
-        // Mã hoá mật khẩu
+        // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Tạo user mới
         const newUser = new User({ username, password: hashedPassword, description });
         await newUser.save();
 
-        res.status(201).json({ message: "Đăng ký thành công!" });
+        res.status(201).json({ message: "Sign up successful!" });
     } catch (error) {
         console.error("Error during signup:", error);
-        res.status(500).json({ message: "Lỗi server!" });
+        res.status(500).json({ message: "Error server!" });
     }
 });
 
-// Đăng nhập
+// Change password
+router.post("/change-password", async (req, res) => {   
+    try {
+        const { username, oldPassword, newPassword } = req.body;
+
+        if (!username || !oldPassword || !newPassword) {
+            return res.status(400).json({ message: "All is required" });
+        }
+        if (newPassword.length < 6) {
+            return res.status(400).json({ message: "Password required at least 6 characters" });
+        }
+
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(400).json({ message: "Username not found!" });
+        }
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Old password is incorrect!" });
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedNewPassword;
+        await user.save();
+
+        res.status(200).json({ message: "Change password successful!" });
+    } catch (error) {
+        console.error("Error during change password:", error);
+        res.status(500).json({ message: "Error server!", error: error.message });
+    }
+});
+
+// Login
 router.post("/login", async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Kiểm tra đầu vào
         if (!username || !password) {
-            return res.status(400).json({ message: "Tên đăng nhập và mật khẩu là bắt buộc!" });
+            return res.status(400).json({ message: "All is required" });
         }
-
-        // Tìm người dùng theo username
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
+            return res.status(400).json({ message: "Username or password is not correct!" });
         }
 
-        // So sánh mật khẩu
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
+            return res.status(400).json({ message: "Username or password is not correct!" });
         }
 
-        // Đăng nhập thành công
-        res.status(200).json({ message: "Đăng nhập thành công!" });
+        res.status(200).json({ message: "Login successful" });
     } catch (error) {
         console.error("Error during login:", error);
-        res.status(500).json({ message: "Lỗi server!", error: error.message });
+        res.status(500).json({ message: "Error server!", error: error.message });
     }
 });
 

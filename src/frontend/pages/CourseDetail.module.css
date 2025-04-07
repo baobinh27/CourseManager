@@ -5,9 +5,18 @@
     flex-direction: row;
 }
 
+.gap {
+    gap: 1vw;
+}
+
+.padding-bottom {
+    padding-bottom: 1vw;
+}
+
 .page {
     width: 80vw;
     margin: 4vw 10vw;
+    align-items: flex-start;
 }
 
 .justify-center {
@@ -27,10 +36,18 @@
     background-color: forestgreen;
     padding: 2vw;
     border-radius: 1vw 1vw 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1vw;
+}
+
+.overview-box * {
+    color: honeydew;
 }
 
 .right-box {
     position: sticky;
+    top: 2vw;
     background-color: white;
     width: 27.5%;
     margin-left: 2.5%;
@@ -44,29 +61,25 @@
     object-fit: cover;
 }
 
-.name, .author {
-    color: honeydew;
-}
-
-.name {
-    font-size: 2vw;
-}
-
-.author {
-    font-weight: normal;
-    font-size: 1.2vw;
-}
-
 .star {
     width: 0.8vw;
     height: 0.8vw;
     object-fit: contain;
 }
 
-.star-number, .enrol-count {
-    font-size: 1vw;
-    color: honeydew;
+.margin-right {
     margin-right: 0.25vw;
+}
+
+/* .enrol-count {
+    padding-left: 1vw;
+} */
+
+.detail-box {
+    padding: 2vw;
+    display: flex;
+    flex-direction: column;
+    gap: 3vw;
 }
 
 .price-box {
@@ -75,7 +88,6 @@
 
 .price {
     margin-bottom: 1vw;
-    font-size: 2vw;
     color: forestgreen;
 }
 
@@ -84,8 +96,6 @@
     background-color: forestgreen;
     color: honeydew;
     border: 0;
-    font-size: 1.5vw;
-    font-weight: bold;
     padding: 0.25vw;
 }
 

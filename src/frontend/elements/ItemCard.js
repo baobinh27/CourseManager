@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React from "react";
 import styles from "./ItemCard.module.css";
 import TagsList from "./TagsList";
@@ -8,33 +9,30 @@ function processPrice(price) {
     return price.toLocaleString("vi-VN") + "₫";
 }
 
-function processName(name) {
-    return (name.length >= 45 ? (name.slice(0, 45) + "...") : (name))
-}
-
-function ItemCard({img, name, tags, ratings, enrolCount, price, discountedPrice}) {
-    return <div className={styles.card}>
-        <img className={styles.img} src={img} alt="" />
+function ItemCard({course, discountedPrice}) {
+    return <Link to={`/course/${course._id}`} className={styles.link}>
+    <div className={styles.card}>
+        <img className={styles.img} src={course.banner} alt="" />
         <div className={styles.info}>
-            <h1 className={styles.name}>{processName(name)}</h1>
+            <h1 className={`${styles.name} multiline-truncate`}>{course.name}</h1>
             <div>
-                <TagsList tags={tags} />
+                <TagsList tags={course.tags} />
                 <div className={styles["stars-and-price"]}>
                     <div>
                         <div className={styles["flex-row"]}>
-                            <p className={styles.rating}>{ratings}</p>
+                            <p className={styles.rating}>{course.ratings}</p>
                             <img className={styles.star} src={star} alt="" />
                         </div>
-                        {enrolCount ? <p className={styles["enrol-count"]}>{`${enrolCount} đã đăng ký`}</p> : null}
+                        {course.enrolCount ? <p className={styles["enrol-count"]}>{`${course.enrolCount} đã đăng ký`}</p> : null}
                     </div>
                     
                     <div className={styles["flex-row"]}>
                         {discountedPrice ? (<>
-                            <p className={styles["old-price"]}>{processPrice(price)}</p>
-                            <p className={styles.price}>{processPrice(discountedPrice)}</p>
+                            <p className={styles["old-price"]}>{processPrice(course.price)}</p>
+                            {/* <p className={styles.price}>{processPrice(discountedPrice)}</p> */}
                         </>
                         ) : (<>
-                            <p className={styles.price}>{processPrice(price)}</p>
+                            <p className={styles.price}>{processPrice(course.price)}</p>
                         </>)
                         }
                     </div>
@@ -47,6 +45,7 @@ function ItemCard({img, name, tags, ratings, enrolCount, price, discountedPrice}
         </div>
         
     </div>
+    </Link> 
 }
 
 export default ItemCard;

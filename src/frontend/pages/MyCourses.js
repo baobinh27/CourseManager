@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React from "react";
 import styles from "./MyCourses.module.css";
 import courses from "../../mock_data/courses";
@@ -36,13 +37,20 @@ function MyCourses() {
                     <h2 className={styles.sectionTitle}>Khóa học đã mua</h2>
                     {renderCourseList(purchasedCourses, "Bạn chưa mua khóa học nào", "purchased")}
                 </section>
+                
+                <div>
+                    <Link to={"/learning?courseId=67d51d9a3e4c59c84ba9e651"}>
+                      <button>
+                        learning test
+                      </button>
+                    </Link>
+                </div>
 
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Khóa học đã tạo</h2>
                     {renderCourseList(createdCourses, "Bạn chưa tạo khóa học nào", "created")}
                 </section>
             </div>
-            
         </div>
     );
 }
