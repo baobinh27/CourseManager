@@ -9,6 +9,7 @@ import CourseDetail from "./frontend/pages/CourseDetail.js";
 import Login from "./frontend/pages/Login.js";
 import Header from "./frontend/elements/Header.js";
 import SearchResult from "./frontend/pages/SearchResult.js";
+import Learning from "./frontend/pages/Learning.js";
 
 function App() {
   return <>
@@ -33,6 +34,9 @@ function App() {
           <Header />
           <SearchResult />
         </>} />
+        <Route path="/learning" element={<>
+          <Learning />
+        </>}/>
         <Route path="*" element={<>
           <Header />
           <NotFound />

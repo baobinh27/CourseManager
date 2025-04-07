@@ -69,10 +69,40 @@ body {
 }
 
 .h6 {
-  font-size: 0.75vw;
+  font-size: 0.85vw;
   font-weight: normal;
+}
+
+.bold {
+  font-weight: bold;
 }
 
 img {
   display: block;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.link:link {
+  color: black;
+}
+
+.link:visited {
+  color: black;
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.multiline-truncate {
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;       /* Số dòng muốn hiển thị */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

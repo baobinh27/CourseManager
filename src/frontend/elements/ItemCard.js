@@ -9,16 +9,12 @@ function processPrice(price) {
     return price.toLocaleString("vi-VN") + "₫";
 }
 
-function processName(name) {
-    return (name.length >= 45 ? (name.slice(0, 45) + "...") : (name))
-}
-
 function ItemCard({course, discountedPrice}) {
     return <Link to={`/course/${course._id}`} className={styles.link}>
     <div className={styles.card}>
         <img className={styles.img} src={course.banner} alt="" />
         <div className={styles.info}>
-            <h1 className={styles.name}>{processName(course.name)}</h1>
+            <h1 className={`${styles.name} multiline-truncate`}>{course.name}</h1>
             <div>
                 <TagsList tags={course.tags} />
                 <div className={styles["stars-and-price"]}>

@@ -2,8 +2,8 @@ import YouTube from "react-youtube";
 
 const VideoPlayer = ({videoId}) => {
     const options = {
-        height: "360",
-        width: "640",
+        height: "540",
+        width: "960",
         playerVars: {
             autoplay: 0,  // 1 = tự động phát
             controls: 1,  // 0 = ẩn nút điều khiển

@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./ContentList.module.css";
 import { FaAngleDown, FaAngleUp, FaClock, FaPlayCircle, FaThList } from "react-icons/fa";
-
-function formatDuration(duration) {
-    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-    const hours = match[1] ? parseInt(match[1]) : 0;
-    const minutes = match[2] ? parseInt(match[2]) : 0;
-    const seconds = match[3] ? parseInt(match[3]) : 0;
-    return `${hours > 0 ? hours + "h " : ""}${minutes}m ${seconds}s`;
-}
+import helper from "../../utils/helper";
 
 function getContentOverview(content) {
     let totalSeconds = 0, totalMinutes = 0, totalHours = 0;
@@ -74,8 +67,7 @@ const ContentList = ({content}) => {
                                     {video.title}
                                 </div>
                                 <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap} h5`}>
-                                    
-                                    {formatDuration(video.duration)}
+                                    {helper.formatDuration(video.duration)}
                                     <FaClock style={{fill: "forestgreen"}}/>
                                 </div>
                             </li>
