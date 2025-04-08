@@ -7,6 +7,7 @@ import MyCourses from "./frontend/pages/MyCourses.js";
 import NotFound from "./frontend/pages/NotFound.js";
 import CourseDetail from "./frontend/pages/CourseDetail.js";
 import Login from "./frontend/pages/Login.js";
+import Register from "./frontend/pages/Register.js";
 import Header from "./frontend/elements/Header.js";
 import SearchResult from "./frontend/pages/SearchResult.js";
 import Learning from "./frontend/pages/Learning.js";
@@ -22,6 +23,7 @@ function App() {
         </>
         }/>
         <Route path="/login" element={<Login />}/>
+        <Route path="/register" element={<Register />}/>
         <Route path="/my-courses" element={<>
           <Header />
           <MyCourses />
