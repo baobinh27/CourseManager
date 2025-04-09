@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
+import { FaArrowLeft,  } from 'react-icons/fa';
 
 function Register() {
     const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Register() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
+
         // Validate form
         if (formData.password !== formData.confirmPassword) {
             setError("Mật khẩu xác nhận không khớp");
@@ -30,16 +31,22 @@ function Register() {
 
         // TODO: Add API call to register user
         console.log("Registering user:", formData);
-        
+
         // Redirect to login page after successful registration
         navigate("/login");
     };
 
     return (
         <div className={styles.container}>
+            <div className={styles.background}></div>
             <div className={styles.formContainer}>
+                <div className={styles["signup-header"]}>
+                                    <Link to="/" className={styles["back-home"]}>
+                                        <FaArrowLeft /> Quay lại trang chủ
+                                    </Link>
+                                </div>
                 <h1 className={styles.title}>Đăng ký tài khoản</h1>
-                
+
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.formGroup}>
                         <label htmlFor="email">Email</label>
@@ -87,8 +94,8 @@ function Register() {
                     </button>
                 </form>
 
-                <Link to="/" className={styles.backButton}>
-                    Quay lại trang chủ
+                <Link to="/Login" className={styles.backButton}>
+                    Quay lại trang đăng nhập
                 </Link>
             </div>
         </div>
