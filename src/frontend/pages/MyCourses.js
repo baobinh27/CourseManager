@@ -44,6 +44,11 @@ function MyCourses() {
                         learning test
                       </button>
                     </Link>
+                    <Link to={"/learning?courseId=67d51d9a3e4c59c84ba9e653"}>
+                      <button>
+                        learning test
+                      </button>
+                    </Link>
                 </div>
 
                 <section className={styles.section}>

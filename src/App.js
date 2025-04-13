@@ -11,6 +11,7 @@ import Register from "./frontend/pages/Register.js";
 import Header from "./frontend/elements/Header.js";
 import SearchResult from "./frontend/pages/SearchResult.js";
 import Learning from "./frontend/pages/Learning.js";
+import Dashboard from "./frontend/pages/admin/dashboard.js";
 
 function App() {
   return <>
@@ -39,6 +40,10 @@ function App() {
         <Route path="/learning" element={<>
           <Learning />
         </>}/>
+        <Route path="/admin" element={<>
+          <Dashboard />
+        </>
+        }/>
         <Route path="*" element={<>
           <Header />
           <NotFound />

@@ -62,9 +62,9 @@ const ContentList = ({content}) => {
                     <ul type="none">
                         {section.sectionContent.map(video => (
                             <li key={video.videoId} className={styles.item}>
-                                <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap} h5`}>
+                                <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap} h5`} style={{width: "80%"}}>
                                     <FaPlayCircle style={{fill: "#ff7700"}} />
-                                    {video.title}
+                                    <p className="h5 truncate">{video.title}</p>
                                 </div>
                                 <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap} h5`}>
                                     {helper.formatDuration(video.duration)}

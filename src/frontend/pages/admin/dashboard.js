@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./Dashboard.module.css";
 
-function Dashboard() {
+const Dashboard = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
