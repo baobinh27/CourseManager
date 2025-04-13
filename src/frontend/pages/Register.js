@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
-import { FaArrowLeft,  } from 'react-icons/fa';
+import { FaArrowLeft, FaExclamationCircle,  } from 'react-icons/fa';
 
 function Register() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
+        username: "",
         email: "",
         password: "",
         confirmPassword: ""
     });
     const [error, setError] = useState("");
+    const [signupButtonState, setSignupButtonState] = useState(0);
+    const signupButtonStates = ["Đăng ký", "...", "Đăng ký thành công! Quay lại..."];
+
+    useEffect(() => {
+        if (!error) return;
+        setTimeout(() => {setError('')}, 2000);
+    }, [error])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,44 +28,68 @@ function Register() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setSignupButtonState(1);
 
-        // Validate form
         if (formData.password !== formData.confirmPassword) {
-            setError("Mật khẩu xác nhận không khớp");
+            setError("Mật khẩu xác nhận không khớp.");
+            setSignupButtonState(0);
             return;
         }
 
-        // TODO: Add API call to register user
-        console.log("Registering user:", formData);
+        try {
+            const response = await fetch('http://localhost:5000/api/user/sign-up', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-        // Redirect to login page after successful registration
-        navigate("/login");
+            const data = await response.json();
+
+            if (response.status === 201) {
+                setSignupButtonState(2);
+                setTimeout(() => {navigate('/login');}, 2000);
+                
+            } else {
+                setSignupButtonState(0);
+                setError(data.message || 'Signup failed. Please try again.');
+            }
+        } catch (err) {
+            setSignupButtonState(0);
+            setError('An error occurred. Please try again later.');
+            console.error('Signup error:', err);
+        }
+        
     };
 
     return (
         <div className={styles.container}>
             <div className={styles.background}></div>
+            {error ? <div className={`${styles["error-dialog"]} flex-row justify-center align-center`}>
+                <FaExclamationCircle />
+                {error}
+            </div> : null}
             <div className={styles.formContainer}>
                 <div className={styles["signup-header"]}>
-                                    <Link to="/" className={styles["back-home"]}>
-                                        <FaArrowLeft /> Quay lại trang chủ
-                                    </Link>
-                                </div>
+                    <Link to="/" className={styles["back-home"]}>
+                        <FaArrowLeft /> Quay lại trang chủ
+                    </Link>
+                </div>
                 <h1 className={styles.title}>Đăng ký tài khoản</h1>
 
                 <form onSubmit={handleSubmit} className={styles.form}>
                     <div className={styles.formGroup}>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">Tên đăng nhập</label>
                         <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
+                            type="text"
+                            id="username"
+                            name="username"
+                            value={formData.username}
                             onChange={handleChange}
-                            required
-                            placeholder="Nhập email của bạn"
+                            placeholder="Username"
                         />
                     </div>
 
@@ -69,7 +101,6 @@ function Register() {
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            required
                             placeholder="Nhập mật khẩu"
                         />
                     </div>
@@ -82,15 +113,26 @@ function Register() {
                             name="confirmPassword"
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            required
                             placeholder="Nhập lại mật khẩu"
                         />
                     </div>
 
-                    {error && <p className={styles.error}>{error}</p>}
+                    <div className={styles.formGroup}>
+                        <label htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="Nhập email của bạn"
+                        />
+                    </div>
 
-                    <button type="submit" className={styles.submitButton}>
-                        Đăng ký
+                    {/* {error && <p className={styles.error}>{error}</p>} */}
+
+                    <button type="submit" className={styles.submitButton} disabled={signupButtonState !== 0} style={{cursor: signupButtonState === 0 ? "pointer" : "not-allowed"}}>
+                        {signupButtonStates[signupButtonState]}
                     </button>
                 </form>
 

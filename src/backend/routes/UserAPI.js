@@ -12,25 +12,25 @@ const router = express.Router();
 // Sign up
 router.post("/sign-up", async (req, res) => {
     try {
-        const { username, password, description } = req.body;
+        const { username, password, email } = req.body;
  
-        if (!username || !password || !description) {
-            return res.status(400).json({ message: "All is required" });
+        if (!username || !password || !email) {
+            return res.status(400).json({ message: "Vui lòng điền đầy đủ thông tin." });
         }
         if (password.length < 6) {
-            return res.status(400).json({ message: "Password required at least 6 characters" });
+            return res.status(400).json({ message: "Mật khẩu cần có ít nhất 6 ký tự." });
         }
 
         const existingUser = await User.findOne({ username });
-        if (existingUser) return res.status(400).json({ message: "Username is existed!" });
+        if (existingUser) return res.status(400).json({ message: "Tên đăng nhập đã tồn tại!" });
 
         // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newUser = new User({ username, password: hashedPassword, description });
+        const newUser = new User({ username, password: hashedPassword, email, description: "" });
         await newUser.save();
 
-        res.status(201).json({ message: "Sign up successful!" });
+        res.status(201).json({ message: "Đăng ký thành công!" });
     } catch (error) {
         console.error("Error during signup:", error);
         res.status(500).json({ message: "Error server!" });
@@ -76,19 +76,19 @@ router.post("/login", async (req, res) => {
         const { username, password } = req.body;
 
         if (!username || !password) {
-            return res.status(400).json({ message: "All is required" });
+            return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin." });
         }
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(400).json({ message: "Username or password is not correct!" });
+            return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Username or password is not correct!" });
+            return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
         }
 
-        res.status(200).json({ message: "Login successful" });
+        res.status(200).json({ message: "Đăng nhập thành công!" });
     } catch (error) {
         console.error("Error during login:", error);
         res.status(500).json({ message: "Error server!", error: error.message });

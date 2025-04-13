@@ -8,6 +8,20 @@
     position: relative;
     overflow: hidden;
 }
+
+.error-dialog {
+    position: absolute;
+    top: 0;
+    z-index: 100;
+    color: #d32f2f;
+    text-align: center;
+    /* margin-top: 0.8rem; */
+    font-size: 0.9rem;
+    background-color: #ffebeec4;
+    padding: 2.8rem;
+    border-radius: 6px;
+}
+
 .signup-header{
     display: flex;
     justify-content: space-between;

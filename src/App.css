@@ -106,3 +106,16 @@ img {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.align-center {
+  align-items: center;
+}

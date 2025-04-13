@@ -1,16 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaArrowLeft, FaExclamationCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
 import styles from './Login.module.css';
 
 const Login = () => {
     const [formData, setFormData] = useState({
-        email: '',
+        username: '',
         password: ''
     });
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [loginButtonState, setLoginButtonState] = useState(0);
+    const loginButtonStates = ["Đăng nhập", "...", "Đăng nhập thành công! Quay lại..."];
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!error) return;
+        setTimeout(() => {setError('')}, 2000);
+    }, [error])
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -27,9 +35,10 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoginButtonState(1);
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            const response = await fetch('http://localhost:5000/api/user/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -40,12 +49,16 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
+                setLoginButtonState(2);
                 localStorage.setItem('token', data.token);
-                navigate('/dashboard');
+                setTimeout(() => {navigate('/')}, 1000)
+                            
             } else {
+                setLoginButtonState(0);
                 setError(data.message || 'Login failed. Please try again.');
             }
         } catch (err) {
+            setLoginButtonState(0);
             setError('An error occurred. Please try again later.');
             console.error('Login error:', err);
         }
@@ -64,6 +77,10 @@ const Login = () => {
     return (
         <div className={styles["login-container"]}>
             <div className={styles["login-background"]}></div>
+            {error ? <div className={`${styles["error-dialog"]} flex-row justify-center align-center`}>
+                <FaExclamationCircle />
+                {error}
+            </div> : null}
             <div className={styles["login-box"]}>
                 <div className={styles["login-header"]}>
                     <Link to="/" className={styles["back-home"]}>
@@ -74,16 +91,15 @@ const Login = () => {
                 <h2 className={styles["login-title"]}>Đăng nhập</h2>
                 <form className={styles["login-form"]} onSubmit={handleSubmit}>
                     <div className={styles["form-group"]}>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">Tên đăng nhập</label>
                         <div className={styles["input-field"]}>
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                value={formData.email}
+                                type="text"
+                                id="username"
+                                name="username"
+                                value={formData.username}
                                 onChange={handleChange}
                                 placeholder="Nhập email của bạn"
-                                required
                             />
                         </div>
                     </div>
@@ -96,9 +112,7 @@ const Login = () => {
                                 name="password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                placeholder="Nhập mật khẩu"
-                                required
-            
+                                placeholder="Nhập mật khẩu"            
                             />
                             <button
                                 type="button"
@@ -115,9 +129,12 @@ const Login = () => {
                     <div className={styles["forgot-password"]}>
                         <Link to="/forgot-password">Quên mật khẩu?</Link>
                     </div>
-                    {error && <div className={styles["error-message"]}>{error}</div>}
-                    <button type="submit" className={`${styles["button"]} ${styles["login-button"]}`}>
-                        Đăng nhập
+                    {/* {error && <div className={styles["error-message"]}>{error}</div>} */}
+                    <button type="submit" className={`${styles["button"]} ${styles["login-button"]}`}
+                        disabled={loginButtonState !== 0}
+                        style={{cursor: loginButtonState === 0 ? "pointer" : "not-allowed"}}
+                    >
+                        {loginButtonStates[loginButtonState]}
                     </button>
                 </form>
 
