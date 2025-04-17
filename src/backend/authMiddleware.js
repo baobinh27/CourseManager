@@ -1,32 +1,32 @@
-const jwt = require("jsonwebtoken");
-const User = require("../models/UserModel");
+const jwt = require('jsonwebtoken');
+const User = require('../models/UserModel');
 
 const authMiddleware = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
-  const token = authHeader.split(" ")[1];
-
   try {
-    const decoded = jwt.verify(token, "SECRET_KEY");
-    const user = await User.findById(decoded.userId).select("-password");
-    if (!user) {
-      return res.status(401).json({ message: "User not found" });
+    const authHeader = req.headers.authorization;
+    
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Unauthorized: Missing or invalid token' });
     }
-    req.user = user; // Gán toàn bộ thông tin người dùng vào req.user
+
+    const token = authHeader.split(' ')[1];
+    const secret = process.env.JWT_SECRET;
+    if (!secret) throw new Error('JWT_SECRET is not defined in environment');
+
+    // Verify token
+    const decoded = jwt.verify(token, secret);
+
+    const user = await User.findById(decoded.userId).select('-password');
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized: User not found' });
+    }
+
+    req.user = user;   // add user to request object
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid token" });
+    console.error('AuthMiddleware error:', err);
+    return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 
 module.exports = authMiddleware;
-
-
-// const jwt = require("jsonwebtoken");
-
-// Sau khi xác thực thành công:
-// const token = jwt.sign({ userId: user._id }, "SECRET_KEY", { expiresIn: "1d" });
-// res.json({ token });

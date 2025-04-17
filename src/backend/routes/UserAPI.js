@@ -5,9 +5,9 @@ const User = require("../../models/UserModel");
 const router = express.Router();
 
 // API USER:  /api/user
-// signup: POST /signup (username, password, description)
-// change-password: POST /change-password (username, oldPassword, newPassword)
-// login: POST /login (username, password)
+// signup: POST /signup (username, password, email)
+// change-password: POST /change-password (email, oldPassword, newPassword)
+// login: POST /login (email, password)
 
 // Sign up
 router.post("/sign-up", async (req, res) => {
@@ -40,16 +40,16 @@ router.post("/sign-up", async (req, res) => {
 // Change password
 router.post("/change-password", async (req, res) => {   
     try {
-        const { username, oldPassword, newPassword } = req.body;
+        const { email, oldPassword, newPassword } = req.body;
 
-        if (!username || !oldPassword || !newPassword) {
+        if (!email || !oldPassword || !newPassword) {
             return res.status(400).json({ message: "All is required" });
         }
         if (newPassword.length < 6) {
             return res.status(400).json({ message: "Password required at least 6 characters" });
         }
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: "Username not found!" });
         }
@@ -73,12 +73,12 @@ router.post("/change-password", async (req, res) => {
 // Login
 router.post("/login", async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { email, password } = req.body;
 
-        if (!username || !password) {
+        if (!email || !password) {
             return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin." });
         }
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
         }
@@ -87,9 +87,20 @@ router.post("/login", async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
         }
+        // jwt after login
+        const jwt = require("jsonwebtoken");
 
-        res.status(200).json({ message: "Đăng nhập thành công!" });
-    } catch (error) {
+        // Sinh token kèm payload { userId }
+        const token = jwt.sign(
+            { userId: user._id }, 
+            process.env.JWT_SECRET || "SECRET_KEY",
+            { expiresIn: "1d" }
+        );
+        res.status(200).json(
+            {   message: "Đăng nhập thành công!", 
+                token,
+            });    
+        } catch (error) {
         console.error("Error during login:", error);
         res.status(500).json({ message: "Error server!", error: error.message });
     }
