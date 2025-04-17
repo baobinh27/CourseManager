@@ -1,30 +1,31 @@
 import { Link, useSearchParams } from "react-router-dom";
-import courses from "../../mock_data/courses";
 import styles from "./Learning.module.css";
 import { FaChevronLeft, FaPlayCircle } from "react-icons/fa";
-import useDocumentTitle from "../hooks/useDocumentTitle.ts";
-import helper from "../../utils/helper";
+import useDocumentTitle from "../hooks/useDocumentTitle";
+import helper from "../utils/helper";
 import VideoPlayer from "../elements/VideoPlayer";
-import { useVideoTitle } from "../hooks/useVideoTitle.ts";
+import useGetCourseDetail from "../hooks/useGetCourseDetail.js";
+import Loading from "./misc/Loading.js";
+import ErrorPage from "./misc/ErrorPage.js";
+import { useVideoTitle } from "../hooks/useVideoTitle.js";
 
 const Learning = () => {
     const [searchParams] = useSearchParams();
     const courseId = searchParams.get("courseId") || "";
     
     
-    const course = courses.find((item) => item._id === courseId);
-    useDocumentTitle(course.name);
+    const { course, loading, error } = useGetCourseDetail(courseId);
+    useDocumentTitle(course?.name);
 
     // Tự động lấy video đầu tiên nếu không truy vấn videoId
-    const videoId = searchParams.get("video") || `${course.content[0].sectionContent[0].videoId}`;
-
+    const videoId = searchParams.get("video") || `${course ? course.content[0].sectionContent[0].videoId : ""}`;
     const videoTitle = useVideoTitle(videoId, course);
 
-    if (!course || !videoId) {
-        return <>
-            <h1>Loading...</h1>
-        </>
+    if (!course || !videoId || loading) {
+        return <Loading />
     }
+
+    if (error) return <ErrorPage message={error} />;
 
     return <>
         <LearningHeader courseName={course.name} />
@@ -33,7 +34,6 @@ const Learning = () => {
                 {course.content.map((section, index) => (<>
                     <div className={`${styles["nav-section"]} h4 bold truncate`}>{`${index + 1}. ${section.sectionTitle}`}</div>
                     {section.sectionContent.map((video) => {
-                        // if (video.videoId === videoId) setVideoName(video.title);
                         return <Link 
                             to={`/learning?courseId=${course._id}&video=${video.videoId}`}
                             className="link"

@@ -1,0 +1,22 @@
+.container {
+    height: 80vh;
+    margin: 5vh 0;
+}
+
+.banner {
+    height: 60vh;
+    width: fit-content;
+}
+
+.button {
+    background-color: forestgreen;
+    color: honeydew;
+    border: 0;
+    padding: 1vw 2vw;
+    border-radius: 0.5vw;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: rgb(30, 119, 30);
+}

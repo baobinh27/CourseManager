@@ -4,7 +4,7 @@ import React from "react";
 import './App.css';
 import Home from "./frontend/pages/Home.js";
 import MyCourses from "./frontend/pages/MyCourses.js";
-import NotFound from "./frontend/pages/NotFound.js";
+import NotFound from "./frontend/pages/misc/NotFound.js";
 import CourseDetail from "./frontend/pages/CourseDetail.js";
 import Login from "./frontend/pages/Login.js";
 import Register from "./frontend/pages/Register.js";
@@ -12,6 +12,7 @@ import Header from "./frontend/elements/Header.js";
 import SearchResult from "./frontend/pages/SearchResult.js";
 import Learning from "./frontend/pages/Learning.js";
 import Dashboard from "./frontend/pages/admin/dashboard.js";
+import Profile from "./frontend/pages/Profile.js";
 
 function App() {
   return <>
@@ -39,6 +40,10 @@ function App() {
         </>} />
         <Route path="/learning" element={<>
           <Learning />
+        </>}/>
+        <Route path="/profile/:id" element={<>
+          <Header />
+          <Profile />
         </>}/>
         <Route path="/admin" element={<>
           <Dashboard />

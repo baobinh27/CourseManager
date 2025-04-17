@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import TagsList from "../elements/TagsList";
 import styles from "./CourseDetail.module.css";
-import courses from "../../mock_data/courses";
-// import star from "../assets/star.png";
 import { FaCalendarCheck, FaCheck, FaStar, FaTags, FaUserCheck } from "react-icons/fa";
 import ContentList from "../elements/ContentList";
 import CourseRatings from "../elements/CourseRatings";
+import useDocumentTitle from "../hooks/useDocumentTitle";
+import useGetCourseDetail from "../hooks/useGetCourseDetail";
+import Loading from "./misc/Loading";
+import ErrorPage from "./misc/ErrorPage";
 
 const getStarRate = (ratings) => {
     return "4.8 (121)";
@@ -14,13 +15,16 @@ const getStarRate = (ratings) => {
 
 const CourseDetail = () => {
     const { id } = useParams();
-    const [course, setCourse] = useState({});
 
-    useEffect(() => {
-        setCourse(courses.find((course) => course._id === id))
-        // console.log(course);
-        
-    }, [id, course])
+    const { course, loading, error } = useGetCourseDetail(id);
+
+    useDocumentTitle(course?.name);
+
+    if (loading) {
+        return <Loading />
+    }
+
+    if (error) return <ErrorPage message={error} />; 
 
     return <>
         {course ? (<div className={`${styles["flex-row"]} ${styles.page}`}>

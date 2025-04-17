@@ -2,15 +2,19 @@ import { useSearchParams } from "react-router-dom";
 import courses from "../../mock_data/courses";
 import styles from "./SearchResult.module.css";
 import PaginatedCourseList from "../elements/PaginatedCourseList";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const SearchResult = () => {
     const [searchParams] = useSearchParams();
     const query = searchParams.get("name")?.toLowerCase() || "";
 
+    // TODO: use API calls to fetch courses
     const filteredCourses = courses.filter((course) =>
         course.name.toLowerCase().includes(query) ||
         course.tags.some((tag) => tag.toLowerCase().includes(query))
     );    
+
+    useDocumentTitle(`Tìm kiếm cho "${query}"`);
 
     return <>
         <h1 className={`${styles["search-header"]} h3`}>{`Kết quả tìm kiếm cho "${query}"`}</h1>

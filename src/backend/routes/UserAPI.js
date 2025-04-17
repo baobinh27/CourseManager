@@ -78,7 +78,7 @@ router.post("/login", async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin." });
         }
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email });
         if (!user) {
             return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
         }
@@ -105,6 +105,20 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ message: "Error server!", error: error.message });
     }
 });
+
+// Get User Info
+router.get("/:id", async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findOne({ _id: userId});
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.log("Error getting user:", error);
+        res.status(500).json({ message: "Server error!", error: error.message});
+    }
+})
+
 
 
 module.exports = router;

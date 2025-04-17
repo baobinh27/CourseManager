@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaExclamationCircle, FaEye, FaEyeSlash } from 'react-icons/fa';
 import styles from './Login.module.css';
+import { useAuth } from '../api/auth';
+import useDocumentTitle from '../hooks/useDocumentTitle';
+import { BASE_API } from '../utils/constant';
 
 const Login = () => {
+    useDocumentTitle("Đăng nhập");
+
     const [formData, setFormData] = useState({
-        username: '',
+        email: '',
         password: ''
     });
+    const { login } = useAuth();
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loginButtonState, setLoginButtonState] = useState(0);
@@ -38,7 +44,7 @@ const Login = () => {
         setLoginButtonState(1);
 
         try {
-            const response = await fetch('http://localhost:5000/api/user/login', {
+            const response = await fetch(`${BASE_API}/api/user/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,8 +55,8 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
+                login(data.token); // Lưu thông tin đăng nhập dưới dạng token
                 setLoginButtonState(2);
-                localStorage.setItem('token', data.token);
                 setTimeout(() => {navigate('/')}, 1000)
                             
             } else {
@@ -67,7 +73,7 @@ const Login = () => {
     const handleGoogleLogin = async () => {
         try {
             // Implement Google OAuth login
-            window.location.href = 'http://localhost:5000/api/auth/google';
+            window.location.href = `${BASE_API}/api/auth/google`;
         } catch (err) {
             setError('Google login failed. Please try again.');
             console.error('Google login error:', err);
@@ -91,13 +97,13 @@ const Login = () => {
                 <h2 className={styles["login-title"]}>Đăng nhập</h2>
                 <form className={styles["login-form"]} onSubmit={handleSubmit}>
                     <div className={styles["form-group"]}>
-                        <label htmlFor="email">Tên đăng nhập</label>
+                        <label htmlFor="email">Email</label>
                         <div className={styles["input-field"]}>
                             <input
-                                type="text"
-                                id="username"
-                                name="username"
-                                value={formData.username}
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
                                 onChange={handleChange}
                                 placeholder="Nhập email của bạn"
                             />

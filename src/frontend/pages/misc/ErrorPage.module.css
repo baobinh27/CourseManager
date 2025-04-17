@@ -1,0 +1,14 @@
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 5.25vw);
+    color: #666;
+}
+
+.loading-icon {
+    font-size: 3rem;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}

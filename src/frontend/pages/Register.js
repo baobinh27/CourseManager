@@ -2,8 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
 import { FaArrowLeft, FaExclamationCircle,  } from 'react-icons/fa';
+import useDocumentTitle from "../hooks/useDocumentTitle";
+import { BASE_API } from "../utils/constant";
 
 function Register() {
+    useDocumentTitle("Đăng ký");
+
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: "",
@@ -39,7 +43,7 @@ function Register() {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/api/user/sign-up', {
+            const response = await fetch(`${BASE_API}/api/user/sign-up`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

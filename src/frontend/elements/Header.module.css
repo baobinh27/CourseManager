@@ -1,17 +1,11 @@
-* {
-    font-size:large;
-    font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-
 .nav-btn {
     border: 0;
     background-color: forestgreen;
     color:honeydew;
-    padding: 1vw 1vw;
-    height: 5.75vw;
-    /* border-radius: 0.5vw; */
-    font-size: 1.2vw;
-    font-weight: 400;
+    padding: 1vw;
+    height: 5.25vw;
+    gap: 0.5vw;
+    cursor: pointer;
 }
 
 .nav-btn:hover {
@@ -23,7 +17,7 @@
     background-color:forestgreen;
     padding: 0 2%;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
 }
 
@@ -52,9 +46,8 @@
 
 
 #search-bar {
-    padding: 1.25vw;
+    padding: 1vw;
     margin: 1vw 0;
-    /* border: 3px solid lightgreen; */
     border: 0;
     background-color: honeydew;
     border-radius: 1vw 0 0 1vw;
@@ -65,7 +58,6 @@
 
 #search-bar:focus {
     outline: 0;
-    /* background-color: #cceecc; */
 }
 
 #search-box {
@@ -81,19 +73,93 @@
     background-color: honeydew;
     color:forestgreen;
     padding: 1vw;
-    margin: 1.2vw 0;
-    font-size: 1vw;
-    font-weight: bold;
+    height: 3.25vw;
+    margin: 1vw 0;
     border-radius: 0.5vw;
+    cursor: pointer;
 }
 
 #login-btn:hover {
-    background-color: lightgreen;
+    background-color: rgb(204, 217, 204);
     color: forestgreen;
 } 
 
+.user-area {
+    position: relative;
+}
+
+.menu-toggle-btn {
+    width: 6vw;
+    margin: 1vw 0;
+    height: 3.25vw;
+    padding: 1.25vw;
+    border-radius: 1vw;
+    background-color: honeydew;
+    color: forestgreen;
+    justify-content: space-around;
+    border: 0;
+    cursor: pointer;
+}
+
+.menu-toggle-btn:hover {
+    background-color: rgb(204, 217, 204);
+    color: forestgreen;
+} 
+
+.menu {
+    position: absolute;
+    z-index: 1;
+    top: 5.25vw;
+    right: 0;
+    width: 12.5vw;
+    padding: 1vw;
+    border-radius: 1.25vw;
+    background-color: white;
+    box-shadow: 0 0 0.5vw 0 gray;
+}
+
+.menu-section {
+    border-bottom: 0.1vw solid gray;
+    padding-bottom: 0.5vw;
+    margin-bottom: 0.5vw;
+}
+
+.menu-btn {
+    width: 100%;
+    border-radius: 0.5vw;
+    padding: 0.5vw;
+    background-color: white;
+    color: black;
+    gap: 0.5vw;
+    border: 0;
+    justify-content: start;
+    cursor: pointer;
+}
+
+.menu-btn:hover {
+    background-color: forestgreen;
+    color: honeydew;
+}
+
+.logout-btn {
+    width: 100%;
+    border-radius: 0.5vw;
+    padding: 0.5vw;
+    border: 0.1vw solid #ff0000cc;
+    color: #ff0000cc;
+    background-color: #ff000011;
+    gap: 0.5vw;
+    justify-content: start;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background-color: #ff0000cc;
+    color: white;
+}
+
 #search-btn {
-    height: 3.75vw;
+    height: 3.25vw;
     background-color: honeydew;
     border-radius: 0 1vw 1vw 0;
     position: relative;

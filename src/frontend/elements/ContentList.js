@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./ContentList.module.css";
 import { FaAngleDown, FaAngleUp, FaClock, FaPlayCircle, FaThList } from "react-icons/fa";
-import helper from "../../utils/helper";
+import helper from "../utils/helper";
 
 function getContentOverview(content) {
     let totalSeconds = 0, totalMinutes = 0, totalHours = 0;

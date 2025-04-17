@@ -21,22 +21,6 @@ const User = require("../../models/UserModel");
 // User update a created course: PUT /update/:courseId (courseId)
    
 
-// get course by courseId
-router.get("/:courseId", async (req, res) => {
-    try {
-         const { courseId } = req.params;
-         const course = await Courses.findOne({ courseId });
-         if (!course) {
-             return res.status(404).json({ message: "Course not found!" });
-         }
-         res.status(200).json(course);
-    }
-    catch (error) {
-         console.error("Error getting course:", error);
-         res.status(500).json({ message: "Server error!" });
-    }
-});
-
 // get all courses
 router.get("/", async (req, res) => {
     try {
@@ -253,6 +237,22 @@ router.put("/update/:courseId", authMiddleware, async (req, res) => {
     } catch (error) {
         console.error("Error updating course:", error);
         res.status(500).json({ message: "Server error!" });
+    }
+});
+
+// get course by courseId
+router.get("/:courseId", async (req, res) => {
+    try {
+         const { courseId } = req.params;
+         const course = await Courses.findOne({ _id: courseId });
+         if (!course) {
+             return res.status(404).json({ message: "Course not found!" });
+         }
+         res.status(200).json(course);
+    }
+    catch (error) {
+         console.error("Error getting course:", error);
+         res.status(500).json({ message: "Server error!" });
     }
 });
 

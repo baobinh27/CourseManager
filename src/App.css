@@ -44,6 +44,10 @@ body {
   background-image: url("./frontend/assets/bg-pattern.avif");
 }
 
+* {
+  font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
 .h1 {
   font-size: 2vw;
   font-weight: bold;
@@ -71,6 +75,10 @@ body {
 .h6 {
   font-size: 0.85vw;
   font-weight: normal;
+}
+
+.h7 {
+  font-size: 0.75vw;
 }
 
 .bold {
@@ -110,6 +118,11 @@ img {
 .flex-row {
   display: flex;
   flex-direction: row;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }
 
 .justify-center {
