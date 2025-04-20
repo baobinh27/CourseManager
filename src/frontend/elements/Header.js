@@ -2,13 +2,15 @@ import {Link} from "react-router-dom";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import styles from "./Header.module.css";
-import {FaAngleDown, FaAngleRight, FaAngleUp, FaUserCircle} from "react-icons/fa";
+import {FaAngleDown, FaAngleRight, FaAngleUp, FaBook, FaUserCircle} from "react-icons/fa";
 import { useAuth } from '../api/auth';
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiSettings } from "react-icons/fi";
 import { ImProfile } from "react-icons/im";
 import useGetUserDetail from "../hooks/useGetUserDetail";
 import Loading from "../pages/misc/Loading";
 import ErrorPage from "../pages/misc/ErrorPage";
+import { FcSettings } from "react-icons/fc";
+import { IoMdSettings } from "react-icons/io";
 
 function Header() {
     const [nameInput, setNameInput] = useState("");
@@ -47,6 +49,7 @@ function Header() {
     const handleLogout = () => {
         logout();
         navigate('/');
+        window.location.reload();
     };
 
     if (loading && user) {
@@ -115,8 +118,16 @@ function Header() {
                             <ImProfile />
                             Hồ sơ của bạn
                         </button>
+                        <button onClick={() => {handleToggleMenu(); navigate(`/my-courses`);}} className={`${styles["menu-btn"]} h6 bold flex-row align-center`}>
+                            <FaBook />
+                            Khoá học của bạn
+                        </button>
+                        
                     </div>
-                    
+                    <button onClick={() => {handleToggleMenu(); navigate(`/settings`);}} className={`${styles["menu-btn"]} h6 bold flex-row align-center`}>
+                        <IoMdSettings />
+                        Cài đặt
+                    </button>
                     <button onClick={handleLogout} className={`${styles["logout-btn"]} h6 bold flex-row align-center`}>
                         <FiLogOut />
                         Đăng xuất

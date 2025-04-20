@@ -1,55 +1,64 @@
 import React, { useState } from "react";
 import styles from "./MyCourses.module.css";
-import CourseCard from "../elements/CourseCard";
+// import CourseCard from "../elements/CourseCard";
 import { useAuth } from "../api/auth";
 import UnAuthorized from "./misc/UnAuthorized";
-import { BASE_API } from "../utils/constant";
 import { useEffect } from "react";
-import { useGetCreatedCourses } from "../hooks/useGetCreatedCourses";
 import Loading from "./misc/Loading";
 import ErrorPage from "./misc/ErrorPage";
+import useGetMultipleCourseDetails from "../hooks/useGetMultipleCourseDetails";
+import useGetUserDetail from "../hooks/useGetUserDetail";
+import ItemCard from "../elements/ItemCard";
 
 function MyCourses() {
     const { user } = useAuth();
-    const [userData, setUserData] = useState(null);
 
-    const { createdCourses, loading, error } = useGetCreatedCourses();
+    const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);
+
+    console.log(userData);
+    
+
+    const [ownedCourseIds, setOwnedCourseIds] = useState([]);
+    const { courses: ownedCourses, loading: loadingOwnedCourses, error: ownedCoursesError } = useGetMultipleCourseDetails(ownedCourseIds);
+    const [createdCourseIds, setCreatedCourseIds] = useState([]);
+    const { courses: createdCourses, loading: loadingCreatedCourses, error: createdCoursesError } = useGetMultipleCourseDetails(createdCourseIds);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const res = await fetch(`${BASE_API}/api/user/${user.userId}`);
-                const userInfo = await res.json();
-                setUserData(userInfo);
-            } catch (err) {
-                console.error("Failed to fetch user:", err);
-            }
-        };
-    
-        if (user?.userId) {
-            fetchUser();
+        if (userData && userData.ownedCourses) {
+            const ids = userData.ownedCourses.map(item => item.courseId);
+            setOwnedCourseIds(ids);
         }
-    }, [user]);
+        if (userData && userData.createdCourses) {
+            setCreatedCourseIds(userData.createdCourses);
+        }
+    }, [userData]);
 
     if (!user) {
         return <UnAuthorized />
     }
 
-    if (loading) {
+    if (loadingUser || loadingOwnedCourses || loadingCreatedCourses) {
         return <Loading />
     }
 
-    if (error) return <ErrorPage message={error} />;    
+    if (userError) return <ErrorPage message={userError} />;    
+    if (ownedCoursesError) return <ErrorPage message={ownedCoursesError} />;   
+    if (createdCoursesError) return <ErrorPage message={createdCoursesError} />; 
 
+    console.log("owned:", ownedCourses);
+    console.log("created:", createdCourses);
+    
+    
     return (
         <div className={styles.container}>
             <div className={styles.content}>
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Khóa học đã mua</h2>
                     <div className={styles.courseGrid}>
-                        {userData && userData.ownedCourses.map((courseData) => (
-                            <div key={courseData.courseId} className={styles.courseItem}>
-                                <CourseCard courseId={courseData.courseId} type={"purchased"} />
+                        {ownedCourses && ownedCourses.map((courseData) => (
+                            <div key={courseData._id} className={styles.courseItem}>
+                                {/* <CourseCard courseId={courseData.courseId} type={"purchased"} /> */}
+                                <ItemCard course={courseData} type="owned" scale={18}/>
                             </div>
                         ))}
                     </div>
@@ -58,9 +67,10 @@ function MyCourses() {
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Khóa học đã tạo</h2>
                     <div className={styles.courseGrid}>
-                        {createdCourses?.map((courseId) => (
-                            <div key={courseId} className={styles.courseItem}>
-                                <CourseCard courseId={courseId} type={"created"}/>
+                        {createdCourses && createdCourses.map((courseData) => (
+                            <div key={courseData._id} className={styles.courseItem}>
+                                {/* <CourseCard courseId={courseId} type={"created"}/> */}
+                                <ItemCard course={courseData} type="created" scale={18}/>
                             </div>
                         ))}
                     </div>

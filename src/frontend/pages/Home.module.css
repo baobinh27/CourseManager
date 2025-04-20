@@ -12,3 +12,10 @@
     mix-blend-mode:darken;
 }
 
+.scroll-list {
+    margin: 0 4vw 4vw;
+}
+
+.title {
+    margin-left: 4vw;
+}

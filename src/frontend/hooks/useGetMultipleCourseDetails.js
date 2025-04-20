@@ -1,0 +1,38 @@
+import { useEffect, useState } from "react";
+import { BASE_API } from "../utils/constant";
+
+const useGetMultipleCourseDetails = (courseIds) => {
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const promises = courseIds.map(id =>
+          fetch(`${BASE_API}/api/course/${id}`).then(res => res.json())
+        );
+
+        const results = await Promise.all(promises);
+
+        // Optional: filter các khóa học bị lỗi hoặc không tồn tại
+        const validCourses = results.filter(course => course && course._id);
+
+        setCourses(validCourses);
+      } catch (err) {
+        setError("Lỗi khi tải danh sách khóa học");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (courseIds && courseIds.length > 0) {
+      fetchCourses();
+    }
+  }, [courseIds]);
+
+  return { courses, loading, error };
+};
+
+export default useGetMultipleCourseDetails;

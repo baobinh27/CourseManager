@@ -23,10 +23,22 @@ function Home() {
 
     return <div className={styles.page}>
         <img className={styles.banner} src={banner} alt="banner" />
-        <ScrollCourseList title={"Phổ biến nhất"} items={courses}/>
-        <ScrollCourseList title={"Kiến thức nền tảng"} items={courses} /> 
-        <ScrollCourseList title={"Kiến thức trung cấp"} items={courses} /> 
-        <ScrollCourseList title={"Kiến thức chuyên sâu"} items={courses} />
+        <div className={styles["scroll-list"]}>
+            <p className={`${styles.title} h2`}>Phổ biến</p>
+            <ScrollCourseList items={courses}/>
+        </div>
+        <div className={styles["scroll-list"]}>
+            <p className={`${styles.title} h2`}>Sơ đẳng</p>
+            <ScrollCourseList items={courses} /> 
+        </div>
+        <div className={styles["scroll-list"]}>
+            <p className={`${styles.title} h2`}>Trung cấp</p>
+            <ScrollCourseList items={courses} /> 
+        </div>
+        <div className={styles["scroll-list"]}>
+            <p className={`${styles.title} h2`}>Chuyên sâu</p>
+            <ScrollCourseList items={courses} />
+        </div>
         <footer style={{marginTop: "50px"}}><img style={{width: "100%"}} src={banner} alt=""></img></footer>
     </div>
 }
