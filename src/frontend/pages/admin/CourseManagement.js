@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
-// Giả sử bạn có API functions để lấy và xóa khóa học (cần tạo hoặc điều chỉnh)
-// import { getAllCoursesAdmin, deleteCourseAdmin } from '../../api/adminApi'; // Ví dụ tên hàm API
+import AdminLayout from "./AdminLayout"; // Import the layout component
 import styles from './CourseManagement.module.css';
 import { useNavigate } from 'react-router-dom';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle'; // Optional: Hook để set title trang
 
-// Mock data - Thay thế bằng API call thực tế
+// Mock data - Replace with actual API call
 const mockCourses = [
   { _id: '1', name: 'Khóa học React cơ bản', author: 'Admin A', lastModified: '2024-01-15T10:00:00Z', enrolCount: 150 },
   { _id: '2', name: 'Node.js cho người mới bắt đầu', author: 'Giảng viên B', lastModified: '2024-02-20T14:30:00Z', enrolCount: 95 },
@@ -13,7 +11,7 @@ const mockCourses = [
 ];
 
 function CourseManagement() {
-  useDocumentTitle('Quản lý Khóa học - Admin'); // Optional
+  
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -22,36 +20,16 @@ function CourseManagement() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // --- TODO: Thay thế bằng API call thực tế ---
-    // const fetchCourses = async () => {
-    //   try {
-    //     setLoading(true);
-    //     // const data = await getAllCoursesAdmin(); // Gọi API lấy tất cả khóa học
-    //     const data = mockCourses; // Sử dụng mock data
-    //     setCourses(data);
-    //     setFilteredCourses(data);
-    //     setError(null);
-    //   } catch (err) {
-    //     console.error("Lỗi khi tải danh sách khóa học:", err);
-    //     setError("Không thể tải danh sách khóa học.");
-    //     setCourses([]);
-    //     setFilteredCourses([]);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    // fetchCourses();
+    // Simulate API call
+    setTimeout(() => {
+      setCourses(mockCourses);
+      setFilteredCourses(mockCourses);
+      setLoading(false);
+    }, 500); 
 
-    // Sử dụng mock data trực tiếp
-    setCourses(mockCourses);
-    setFilteredCourses(mockCourses);
-    setLoading(false);
-     // --- Kết thúc phần TODO ---
-
-  }, []); // Chạy 1 lần khi component mount
+  }, []); 
 
   useEffect(() => {
-    // Lọc khóa học khi searchTerm thay đổi
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = courses.filter(course =>
       course.name.toLowerCase().includes(lowerCaseSearchTerm) ||
@@ -65,26 +43,22 @@ function CourseManagement() {
   };
 
   const handleViewDetails = (courseId) => {
-    // Chuyển hướng đến trang chi tiết khóa học (có thể là trang chi tiết chung)
-    navigate(`/courses/${courseId}`); // Giả sử URL là /courses/:id
-    console.log(`Xem chi tiết khóa học: ${courseId}`);
+    navigate(`/courses/${courseId}`);
   };
 
   const handleEdit = (courseId) => {
-    // Chuyển hướng đến trang chỉnh sửa khóa học (cần tạo trang này)
-    navigate(`/admin/edit-course/${courseId}`); // Ví dụ URL
-    console.log(`Chỉnh sửa khóa học: ${courseId}`);
+    navigate(`/admin/edit-course/${courseId}`); 
+  };
+
+  const handleCreateCourse = () => {
+    navigate('/admin/create-course'); // Navigate to the create course page
   };
 
   const handleDelete = async (courseId, courseName) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa khóa học "${courseName}" không? Hành động này không thể hoàn tác.`)) {
       try {
-        // --- TODO: Thay thế bằng API call thực tế ---
-        // await deleteCourseAdmin(courseId); // Gọi API xóa
         console.log(`(API Call) Xóa khóa học: ${courseId}`);
-         // --- Kết thúc phần TODO ---
-
-        // Cập nhật lại danh sách sau khi xóa thành công
+        // Update state after successful deletion (simulation)
         const updatedCourses = courses.filter(course => course._id !== courseId);
         setCourses(updatedCourses);
         alert(`Đã xóa khóa học "${courseName}"`);
@@ -95,65 +69,68 @@ function CourseManagement() {
     }
   };
 
-  if (loading) {
-    return <div className={styles.message}>Đang tải danh sách khóa học...</div>;
-  }
-
-  if (error) {
-    return <div className={`${styles.message} ${styles.error}`}>{error}</div>;
-  }
-
   return (
-    <div className={styles.courseManagementContainer}>
-      <h1>Quản lý Khóa học</h1>
+    <AdminLayout>
+      <div className={styles.courseManagementContainer}>
+        <div className={styles.headerSection}> {/* Added a wrapper div for H1 and Button */} 
+          <h1>Quản lý Khóa học</h1>
+          <button onClick={handleCreateCourse} className={`${styles.actionButton} ${styles.createButton}`}> {/* Add Create Button */}
+            + Tạo khóa học
+          </button>
+        </div>
 
-      <div className={styles.filterContainer}>
-        <input
-          type="text"
-          placeholder="Tìm kiếm theo tên khóa học hoặc tác giả..."
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className={styles.searchInput}
-        />
-      </div>
+        <div className={styles.filterContainer}>
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo tên khóa học hoặc tác giả..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            className={styles.searchInput}
+          />
+        </div>
 
-      {filteredCourses.length > 0 ? (
-        <table className={styles.courseTable}>
-          <thead>
-            <tr>
-              <th>Tên Khóa Học</th>
-              <th>Người Tạo</th>
-              <th>Ngày Cập Nhật</th>
-              <th>Số Lượng Đăng Ký</th>
-              <th>Hành Động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCourses.map((course) => (
-              <tr key={course._id}>
-                <td>{course.name}</td>
-                <td>{course.author}</td>
-                <td>{new Date(course.lastModified).toLocaleDateString()}</td>
-                <td className={styles.enrollCount}>{course.enrolCount}</td>
-                <td className={styles.actions}>
-                  <button onClick={() => handleViewDetails(course._id)} className={styles.actionButton}>
-                    Xem
-                  </button>
-                  <button onClick={() => handleEdit(course._id)} className={`${styles.actionButton} ${styles.editButton}`}>
-                    Sửa
-                  </button>
-                  <button onClick={() => handleDelete(course._id, course.name)} className={`${styles.actionButton} ${styles.deleteButton}`}>
-                    Xóa
-                  </button>
-                </td>
+        {loading ? (
+          <div className={styles.message}>Đang tải danh sách khóa học...</div>
+        ) : error ? (
+          <div className={`${styles.message} ${styles.error}`}>{error}</div>
+        ) : filteredCourses.length > 0 ? (
+          <table className={styles.courseTable}>
+            <thead>
+              <tr>
+                <th>Tên Khóa Học</th>
+                <th>Người Tạo</th>
+                <th>Ngày Cập Nhật</th>
+                <th>Số Lượng Đăng Ký</th>
+                <th>Hành Động</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p className={styles.message}>Không tìm thấy khóa học nào.</p>
-      )}
-    </div>
+            </thead>
+            <tbody>
+              {filteredCourses.map((course) => (
+                <tr key={course._id}>
+                  <td>{course.name}</td>
+                  <td>{course.author}</td>
+                  <td>{new Date(course.lastModified).toLocaleDateString()}</td>
+                  <td className={styles.enrollCount}>{course.enrolCount}</td>
+                  <td className={styles.actions}>
+                    <button onClick={() => handleViewDetails(course._id)} className={styles.actionButton}>
+                      Xem
+                    </button>
+                    <button onClick={() => handleEdit(course._id)} className={`${styles.actionButton} ${styles.editButton}`}>
+                      Sửa
+                    </button>
+                    <button onClick={() => handleDelete(course._id, course.name)} className={`${styles.actionButton} ${styles.deleteButton}`}>
+                      Xóa
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className={styles.message}>Không tìm thấy khóa học nào khớp với tìm kiếm.</p>
+        )}
+      </div>
+    </AdminLayout>
   );
 }
 

@@ -2,27 +2,35 @@
   padding: 2rem;
   max-width: 1200px;
   margin: 2rem auto;
-  background-color: #f9f9f9; /* Light background for the container */
+  background-color: #f9f9f9; 
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-  text-align: center;
+/* Wrap H1 and Button */
+.headerSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1.5rem;
-  color: #333; /* Darker heading color */
+}
+
+h1 {
+  /* Remove text-align: center if using flexbox */
+  margin-bottom: 0; /* Remove bottom margin as it's handled by headerSection */
+  color: #333; 
 }
 
 .filterContainer {
   margin-bottom: 1.5rem;
   display: flex;
-  justify-content: center; /* Center the search input */
+  justify-content: center; 
 }
 
 .searchInput {
   padding: 0.75rem 1rem;
-  width: 50%; /* Adjust width as needed */
-  min-width: 300px; /* Minimum width */
+  width: 50%;
+  min-width: 300px; 
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1rem;
@@ -32,7 +40,7 @@ h1 {
   width: 100%;
   border-collapse: collapse;
   margin-top: 1rem;
-  background-color: #fff; /* White background for the table */
+  background-color: #fff; 
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -41,30 +49,30 @@ h1 {
   border: 1px solid #ddd;
   padding: 0.8rem 1rem;
   text-align: left;
-  vertical-align: middle; /* Align content vertically */
+  vertical-align: middle; 
 }
 
 .courseTable th {
-  background-color: #f2f2f2; /* Light gray background for header */
+  background-color: #f2f2f2; 
   font-weight: 600;
   color: #555;
 }
 
 .courseTable tr:nth-child(even) {
-  background-color: #f9f9f9; /* Zebra striping for readability */
+  background-color: #f9f9f9; 
 }
 
 .courseTable tr:hover {
-  background-color: #f1f1f1; /* Highlight row on hover */
+  background-color: #f1f1f1; 
 }
 
 .enrollCount {
-  text-align: center; /* Center align numeric data */
+  text-align: center; 
 }
 
 .actions {
-  text-align: center; /* Center align action buttons */
-  white-space: nowrap; /* Prevent buttons from wrapping */
+  text-align: center; 
+  white-space: nowrap; 
 }
 
 .actionButton {
@@ -79,23 +87,31 @@ h1 {
 
 .actionButton:hover {
   opacity: 0.9;
-  transform: translateY(-1px); /* Slight lift effect */
+  transform: translateY(-1px); 
 }
 
 /* Specific button styles */
 .actionButton {
-  background-color: #007bff; /* Blue for view */
+  background-color: #007bff; 
   color: white;
 }
 
 .editButton {
-  background-color: #ffc107; /* Yellow for edit */
+  background-color: #ffc107; 
   color: #333;
 }
 
 .deleteButton {
-  background-color: #dc3545; /* Red for delete */
+  background-color: #dc3545; 
   color: white;
+}
+
+/* Create button style */
+.createButton {
+  background-color: #28a745; /* Green for create */
+  color: white;
+  font-weight: 500;
+  padding: 0.6rem 1rem; /* Slightly larger padding */
 }
 
 .message {
@@ -106,6 +122,6 @@ h1 {
 }
 
 .error {
-  color: #dc3545; /* Red color for error messages */
+  color: #dc3545; 
   font-weight: bold;
 }
