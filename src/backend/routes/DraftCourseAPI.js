@@ -35,6 +35,11 @@ router.post('/create', authMiddleware, async (req, res) => {
       if (!auth.isLoggedIn()) {
         return res.status(403).json({ message: 'Forbidden: Not logged in' });
       }
+
+      if (!name || !content || !price || !banner) {
+        return res.status(400).json({ message: 'Required fields cannot be empty' });
+      }
+
       const courseId = new mongoose.Types.ObjectId();
 
       // Optional: prevent duplicate draft for same user & course

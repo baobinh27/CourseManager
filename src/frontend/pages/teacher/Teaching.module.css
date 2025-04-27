@@ -1,0 +1,40 @@
+.banner {
+    width: 60vw;
+    height: calc(100vh - 5.25vw);
+    object-fit: cover;
+}
+
+.content {
+    height: calc(100vh - 10.25vw);
+    padding: 2.5vw 2.5vw;
+    width: 35vw;
+    gap: 3vw;
+}
+
+.guide-btn, .start-btn {
+    width: 30vw;
+    padding: 1vw 0;
+    border-radius: 2vw;
+    cursor: pointer;
+}
+
+.guide-btn {
+    border: 0.15vw solid forestgreen;
+    color: forestgreen;
+    background-color: honeydew;
+}
+
+.guide-btn:hover {
+    background-color: rgb(215, 228, 215);
+}
+
+.start-btn {
+    border: 0.15vw solid forestgreen;
+    color: honeydew;
+    background-color: forestgreen;
+}
+
+.start-btn:hover {
+    background-color: rgb(28, 116, 28);
+    border: 2px solid rgb(28, 116, 28);
+}

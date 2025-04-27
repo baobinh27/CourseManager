@@ -14,6 +14,9 @@ import Learning from "./frontend/pages/Learning.js";
 import Dashboard from "./frontend/pages/admin/dashboard.js";
 import Profile from "./frontend/pages/Profile.js";
 import CourseManagement from "./frontend/pages/admin/CourseManagement.js";
+import Teaching from "./frontend/pages/teacher/Teaching.js";
+import CreateCourse from "./frontend/pages/teacher/CreateCourse.js";
+import GuidePage from "./frontend/pages/teacher/GuidePage.js";
 
 function App() {
   return <>
@@ -46,16 +49,24 @@ function App() {
           <Header />
           <Profile />
         </>}/>
+        <Route path="/teaching" element={<>
+          <Header />
+          <Teaching />
+        </>}/>
+        <Route path="/teaching/guide" element={<>
+          <Header />
+          <GuidePage />
+        </>}/>
+        <Route path="/teaching/create" element={<>
+          <CreateCourse />
+        </>}/>
         <Route path="/admin" element={<>
           <Dashboard />
-        </>
-        }/>
+        </>}/>
         <Route path="/admin/course-management" element={<>
           <CourseManagement />
-        </>
-        }/>
+        </>}/>
         <Route path="*" element={<>
-          <Header />
           <NotFound />
         </>}/>
       </Routes>

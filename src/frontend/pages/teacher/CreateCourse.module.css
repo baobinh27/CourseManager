@@ -1,0 +1,144 @@
+.page {
+    align-items: start;
+}
+
+.header {
+    background-color: forestgreen;
+    padding: 1vw;
+}
+
+.back-btn {
+    border: 0;
+    background-color: transparent;
+    color: honeydew;
+    cursor: pointer;
+    padding: 0.5vw 0.75vw 0.5vw 0.4vw;
+    border-radius: 0.5vw;
+    gap: 0.5vw;
+}
+
+.back-icon-box {
+    height: 1.5vw;
+    display: flex;
+    align-items: center;
+}
+
+.back-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.title {
+    color: honeydew;
+    font-weight: bold;
+    margin-left: 3vw;
+}
+
+.formContainer {
+    max-width: 800px;
+    margin: 3vw auto 10vw;
+    padding: 2vw;
+    /* background-color: rgb(246, 255, 246); */
+    background-color: white;
+    border-radius: 2vw;
+}
+
+.fieldGroup {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.input,
+.textarea {
+    width: calc(100% - 1.5vw);
+    padding: 0.75vw;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.section {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    background-color: honeydew;
+    border-radius: 10px;
+}
+
+.videoInputGroup {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.button {
+    padding: 10px 15px;
+    background-color: #2b7a2f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.25s ease-in-out;
+}
+
+.button:hover {
+    background-color: forestgreen;
+    transform: scale(1.05);
+}
+
+.iconButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #2e7d3211;
+    color: #2e7d32;
+    border: 0.1vw solid #2e7d32;
+    border-radius: 6px;
+    cursor: pointer;
+    gap: 0.5vw;
+}
+
+.iconButton:hover {
+    background-color: #2e7d32;
+    color: white;
+
+}
+
+.danger {
+    background-color: #fff0f0;
+    border: 0.1vw solid #ff0000cc;
+    color: #ff0000cc;
+}
+
+.danger:hover {
+    background-color: #ff0000cc;
+    color: white;
+}
+
+.dialogBackground {
+    background-color: rgba(0, 0, 0, 0.2);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+.dialogBody {
+    background-color: white;
+    position: absolute;
+    border-radius: 1vw;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30vw;
+    padding: 2vw;
+    gap: 1vw;
+}

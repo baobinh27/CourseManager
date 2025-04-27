@@ -42,8 +42,6 @@ const Profile = () => {
     if (ownedCoursesError) return <ErrorPage message={ownedCoursesError} />;
     if (createdCoursesError) return <ErrorPage message={createdCoursesError} />;
 
-
-
     const handleSave = () => {
         // TODO: Gửi request lên server để cập nhật mô tả nếu cần
         setIsEditing(false);

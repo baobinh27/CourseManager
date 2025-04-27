@@ -13,10 +13,7 @@ import ItemCard from "../elements/ItemCard";
 function MyCourses() {
     const { user } = useAuth();
 
-    const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);
-
-    console.log(userData);
-    
+    const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);    
 
     const [ownedCourseIds, setOwnedCourseIds] = useState([]);
     const { courses: ownedCourses, loading: loadingOwnedCourses, error: ownedCoursesError } = useGetMultipleCourseDetails(ownedCourseIds);
@@ -44,10 +41,6 @@ function MyCourses() {
     if (userError) return <ErrorPage message={userError} />;    
     if (ownedCoursesError) return <ErrorPage message={ownedCoursesError} />;   
     if (createdCoursesError) return <ErrorPage message={createdCoursesError} />; 
-
-    console.log("owned:", ownedCourses);
-    console.log("created:", createdCourses);
-    
     
     return (
         <div className={styles.container}>
