@@ -4,6 +4,8 @@ const Courses = require("../../models/CourseModel");
 const authMiddleware = require("../authMiddleware");
 const User = require("../../models/UserModel");
 
+const test_api = require('../test_api');
+
 
 // API COURSE:  /api/course
 // get by courseId: GET /:courseId (courseId)
@@ -22,7 +24,7 @@ const User = require("../../models/UserModel");
    
 
 // get all courses
-router.get("/", async (req, res) => {
+router.get("/", test_api, async (req, res) => {
     try {
         const courses = await Courses.find({});
         if (!courses || courses.length === 0) {

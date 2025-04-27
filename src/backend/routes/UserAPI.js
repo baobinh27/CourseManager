@@ -16,7 +16,7 @@ router.post("/sign-up", async (req, res) => {
  
         if (!username || !password || !email) {
             return res.status(400).json({ message: "Vui lòng điền đầy đủ thông tin." });
-        }
+        }   
         if (password.length < 6) {
             return res.status(400).json({ message: "Mật khẩu cần có ít nhất 6 ký tự." });
         }
