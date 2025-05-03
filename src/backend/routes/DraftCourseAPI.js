@@ -43,7 +43,7 @@ router.post('/create', authMiddleware, async (req, res) => {
       const courseId = new mongoose.Types.ObjectId();
 
       // Optional: prevent duplicate draft for same user & course
-      const exists = await DraftCourses.findOne({ courseId, userId: user._id });
+      const exists = await DraftCourses.findOne({ name, userId: user._id });
       if (exists) {
         return res.status(409).json({ message: 'Draft already exists for this course' });
       }
@@ -180,7 +180,7 @@ router.get('/allDraftCourses', authMiddleware, async (req, res) => {
 //         }
     
 //         const course = new Courses({
-//             courseId: draft.courseId,
+//             courseId: draft.courseId,  // Course bỏ courseId này và để mongoDB tự sinh _id mới
 //             userId: draft.userId,
 //             name: draft.name,
 //             author: draft.author,

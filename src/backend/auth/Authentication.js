@@ -27,7 +27,7 @@ class Authentication {
         if (!this.user) return false;
         const enrolledCourseIds = this.user.ownedCourses.map(c => c.courseId.toString());
         return enrolledCourseIds.includes(courseId.toString());
-}
+    }
 
 // Check User ? Admin
 //      isAdmin() {
