@@ -164,55 +164,61 @@ router.get('/allDraftCourses', authMiddleware, async (req, res) => {
   });
 
 // admin approve a draft course
-// router.post('/approve/:courseId', authMiddleware, async (req, res) => {
-//     try {
-//         const { courseId } = req.params;
-//         const user = req.user;
-//         const auth = new Authentication(user);
+router.post('/approve/:courseId', authMiddleware, async (req, res) => {
+    try {
+        const { courseId } = req.params;
+        const user = req.user;
+        const auth = new Authentication(user);
     
-//         if (!auth.isAdmin()) {
-//             return res.status(403).json({ message: 'Forbidden: Admins only' });
-//         }
+        if (!auth.isAdmin()) {
+            return res.status(403).json({ message: 'Forbidden: Admins only' });
+        }
     
-//         const draft = await DraftCourses.findOne({ courseId });
-//         if (!draft) {
-//             return res.status(404).json({ message: 'Draft course not found' });
-//         }
+        const draft = await DraftCourses.findOne({ courseId });
+        if (!draft) {
+            return res.status(404).json({ message: 'Draft course not found' });
+        }
     
-//         const course = new Courses({
-//             courseId: draft.courseId,
-//             userId: draft.userId,
-//             name: draft.name,
-//             author: draft.author,
-//             tags: draft.tags,
-//             description: draft.description,
-//             content: draft.content,
-//             ratings: [],
-//             enrollCount: 0,
-//             price: draft.price,
-//             lastModified: new Date(),
-//             banner: draft.banner,
-//         });
-//         await course.save();
+        const course = new Courses({
+            courseId: draft.courseId,
+            userId: draft.userId,
+            name: draft.name,
+            author: draft.author,
+            tags: draft.tags,
+            description: draft.description,
+            content: draft.content.map(section => ({
+                sectionTitle: section.sectionTitle,
+                sectionContent: section.sectionContent.map(videoId => ({
+                    videoId,
+                    title: videoId, // Use videoId as title initially
+                    duration: "0:00" // Set default duration
+                }))
+            })),
+            ratings: [],
+            enrollCount: 0,
+            price: draft.price,
+            lastModified: new Date(),
+            banner: draft.banner,
+        });
+        await course.save();
     
-//         // Update in user.createdCourses
-//         const courseOwner = await User.findById(draft.userId);
-//         if (courseOwner) {
-//             courseOwner.createdCourses.push(course._id);
-//             await courseOwner.save();
-//         }
-//         await DraftCourses.deleteOne({ courseId });
+        // Update in user.createdCourses
+        const courseOwner = await User.findById(draft.userId);
+        if (courseOwner) {
+            courseOwner.createdCourses = courseOwner.createdCourses || [];
+            courseOwner.createdCourses.push(course._id);
+            await courseOwner.save();
+        }
+        await DraftCourses.deleteOne({ courseId });
 
     
-//         res.status(201).json({ message: 'Draft course approved successfully', course });
-//     } catch (error) {
-//         console.error('Error approving draft course:', error);
-//         res.status(500).json({ message: 'Server error' });
-//     }
-//   });
+        res.status(201).json({ message: 'Draft course approved successfully', course });
+    } catch (error) {
+        console.error('Error approving draft course:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+  });
 
-
-  
 // admin reject a draft course
 router.post('/reject/:courseId', authMiddleware, async (req, res) => {
   try {
