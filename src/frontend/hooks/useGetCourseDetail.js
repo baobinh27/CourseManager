@@ -10,7 +10,16 @@ const useGetCourseDetail = (courseId) => {
         const fetchCourse = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`${BASE_API}/api/course/${courseId}`);
+
+                // Lấy token (nếu có)
+                const token = localStorage.getItem("token");
+
+                const response = await fetch(`${BASE_API}/api/course/courseId/${courseId}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { Authorization: `Bearer ${token}` } : {})
+                    }
+                });
                 const data = await response.json();                
 
                 if (!response.ok) {

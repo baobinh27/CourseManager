@@ -6,6 +6,7 @@ const Courses = require("../../models/CourseModel");
 const authMiddleware = require("../authMiddleware");
 const Authentication = require("../auth/Authentication");
 
+const optionalAuthMiddleware = require("../optionalAuthMiddleware")
 
 const User = require("../../models/UserModel");
 const Orders = require("../../models/OrderModel");
@@ -74,21 +75,39 @@ router.get("/search/tags", async (req, res) => {
   });
 
 // get by courseId
-router.get("/courseId/:courseId", authMiddleware, async (req, res) => {
+router.get("/courseId/:courseId", optionalAuthMiddleware, async (req, res) => {
     try {
         const { courseId } = req.params;
-        const user = req.user;
-        const auth = new Authentication(user);
+        const user = req.user || null;
 
-        const course = await Courses.find({ courseId });
+        const course = await Courses.findOne({ _id: courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found!" });
         }
 
-        if (!auth.isCourseCreator(course) && !auth.isEnrolled(courseId)) {
-            return res.status(403).json({ message: "No permission!!" });
+        let isAuthorized = false;
+
+        console.log("user:", user);
+        
+
+        if (user) {
+            const auth = new Authentication(user);
+            isAuthorized = auth.isCourseCreator(course) || auth.isEnrolled(courseId);
         }
-        res.status(200).json(course);
+
+        const courseObject = course;
+
+        if (!isAuthorized) {
+            courseObject.content = courseObject.content.map(section => ({
+                sectionTitle: section.sectionTitle,
+                sectionContent: section.sectionContent.map(video => ({
+                    title: video.title,
+                    duration: video.duration
+                }))
+            }));
+        }
+
+        res.status(200).json(courseObject);
     }
     catch (error) {
         console.error("Error getting course:", error);

@@ -13,7 +13,7 @@ class Authentication {
 
         // Check User ? creator of course
     isCourseCreator(course) {
-        if (!this.user) return false;
+        if (!this.user || !course.userId) return false;
         return course.userId.toString() === this.user._id.toString();
     }
 
