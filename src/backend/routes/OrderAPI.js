@@ -21,26 +21,26 @@ const test_api = require('../test_api');
 // enroll a course
 router.post("/enroll", authMiddleware, async (req, res) => {
     try {
-         const userId = req.user._id; 
-         const { courseId, amount, paymentMethod, paymentProof, note } = req.body;
-         // Check if the course exists
-         const course = await Courses.findOne({ courseId });
-         if (!course) {
-              return res.status(404).json({ message: "Course not found" });
-         }
+        const userId = req.user._id; 
+        const { courseId, amount, paymentMethod, paymentProof, note } = req.body;
+        // Check if the course exists
+        const course = await Courses.findOne({ courseId });
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
 
-         // Create a new order
-         const newOrder = new Orders({
-                  userId,
-                  courseId,
-                  amount,
-                  paymentMethod,
-                  paymentProof,
-                  note,
-         });
+        // Create a new order
+        const newOrder = new Orders({
+            userId,
+            courseId,
+            amount,
+            paymentMethod,
+            paymentProof,
+            note,
+        });
 
-         await newOrder.save();
-         res.status(201).json({ message: "Order created successfully", order: newOrder });
+        await newOrder.save();
+        res.status(201).json({ message: "Order created successfully", order: newOrder });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error" });
