@@ -8,6 +8,7 @@ const Authentication = require("../auth/Authentication");
 
 
 const User = require("../../models/UserModel");
+const Orders = require("../../models/OrderModel");
 
 const test_api = require('../test_api');
 
@@ -188,8 +189,8 @@ router.put("/update/:courseId", test_api, async (req, res) => {
 // User enroll in a course
 router.post("/enroll", authMiddleware, async (req, res) => {
     try {
-        const { courseId } = req.body;
-        const course = await Courses.findOne({ courseId });
+        const userId = req.user._id;
+        const { courseId, paymentMethod, amount, note } = req.body;
         const user = req.user;
         const auth = new Authentication(user);
 
@@ -199,9 +200,18 @@ router.post("/enroll", authMiddleware, async (req, res) => {
         if (auth.isEnrolled(courseId)) {
             return res.status(400).json({ message: "You are already enrolled in this course!" });
         }
-        if (!user) {
-            return res.status(404).json({ message: "User not found!" });
+        const course = await Courses.findOne({ courseId });
+        if (!course) {
+            return res.status(404).json({ message: "Course not found!" });
         }
+        const order = new Orders({
+            userId,
+            courseId,
+            amount,
+            paymentMethod,
+            note
+          });
+          await order.save();
         // ownedCourses: [
         //     {
         //       courseId: { type: Schema.Types.ObjectId, ref: 'Course' },
@@ -211,17 +221,8 @@ router.post("/enroll", authMiddleware, async (req, res) => {
         //       enrolledAt: { type: Date, default: Date.now }
         //     }
         //   ],
-        user.ownedCourses.push({
-            courseId: courseId,
-            progress: 0,
-            lastWatchedVideo: null,
-            completedVideos: [],
-            enrolledAt: new Date()
-        });
-        course.enrollCount += 1;
-        await course.save();
-        await user.save();
-        res.status(200).json({ message: "Enrolled successfully!" });
+        res.status(201).json({ message: "Enrollment request created. Please wait for admin approval.", order });
+
     } catch (error) {
         console.error("Error enrolling in course:", error);
         res.status(500).json({ message: "Server error!" });
