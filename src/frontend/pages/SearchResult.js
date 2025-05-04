@@ -1,32 +1,38 @@
 import { useSearchParams } from "react-router-dom";
-import courses from "../../mock_data/courses";
 import styles from "./SearchResult.module.css";
 import PaginatedCourseList from "../elements/PaginatedCourseList";
 import useDocumentTitle from "../hooks/useDocumentTitle";
+import useGetSearchResult from "../hooks/useGetSearchResult";
+import Loading from "./misc/Loading";
+import ErrorPage from "./misc/ErrorPage";
 
 const SearchResult = () => {
     const [searchParams] = useSearchParams();
-    const query = searchParams.get("name")?.toLowerCase() || "";
+    const query = searchParams.get("query")?.toLowerCase() || "";
 
-    // TODO: use API calls to fetch courses
-    const filteredCourses = courses.filter((course) =>
-        course.name.toLowerCase().includes(query) ||
-        course.tags.some((tag) => tag.toLowerCase().includes(query))
-    );    
+    const { courses, loading, error } = useGetSearchResult(query);
 
     useDocumentTitle(`Tìm kiếm cho "${query}"`);
+
+    if (loading) {
+        return <Loading />
+    }
+
+    if (error) return <ErrorPage message={error} />;
+
+    
 
     return <>
         <h1 className={`${styles["search-header"]} h3`}>{`Kết quả tìm kiếm cho "${query}"`}</h1>
         <div className={`${styles["flex-row"]} ${styles.page}`}>
             <div className={styles["left-box"]}>
-                {filteredCourses && 
-                    (filteredCourses.length !== 0 ? 
-                        <PaginatedCourseList courses={filteredCourses} columns={3} maxItemPerPage={15}/> 
+                {courses && 
+                    (courses.length !== 0 ? 
+                        <PaginatedCourseList courses={courses} columns={3} maxItemPerPage={15}/> 
                     : <div className="h4">Không tìm thấy kết quả.</div>)
                 }
             </div>
-            {filteredCourses?.length !== 0 && <div className={styles["right-box"]}>
+            {courses?.length !== 0 && <div className={styles["right-box"]}>
                 <p className="h5">Lọc kết quả</p>
             </div>}
             

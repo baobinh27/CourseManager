@@ -1,6 +1,6 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Learning.module.css";
-import { FaChevronLeft, FaPlayCircle } from "react-icons/fa";
+import { FaChevronLeft, FaLock, FaPlayCircle, FaRegPlayCircle } from "react-icons/fa";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import helper from "../utils/helper";
 import VideoPlayer from "../elements/VideoPlayer";
@@ -8,53 +8,93 @@ import useGetCourseDetail from "../hooks/useGetCourseDetail.js";
 import Loading from "./misc/Loading.js";
 import ErrorPage from "./misc/ErrorPage.js";
 import { useVideoTitle } from "../hooks/useVideoTitle.js";
+import { useAuth } from "../api/auth";
+import useGetUserDetail from "../hooks/useGetUserDetail.js";
+import { useEffect, useState } from "react";
+import { FaCircleCheck } from "react-icons/fa6";
 
 const Learning = () => {
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const courseId = searchParams.get("courseId") || "";
-    
-    
-    const { course, loading, error } = useGetCourseDetail(courseId);
+    const { user } = useAuth();
+
+    const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);
+
+    const { course, loading: loadingCourse, error: courseError } = useGetCourseDetail(courseId);
     useDocumentTitle(course?.name);
+
+    const [learningInfo, setLearningInfo] = useState();
+
+    useEffect(() => {
+        if (!userData || !courseId) return;
+        setLearningInfo(userData.ownedCourses.find((ownedCourse) => ownedCourse.courseId === courseId))
+    }, [userData, courseId])
 
     // Tự động lấy video đầu tiên nếu không truy vấn videoId
     const videoId = searchParams.get("video") || `${course ? course.content[0].sectionContent[0].videoId : ""}`;
     const videoTitle = useVideoTitle(videoId, course);
 
-    if (!course || !videoId || loading) {
+    console.log(userData);
+    console.log("learning info:", learningInfo);
+
+    if (!course || !videoId || loadingCourse || loadingUser || !learningInfo) {
         return <Loading />
     }
 
-    if (error) return <ErrorPage message={error} />;
+    if (userError) return <ErrorPage message={userError} />;
+    if (courseError) return <ErrorPage message={courseError} />;
 
     return <>
         <LearningHeader courseName={course.name} />
         <div className={`${styles["flex-row"]}`}>
             <div className={styles["content-list"]}>
-                {course.content.map((section, index) => (<>
-                    <div className={`${styles["nav-section"]} h4 bold truncate`}>{`${index + 1}. ${section.sectionTitle}`}</div>
-                    {section.sectionContent.map((video) => {
-                        return <Link 
-                            to={`/learning?courseId=${course._id}&video=${video.videoId}`}
-                            className="link"
+                {course.content.map((section, sIndex) => (<>
+                    <div className={`${styles["nav-section"]} h4 bold truncate`}>{`${sIndex + 1}. ${section.sectionTitle}`}</div>
+                    {section.sectionContent.map((video, vIndex) => {
+                        // Tính thứ tự toàn cục của video trong khoá học
+                        const flatIndex = course.content
+                            .slice(0, sIndex)
+                            .reduce((acc, sec) => acc + sec.sectionContent.length, 0) + vIndex;
+
+                        const flatVideoList = course.content.flatMap(s => s.sectionContent.map(v => v.videoId));
+                        const completedSet = new Set(learningInfo.completedVideos);
+
+                        const unlockedIndex = flatVideoList.findIndex(
+                            videoId => !completedSet.has(videoId)
+                        );
+
+                        const currentVideoId = video.videoId;
+                        const isUnlocked = completedSet.has(currentVideoId) || flatIndex === unlockedIndex;
+
+                        return <button
+                            key={vIndex}
+                            onClick={() => navigate(`/learning?courseId=${course._id}&video=${video.videoId}`)}
+                            className={`${styles["nav-content"]} h5 flex-row align-center`}
+                            disabled={!isUnlocked}
                         >
-                            <div className={`${styles["nav-content"]} h5`}>
-                            <div className={`truncate h5`}>
-                                {video.title}
+                            {isUnlocked ?
+                                learningInfo.completedVideos.includes(video.videoId) ?
+                                    <FaCircleCheck fill="forestgreen" /> :
+                                    <FaRegPlayCircle fill="#ff7700" />
+                                : <FaLock />}
+                            <div style={{ width: "90%" }}>
+                                <div className={`truncate h5`}>
+                                    {video.title}
+                                </div>
+                                <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
+                                    <FaPlayCircle fill={isUnlocked ? "#ff7700" : "#bbb"} />
+                                    <p className="h6">{helper.formatDuration(video.duration)}</p>
+                                </div>
                             </div>
-                            <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
-                                <FaPlayCircle fill="#ff7700"/>
-                                <p className="h6">{helper.formatDuration(video.duration)}</p>
-                            </div>
-                            </div>
-                        </Link>
+
+                        </button>
                     })}
                 </>))}
-
             </div>
             <div className={styles["video-box"]}>
                 <div className={styles["video-container"]}>
-                    <VideoPlayer videoId={videoId}/>
+                    <VideoPlayer videoId={videoId} />
                 </div>
                 <h1 className="h3">{videoTitle ? videoTitle : "null"}</h1>
             </div>
@@ -62,7 +102,7 @@ const Learning = () => {
     </>
 }
 
-const LearningHeader = ({courseName}) => {
+const LearningHeader = ({ courseName }) => {
     return <div className={`${styles["flex-row"]} ${styles["align-center"]} ${styles["learning-header"]}`}>
         <Link to="/my-courses" className="link">
             <button className={`${styles["flex-row"]} ${styles["align-center"]} ${styles["back-btn"]} h5`}>
@@ -70,7 +110,7 @@ const LearningHeader = ({courseName}) => {
                 <div className="h5">Quay lại</div>
             </button>
         </Link>
-        
+
         <div className={`${styles["course-name"]} h4`}>{courseName}</div>
     </div>
 }

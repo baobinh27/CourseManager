@@ -10,6 +10,17 @@ import useGetMultipleCourseDetails from "../hooks/useGetMultipleCourseDetails";
 import useGetUserDetail from "../hooks/useGetUserDetail";
 import ItemCard from "../elements/ItemCard";
 
+const countVideosInCourse = (content) => {
+    if (!Array.isArray(content)) return 0;
+  
+    return content.reduce((total, section) => {
+      if (Array.isArray(section.sectionContent)) {
+        return total + section.sectionContent.length;
+      }
+      return total;
+    }, 0);
+  };
+
 function MyCourses() {
     const { user } = useAuth();
 
@@ -17,6 +28,7 @@ function MyCourses() {
 
     const [ownedCourseIds, setOwnedCourseIds] = useState([]);
     const { courses: ownedCourses, loading: loadingOwnedCourses, error: ownedCoursesError } = useGetMultipleCourseDetails(ownedCourseIds);
+    const [courseProgresses, setCourseProgresses] = useState([]);
     const [createdCourseIds, setCreatedCourseIds] = useState([]);
     const { courses: createdCourses, loading: loadingCreatedCourses, error: createdCoursesError } = useGetMultipleCourseDetails(createdCourseIds);
 
@@ -28,7 +40,29 @@ function MyCourses() {
         if (userData && userData.createdCourses) {
             setCreatedCourseIds(userData.createdCourses);
         }
+        userData && console.log("user data:", userData);
+        
     }, [userData]);
+
+    useEffect(() => {
+        if (!ownedCourses || !userData) return;
+    
+        const fetchProgresses = () => {
+            const progresses = ownedCourses.map((ownedCourse, index) => {
+                const totalVideos = countVideosInCourse(ownedCourse.content);
+                const completedVideos = userData.ownedCourses[index]?.completedVideos?.length || 0;
+                return totalVideos > 0 ? ((completedVideos * 100) / totalVideos).toLocaleString({}, {maximumFractionDigits: 1, minimumFractionDigits: 0}) : 0;
+            });
+    
+            setCourseProgresses(progresses);
+        };
+    
+        fetchProgresses();
+    }, [ownedCourses, userData]);
+
+    useEffect(() => {
+        console.log(courseProgresses);
+    }, [courseProgresses])
 
     if (!user) {
         return <UnAuthorized />
@@ -48,10 +82,10 @@ function MyCourses() {
                 <section className={styles.section}>
                     <h2 className={styles.sectionTitle}>Khóa học đã mua</h2>
                     <div className={styles.courseGrid}>
-                        {ownedCourses && ownedCourses.map((courseData) => (
+                        {ownedCourses && ownedCourses.map((courseData, index) => (
                             <div key={courseData._id} className={styles.courseItem}>
                                 {/* <CourseCard courseId={courseData.courseId} type={"purchased"} /> */}
-                                <ItemCard course={courseData} type="owned" scale={18}/>
+                                <ItemCard course={courseData} type="owned" scale={18} percent={courseProgresses[index]}/>
                             </div>
                         ))}
                     </div>
