@@ -43,7 +43,7 @@ router.post('/create', authMiddleware, async (req, res) => {
       const courseId = new mongoose.Types.ObjectId();
 
       // Optional: prevent duplicate draft for same user & course
-      const exists = await DraftCourses.findOne({ courseId, userId: user._id });
+      const exists = await DraftCourses.findOne({ name, userId: user._id });
       if (exists) {
         return res.status(409).json({ message: 'Draft already exists for this course' });
       }
@@ -179,8 +179,10 @@ router.post('/approve/:courseId', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'Draft course not found' });
         }
     
+        // Kết hợp cả hai phiên bản: bỏ courseId như nhánh main đề xuất
+        // nhưng giữ lại cấu trúc xử lý content từ nhánh của bạn
         const course = new Courses({
-            courseId: draft.courseId,
+            // Bỏ courseId và để MongoDB tự tạo _id
             userId: draft.userId,
             name: draft.name,
             author: draft.author,

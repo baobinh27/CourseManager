@@ -1,6 +1,7 @@
-import { Link, useSearchParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import styles from "./Learning.module.css";
-import { FaChevronLeft, FaPlayCircle } from "react-icons/fa";
+import { FaChevronLeft, FaLock, FaPlayCircle, FaRegPlayCircle } from "react-icons/fa";
+import { FaCircleCheck } from "react-icons/fa6";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import helper from "../utils/helper";
 import VideoPlayer from "../elements/VideoPlayer";
@@ -8,14 +9,17 @@ import useGetCourseDetail from "../hooks/useGetCourseDetail.js";
 import Loading from "./misc/Loading.js";
 import ErrorPage from "./misc/ErrorPage.js";
 import { useVideoTitle } from "../hooks/useVideoTitle.js";
+import { useAuth } from "../api/auth";
+import useGetUserDetail from "../hooks/useGetUserDetail.js";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 const Learning = () => {
-    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const courseId = searchParams.get("courseId") || "";
     const adminPreview = searchParams.get("adminPreview") === "true";
+    const { user } = useAuth();
     
     const [draftCourse, setDraftCourse] = useState(null);
     const [draftLoading, setDraftLoading] = useState(false);
@@ -24,10 +28,21 @@ const Learning = () => {
     // Always call the hook, but we may ignore the result
     const { course: regularCourse, loading: regularLoading, error: regularError } = useGetCourseDetail(courseId);
     
+    // Get user data for learning progress
+    const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);
+    
     // Use either the draft course or the regular course based on adminPreview flag
     const course = adminPreview ? draftCourse : regularCourse;
     
     useDocumentTitle((adminPreview && draftCourse) ? `Preview: ${draftCourse.name}` : regularCourse?.name);
+
+    const [learningInfo, setLearningInfo] = useState();
+
+    // Track learning progress for regular courses
+    useEffect(() => {
+        if (!userData || !courseId || adminPreview) return;
+        setLearningInfo(userData.ownedCourses.find((ownedCourse) => ownedCourse.courseId === courseId))
+    }, [userData, courseId, adminPreview])
 
     // Load draft course for admin preview
     useEffect(() => {
@@ -68,8 +83,8 @@ const Learning = () => {
     }, [adminPreview, courseId]);
     
     // Determine loading and error states
-    const isLoading = adminPreview ? draftLoading : regularLoading;
-    const hasError = adminPreview ? draftError : regularError;
+    const isLoading = adminPreview ? draftLoading : (regularLoading || loadingUser);
+    const hasError = adminPreview ? draftError : (regularError || userError);
     
     // Tự động lấy video đầu tiên nếu không truy vấn videoId
     const videoId = searchParams.get("video") || 
@@ -83,7 +98,7 @@ const Learning = () => {
             
     const videoTitle = useVideoTitle(videoId, course);
 
-    if (!course || !videoId || isLoading) {
+    if (!course || !videoId || isLoading || (!adminPreview && !learningInfo)) {
         return <Loading />
     }
 
@@ -99,23 +114,75 @@ const Learning = () => {
         />
         <div className={`${styles["flex-row"]}`}>
             <div className={styles["content-list"]}>
-                {course.content.map((section, index) => (<>
-                    <div className={`${styles["nav-section"]} h4 bold truncate`}>{`${index + 1}. ${section.sectionTitle}`}</div>
-                    {section.sectionContent.map((video) => {
-                        return <Link 
-                            to={`/learning?courseId=${courseId}&video=${video.videoId}${adminPreview ? '&adminPreview=true' : ''}`}
-                            className="link"
-                        >
-                            <div className={`${styles["nav-content"]} h5`}>
-                            <div className={`truncate h5`}>
-                                {video.title}
-                            </div>
-                            <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
-                                <FaPlayCircle fill="#ff7700"/>
-                                <p className="h6">{helper.formatDuration(video.duration)}</p>
-                            </div>
-                            </div>
-                        </Link>
+                {course.content.map((section, sIndex) => (<>
+                    <div className={`${styles["nav-section"]} h4 bold truncate`}>{`${sIndex + 1}. ${section.sectionTitle}`}</div>
+                    {section.sectionContent.map((video, vIndex) => {
+                        // Tính thứ tự toàn cục của video trong khoá học và kiểm tra xem đã mở khóa chưa
+                        // Chỉ áp dụng cho regular courses
+                        let isUnlocked = true;
+                        if (!adminPreview && learningInfo) {
+                            const flatIndex = course.content
+                                .slice(0, sIndex)
+                                .reduce((acc, sec) => acc + sec.sectionContent.length, 0) + vIndex;
+
+                            const flatVideoList = course.content.flatMap(s => s.sectionContent.map(v => v.videoId));
+                            const completedSet = new Set(learningInfo.completedVideos);
+
+                            const unlockedIndex = flatVideoList.findIndex(
+                                videoId => !completedSet.has(videoId)
+                            );
+
+                            const currentVideoId = video.videoId;
+                            isUnlocked = completedSet.has(currentVideoId) || flatIndex === unlockedIndex;
+                        }
+
+                        // Trong chế độ adminPreview, tất cả các video đều mở khóa
+                        const videoUrl = `/learning?courseId=${adminPreview ? courseId : course._id}&video=${video.videoId}${adminPreview ? '&adminPreview=true' : ''}`;
+
+                        return adminPreview ? (
+                            // Admin preview chế độ xem - sử dụng Link
+                            <Link 
+                                to={videoUrl}
+                                className="link"
+                                key={video.videoId}
+                            >
+                                <div className={`${styles["nav-content"]} h5 flex-row align-center`}>
+                                    <FaRegPlayCircle fill="#ff7700" />
+                                    <div style={{ width: "90%" }}>
+                                        <div className={`truncate h5`}>
+                                            {video.title}
+                                        </div>
+                                        <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
+                                            <FaPlayCircle fill="#ff7700" />
+                                            <p className="h6">{helper.formatDuration(video.duration)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Link>
+                        ) : (
+                            // Regular course với tracking học tập - sử dụng button
+                            <button
+                                key={video.videoId}
+                                onClick={() => navigate(videoUrl)}
+                                className={`${styles["nav-content"]} h5 flex-row align-center`}
+                                disabled={!isUnlocked}
+                            >
+                                {isUnlocked ?
+                                    learningInfo.completedVideos.includes(video.videoId) ?
+                                        <FaCircleCheck fill="forestgreen" /> :
+                                        <FaRegPlayCircle fill="#ff7700" />
+                                    : <FaLock />}
+                                <div style={{ width: "90%" }}>
+                                    <div className={`truncate h5`}>
+                                        {video.title}
+                                    </div>
+                                    <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
+                                        <FaPlayCircle fill={isUnlocked ? "#ff7700" : "#bbb"} />
+                                        <p className="h6">{helper.formatDuration(video.duration)}</p>
+                                    </div>
+                                </div>
+                            </button>
+                        );
                     })}
                 </>))}
             </div>
@@ -126,7 +193,7 @@ const Learning = () => {
                     </div>
                 )}
                 <div className={styles["video-container"]}>
-                    <VideoPlayer videoId={videoId}/>
+                    <VideoPlayer videoId={videoId} />
                 </div>
                 <h1 className="h3">{videoTitle ? videoTitle : "null"}</h1>
             </div>

@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import styles from "./Header.module.css";
 import {FaAngleDown, FaAngleRight, FaAngleUp, FaBook, FaUserCircle} from "react-icons/fa";
 import { useAuth } from '../api/auth';
-import { FiLogOut, FiSettings } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 import { ImProfile } from "react-icons/im";
 import useGetUserDetail from "../hooks/useGetUserDetail";
 import Loading from "../pages/misc/Loading";
 import ErrorPage from "../pages/misc/ErrorPage";
-import { FcSettings } from "react-icons/fc";
 import { IoMdSettings } from "react-icons/io";
 
 function Header() {
@@ -79,7 +78,7 @@ function Header() {
                 placeholder="Tìm kiếm bất kỳ thứ gì..." 
             />
             {nameInput ? 
-            <Link to={`/search?name=${nameInput}`}>
+            <Link to={`/search?query=${nameInput}`}>
                 <button 
                     onClick={() => setNameInput("")} 
                     id={styles["search-btn"]} 

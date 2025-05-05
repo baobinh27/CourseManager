@@ -12,7 +12,7 @@ function processPrice(price) {
 
 
 
-function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20}) {
+function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, percent = 0}) {
     const navigate = useNavigate();
 
     const cardScales = {
@@ -65,7 +65,7 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20}) {
                         Tiếp tục học
                     </Link>
                     <div>
-                        <ProgressBar percent={50}/>
+                        <ProgressBar percent={percent}/>
                     </div>
                 </div>
                 

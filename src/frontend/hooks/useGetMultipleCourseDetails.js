@@ -8,10 +8,17 @@ const useGetMultipleCourseDetails = (courseIds) => {
 
   useEffect(() => {
     const fetchCourses = async () => {
+      const token = localStorage.getItem("token");
       try {
         setLoading(true);
+
         const promises = courseIds.map(id =>
-          fetch(`${BASE_API}/api/course/${id}`).then(res => res.json())
+          fetch(`${BASE_API}/api/course/courseId/${id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              ...(token ? { Authorization: `Bearer ${token}` } : {})
+            }
+          }).then(res => res.json())
         );
 
         const results = await Promise.all(promises);
