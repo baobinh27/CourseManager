@@ -77,50 +77,50 @@ router.get("/all-orders", authMiddleware, async (req, res) => {
 
 // admin process order
 router.post("/process/:orderId", authMiddleware, async (req, res) => {
-     try {
-         const user = req.user;
-         const auth = new Authentication(user);
-         if (!auth.isAdmin()) return res.status(403).json({ message: 'Forbidden' });
-         
-         const { orderId } = req.params;
-         const { action, noteFromAdmin } = req.body;
-         if (!['approve', 'reject'].includes(action)) {
-                  return res.status(400).json({ message: 'Invalid action' });
-         }
-         
-         // Update order status
-         const update = {
-                  status: action === 'approve' ? 'approved' : 'rejected',
-                  noteFromAdmin,
-                  approvedAt: new Date()
-         };
-         const order = await Orders.findByIdAndUpdate(orderId, update, { new: true });
-         if (!order) return res.status(404).json({ message: 'Order not found' });
-         
-         // If approved, add to user's ownedCourses
-         if (action === 'approve') {
-                  await Users.findByIdAndUpdate(order.userId, {
-                           $push: {
-                                    ownedCourses: {
-                                             courseId: order.courseId,
-                                             progress: 0,
-                                             lastWatchedVideo: null,
-                                             completedVideos: [],
-                                             enrolledAt: new Date()
-                                    }
-                           }
-                  });
-         }
-         
-         // Populate for response
-         await order.populate('userId', 'username email');
-         await order.populate('courseId', 'name');
-         
-         res.status(200).json(order);
-     } catch (err) {
-         console.error('Error processing order:', err);
-         res.status(500).json({ message: 'Server error' });
-     }
+    try {
+        const user = req.user;
+        const auth = new Authentication(user);
+        if (!auth.isAdmin()) return res.status(403).json({ message: 'Forbidden' });
+        
+        const { orderId } = req.params;
+        const { action, noteFromAdmin } = req.body;
+        if (!['approve', 'reject'].includes(action)) {
+                return res.status(400).json({ message: 'Invalid action' });
+        }
+        
+        // Update order status
+        const update = {
+            status: action === 'approve' ? 'approved' : 'rejected',
+            noteFromAdmin,
+            approvedAt: new Date()
+        };
+        const order = await Orders.findByIdAndUpdate(orderId, update, { new: true });
+        if (!order) return res.status(404).json({ message: 'Order not found' });
+        
+        // If approved, add to user's ownedCourses
+        if (action === 'approve') {
+            await Users.findByIdAndUpdate(order.userId, {
+                $push: {
+                    ownedCourses: {
+                        courseId: order.courseId,
+                        progress: 0,
+                        lastWatchedVideo: null,
+                        completedVideos: [],
+                        enrolledAt: new Date()
+                    }
+                }
+            });
+        }
+        
+        // Populate for response
+        await order.populate('userId', 'username email');
+        await order.populate('courseId', 'name');
+        
+        res.status(200).json(order);
+    } catch (err) {
+        console.error('Error processing order:', err);
+        res.status(500).json({ message: 'Server error' });
+    }
 });
 
 module.exports = router;
