@@ -17,7 +17,6 @@ const test_api = require('../test_api');
 // API COURSE:  /api/course
 
 // get all for searching: GET /search?query= (name)
-// get by tags for searching: GET /search/tags?tag= (tag)
 // get by courseId: GET courseId/:courseId (courseId)  coursecreatorId hoặc isEnrolled mới có quyền
  
 // get by author: (bỏ) Trong user có Array createdCourses chứa các 
@@ -38,17 +37,23 @@ const test_api = require('../test_api');
 router.get("/search", async (req, res) => {
     try {
         const { query } = req.query;
-        let filter = {};
-    
-        if (query && query.trim().length > 0) {
-            const regex = new RegExp(query.trim(), 'i');
-            filter.name = { $regex: regex };
+
+        if (!query || query.trim().length === 0) {
+            return res.status(400).json({ message: "Missing search query." });
         }
-    
-        const courses = await Courses.find(filter).sort({ createdAt: -1 });
+        const regex = new RegExp(query.trim(), 'i');
+
+        const courses = await Courses.find({
+            $or: [
+              { name: { $regex: regex } },
+              { tags: { $elemMatch: { $regex: regex } } }
+            ]
+        }).sort({ createdAt: -1 });  
+
         if (!courses || courses.length === 0) {
             return res.status(404).json({ message: "No courses found!" });
         }
+
         return res.status(200).json(courses);
     } catch (error) {
         console.error("Error searching courses:", error);
@@ -56,37 +61,19 @@ router.get("/search", async (req, res) => {
     }
 });
 
-// get courses by tags for searching. 
-router.get("/search/tags", async (req, res) => {
-    try {
-      const { tag } = req.query;
-      let filter = {};
-  
-      if (tag && tag.trim().length > 0) {
-        filter.tags = { $elemMatch: { $regex: new RegExp(tag.trim(), 'i') } };
-      }
-  
-      const courses = await Courses.find(filter).sort({ createdAt: -1 });
-      return res.status(200).json(courses);
-    } catch (error) {
-      console.error("Error searching courses by tag:", error);
-  return res.status(500).json({ message: "Server error while searching by tag." });
-    }
-  });
-
 // get by courseId
 router.get("/courseId/:courseId", optionalAuthMiddleware, async (req, res) => {
     try {
         const { courseId } = req.params;
-        const user = req.user || null;
+        const user = req.user;
 
-        const course = await Courses.findOne({ _id: courseId });
+        const course = await Courses.find({ courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found!" });
         }
-
-        let isAuthorized = false;        
-
+        let isAuthorized = false;
+        // console.log("user:", user);
+        
         if (user) {
             const auth = new Authentication(user);
             isAuthorized = auth.isCourseCreator(course) || auth.isEnrolled(courseId);
