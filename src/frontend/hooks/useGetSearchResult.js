@@ -1,25 +1,21 @@
 import { useEffect, useState } from "react";
 import { BASE_API } from "../utils/constant";
 
-const useGetCourseDetail = (courseId) => {
-    const [course, setCourse] = useState(null);
+const useGetSearchResult = (query) => {
+    const [courses, setCourse] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        if (!query || query === "") {
+            setCourse(null);
+            return;
+        }
+
         const fetchCourse = async () => {
             try {
                 setLoading(true);
-
-                // Lấy token (nếu có)
-                const token = localStorage.getItem("token");
-
-                const response = await fetch(`${BASE_API}/api/course/courseId/${courseId}`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...(token ? { Authorization: `Bearer ${token}` } : {})
-                    }
-                });
+                const response = await fetch(`${BASE_API}/api/course/search?query=${query}`);
                 const data = await response.json();                
 
                 if (!response.ok) {
@@ -34,13 +30,10 @@ const useGetCourseDetail = (courseId) => {
                 setLoading(false);
             }
         };
+        fetchCourse();
+    }, [query]);
 
-        if (courseId) {
-            fetchCourse();
-        }
-    }, [courseId]);
-
-    return { course, loading, error };
+    return { courses, loading, error };
 };
 
-export default useGetCourseDetail;
+export default useGetSearchResult;

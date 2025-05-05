@@ -1,0 +1,93 @@
+.pageContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.button {
+    position: absolute;
+    padding: 0.5rem 1rem;
+    margin: 0.5rem 1rem;
+    gap: 0.5rem;
+    background-color: honeydew;
+    color: forestgreen;
+    border: 1px solid forestgreen;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.button:hover {
+    background-color: forestgreen;
+    color: honeydew;
+}
+
+.buttonContainer {
+    margin-bottom: 5rem;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+}
+
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.sectionContent {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.note {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.continueButton {
+    display: inline-block;
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.continueButton:hover {
+    background-color: #0056b3;
+}
+
+.fullWidth {
+    border: 1px solid black;
+    margin: 0;
+    padding: 0;
+    width: 1536px;
+}

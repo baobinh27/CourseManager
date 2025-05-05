@@ -10,7 +10,7 @@ const useGetAllCourses = () => {
         const fetchCourse = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`${BASE_API}/api/course/`);
+                const response = await fetch(`${BASE_API}/api/course/search?query=`);
                 const data = await response.json();                
 
                 if (!response.ok) {

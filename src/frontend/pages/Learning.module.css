@@ -58,11 +58,29 @@
 }
 
 .nav-content {
-    padding: 0.5vw 0.5vw 0.5vw 2vw;
+    padding: 0.5vw 0.5vw 0.5vw 0.75vw;
+    cursor: pointer;
+    width: 100%;
+    border: 0;
+    background-color: white;
+    gap: 0.5vw;
 }
 
 .nav-content:hover {
     background-color: #eee;
+}
+
+.selected {
+    background-color: rgb(95, 202, 95);
+}
+
+.selected:hover {
+    background-color: rgb(52, 159, 52);
+}
+
+.nav-content:disabled {
+    cursor: not-allowed;
+    background-color: #f4f4f4;
 }
 
 .video-box {

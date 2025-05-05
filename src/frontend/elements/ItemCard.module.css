@@ -13,7 +13,6 @@
 
 .card {
     width: 20vw;
-    max-width: 20vw;
     height: 18vw;
     border: 0;
     border-radius: 1vw;
@@ -93,14 +92,16 @@
     text-decoration: line-through;
 }
 
-.link {
+.continueButton {
+    display: inline-block;
+    background-color: #2e7d32;
+    color: white;
+    padding: 0.5vw 0.75vw;
+    border-radius: 0.5vw;
     text-decoration: none;
+    transition: background-color 0.2s ease;
 }
 
-.link:link {
-    color: black;
-}
-
-.link:visited {
-    color: black;
-}
+.continueButton:hover {
+    background-color: #1b5e20;
+} 

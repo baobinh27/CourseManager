@@ -17,7 +17,7 @@ app.use(cors());
 app.use("/api/user", require("./routes/UserAPI"));
 app.use("/api/draftCourse", require("./routes/DraftCourseAPI"));
 app.use("/api/course", require("./routes/CourseAPI"));
-
+app.use("/api/order", require("./routes/OrderAPI"));
 
 
 const PORT = process.env.PORT_BE;

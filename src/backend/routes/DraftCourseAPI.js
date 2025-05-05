@@ -1,5 +1,8 @@
 const express = require("express");
+const mongoose = require('mongoose');
 const router = express.Router();
+
+const test_api = require('../test_api');
 
 const authMiddleware = require("../authMiddleware");
 const Authentication = require("../auth/Authentication");
@@ -25,21 +28,27 @@ const User = require("../../models/UserModel");
 // User create a draft course
 router.post('/create', authMiddleware, async (req, res) => {
     try {
-      const { courseId, name, author, tags, description, content, price, banner } = req.body;
+      const { name, author, tags, description, content, price, banner } = req.body;
       const user = req.user;
       const auth = new Authentication(user);
   
       if (!auth.isLoggedIn()) {
         return res.status(403).json({ message: 'Forbidden: Not logged in' });
       }
-  
+
+      if (!name || !content || !price || !banner) {
+        return res.status(400).json({ message: 'Required fields cannot be empty' });
+      }
+
+      const courseId = new mongoose.Types.ObjectId();
+
       // Optional: prevent duplicate draft for same user & course
-      const exists = await DraftCourse.findOne({ courseId, userId: user._id });
+      const exists = await DraftCourses.findOne({ name, userId: user._id });
       if (exists) {
         return res.status(409).json({ message: 'Draft already exists for this course' });
       }
   
-      const draft = new DraftCourse({ courseId, userId: user._id, name, author, tags, description, content, price, banner });
+      const draft = new DraftCourses({ courseId, userId: user._id, name, author, tags, description, content, price, banner });
       await draft.save();
   
       res.status(201).json({ message: 'Draft course created successfully', draft });
@@ -48,7 +57,6 @@ router.post('/create', authMiddleware, async (req, res) => {
       res.status(500).json({ message: 'Server error' });
     }
   });
-  
 
 // User update a draft course
 router.put('/update/:courseId', authMiddleware, async (req, res) => {
@@ -57,7 +65,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
       const user = req.user;
       const auth = new Authentication(user);
   
-      const draft = await DraftCourse.findOne({ courseId, userId: user._id });
+      const draft = await DraftCourses.findOne({ courseId, userId: user._id });
       if (!draft) {
         return res.status(404).json({ message: 'Draft course not found' });
       }
@@ -69,7 +77,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
       const updates = (({ name, author, tags, description, content, price, banner }) =>
         ({ name, author, tags, description, content, price, banner }))(req.body);
   
-      const updated = await DraftCourse.findOneAndUpdate(
+      const updated = await DraftCourses.findOneAndUpdate(
         { courseId, userId: user._id },
         updates,
         { new: true }
@@ -89,7 +97,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
       const user = req.user;
       const auth = new Authentication(user);
   
-      const draft = await DraftCourse.findOne({ courseId, userId: user._id });
+      const draft = await DraftCourses.findOne({ courseId, userId: user._id });
       if (!draft) {
         return res.status(404).json({ message: 'Draft course not found' });
       }
@@ -98,7 +106,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
         return res.status(403).json({ message: 'Forbidden: No permission' });
       }
   
-      await DraftCourse.deleteOne({ courseId, userId: user._id });
+      await DraftCourses.deleteOne({ courseId, userId: user._id });
       res.status(200).json({ message: 'Draft course deleted successfully' });
     } catch (error) {
       console.error('Error deleting draft course:', error);
@@ -112,7 +120,7 @@ router.get('/:courseId', authMiddleware, async (req, res) => {
       const { courseId } = req.params;
       const user = req.user;
   
-      const draft = await DraftCourse.findOne({ courseId, userId: user._id });
+      const draft = await DraftCourses.findOne({ courseId, userId: user._id });
       if (!draft) {
         return res.status(404).json({ message: 'Draft course not found' });
       }
@@ -128,7 +136,7 @@ router.get('/:courseId', authMiddleware, async (req, res) => {
 router.get('/all', authMiddleware, async (req, res) => {
     try {
       const user = req.user;
-      const drafts = await DraftCourse.find({ userId: user._id });
+      const drafts = await DraftCourses.find({ userId: user._id });
   
       res.status(200).json(drafts);
     } catch (error) {
@@ -147,7 +155,7 @@ router.get('/allDraftCourses', authMiddleware, async (req, res) => {
         return res.status(403).json({ message: 'Forbidden: Admins only' });
       }
   
-      const drafts = await DraftCourse.find({});
+      const drafts = await DraftCourses.find({});
       res.status(200).json(drafts);
     } catch (error) {
       console.error('Error fetching all draft courses:', error);
@@ -156,99 +164,76 @@ router.get('/allDraftCourses', authMiddleware, async (req, res) => {
   });
 
 // admin approve a draft course
-router.post('/approve/:courseId', authMiddleware, async (req, res) => {
-    try {
-        const { courseId } = req.params;
-        const user = req.user;
-        const auth = new Authentication(user);
-    
-        if (!auth.isAdmin()) {
-            return res.status(403).json({ message: 'Forbidden: Admins only' });
-        }
-    
-        const draft = await DraftCourse.findOne({ courseId });
-        if (!draft) {
-            return res.status(404).json({ message: 'Draft course not found' });
-        }
-    
-        const course = new Course({
-            courseId: draft.courseId,
-            userId: draft.userId,
-            name: draft.name,
-            author: draft.author,
-            tags: draft.tags,
-            description: draft.description,
-            content: draft.content,
-            ratings: [],
-            enrollCount: 0,
-            price: draft.price,
-            lastModified: new Date(),
-            banner: draft.banner,
-        });
-        await course.save();
-    
-        // Update in user.createdCourses
-        const courseOwner = await User.findById(draft.userId);
-        if (courseOwner) {
-            courseOwner.createdCourses.push(course._id);
-            await courseOwner.save();
-        }
-        await DraftCourse.deleteOne({ courseId });
-
-    
-        res.status(201).json({ message: 'Draft course approved successfully', course });
-    } catch (error) {
-        console.error('Error approving draft course:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-  });
-// router.post("/approve/:courseId", async (req, res) => {
+// router.post('/approve/:courseId', authMiddleware, async (req, res) => {
 //     try {
 //         const { courseId } = req.params;
-//         const draftCourse = await DraftCourses.findOne({ courseId });
-//         if (!draftCourse) {
-//             return res.status(404).json({ message: "Draft course not found!" });
+//         const user = req.user;
+//         const auth = new Authentication(user);
+    
+//         if (!auth.isAdmin()) {
+//             return res.status(403).json({ message: 'Forbidden: Admins only' });
 //         }
-
-//         await DraftCourses.deleteOne({ courseId });        
-//         // Update the courseId in created Courses by user
-//         const user = await User.findById(draftCourse.userId);
-//         if (user) {
-//             user.createdCourses.push(newCourse._id);
-//             await user.save();
-//         } else {
-//             console.error("User not found:", draftCourse.userId);
+    
+//         const draft = await DraftCourses.findOne({ courseId });
+//         if (!draft) {
+//             return res.status(404).json({ message: 'Draft course not found' });
 //         }
-//         res.status(201).json({ message: "Draft course approved and moved to Courses!" });
+    
+//         const course = new Courses({
+//             courseId: draft.courseId,  // Course bỏ courseId này và để mongoDB tự sinh _id mới
+//             userId: draft.userId,
+//             name: draft.name,
+//             author: draft.author,
+//             tags: draft.tags,
+//             description: draft.description,
+//             content: draft.content,
+//             ratings: [],
+//             enrollCount: 0,
+//             price: draft.price,
+//             lastModified: new Date(),
+//             banner: draft.banner,
+//         });
+//         await course.save();
+    
+//         // Update in user.createdCourses
+//         const courseOwner = await User.findById(draft.userId);
+//         if (courseOwner) {
+//             courseOwner.createdCourses.push(course._id);
+//             await courseOwner.save();
+//         }
+//         await DraftCourses.deleteOne({ courseId });
 
+    
+//         res.status(201).json({ message: 'Draft course approved successfully', course });
+//     } catch (error) {
+//         console.error('Error approving draft course:', error);
+//         res.status(500).json({ message: 'Server error' });
 //     }
-//     catch (error) {
-//          console.error("Error approving draft course:", error);
-//          res.status(500).json({ message: "Server error!" });
-//     }
-// });
+//   });
 
+
+  
 // admin reject a draft course
 router.post('/reject/:courseId', authMiddleware, async (req, res) => {
-    try {
-      const { courseId } = req.params;
-      const user = req.user;
-      const auth = new Authentication(user);
-  
-      if (!auth.isAdmin()) {
-        return res.status(403).json({ message: 'Forbidden: Admins only' });
-      }
-  
-      const deleted = await DraftCourse.findOneAndDelete({ courseId });
-      if (!deleted) {
-        return res.status(404).json({ message: 'Draft course not found' });
-      }
-  
-      res.status(200).json({ message: 'Draft course rejected and deleted' });
-    } catch (error) {
-      console.error('Error rejecting draft course:', error);
-      res.status(500).json({ message: 'Server error' });
+  try {
+    const { courseId } = req.params;
+    const user = req.user;
+    const auth = new Authentication(user);
+
+    if (!auth.isAdmin()) {
+      return res.status(403).json({ message: 'Forbidden: Admins only' });
     }
-  });
+
+    const deleted = await DraftCourses.findOneAndDelete({ courseId });
+    if (!deleted) {
+      return res.status(404).json({ message: 'Draft course not found' });
+    }
+
+    res.status(200).json({ message: 'Draft course rejected and deleted' });
+  } catch (error) {
+    console.error('Error rejecting draft course:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 module.exports = router;

@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../../models/UserModel");
 
 const router = express.Router();
+const authMiddleware = require("../authMiddleware");
 
 // API USER:  /api/user
 // signup: POST /signup (username, password, email)
@@ -16,7 +17,7 @@ router.post("/sign-up", async (req, res) => {
  
         if (!username || !password || !email) {
             return res.status(400).json({ message: "Vui lòng điền đầy đủ thông tin." });
-        }
+        }   
         if (password.length < 6) {
             return res.status(400).json({ message: "Mật khẩu cần có ít nhất 6 ký tự." });
         }
@@ -105,6 +106,40 @@ router.post("/login", async (req, res) => {
         res.status(500).json({ message: "Error server!", error: error.message });
     }
 });
+
+router.post("/progress", authMiddleware, async (req, res) => {
+    try {
+      const userId = req.user._id;
+      const { courseId, videoId } = req.body;
+  
+      if (!courseId || !videoId) {
+        return res.status(400).json({ message: "courseId và videoId là bắt buộc." });
+      }
+  
+      const user = await User.findById(userId);
+  
+      const ownedCourse = user.ownedCourses.find(oc => oc.courseId.toString() === courseId);
+      if (!ownedCourse) {
+        return res.status(404).json({ message: "User chưa đăng ký khóa học này." });
+      }
+  
+      // Nếu video chưa hoàn thành, thêm vào danh sách
+      if (!ownedCourse.completedVideos.includes(videoId)) {
+        ownedCourse.completedVideos.push(videoId);
+        // ownedCourse.progress = ownedCourse.completedVideos.length;
+      }
+  
+      // Cập nhật video cuối cùng đã xem
+      ownedCourse.lastWatchedVideo = videoId;
+  
+      await user.save();
+  
+      res.status(200).json({ message: "Cập nhật tiến độ thành công.", ownedCourse });
+    } catch (error) {
+      console.error("Lỗi khi cập nhật tiến độ:", error);
+      res.status(500).json({ message: "Lỗi server." });
+    }
+  });
 
 // Get User Info
 router.get("/:id", async (req, res) => {

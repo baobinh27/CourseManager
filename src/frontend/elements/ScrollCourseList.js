@@ -3,18 +3,17 @@ import ItemCard from "./ItemCard";
 import styles from "./ScrollCourseList.module.css";
 import { useState } from "react";
 
-const ScrollList = ({title, items}) => {
-    const visibleCount = 4;
+const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20 }) => {
     const [showLeftScrollBtn, setShowLeftScrollBtn] = useState(false);
     const [showRightScrollBtn, setShowRightScrollBtn] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
-        if (items.length > 4) {
+        if (items.length > visibleCount) {
             setShowLeftScrollBtn(currentIndex > 0);
             setShowRightScrollBtn(currentIndex < items.length - visibleCount);
         }
-    }, [items, currentIndex])
+    }, [items, currentIndex, visibleCount])
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1));
@@ -27,18 +26,19 @@ const ScrollList = ({title, items}) => {
     };
 
     return <>
-        <h1 className={styles.title}>{title}</h1>
-        <div className={styles["flex-row"]}>
+        <div className={`${styles["flex-row"]} ${styles.track}`}>
             <button disabled={!showLeftScrollBtn} onClick={prevSlide} className={styles.prev}>❮</button>
             <div className={styles.list}>
-            <div className={styles["carousel-track"]} style={{ transform: `translateX(-${currentIndex/items.length * 100}%)`}}>
-                {items.map((item) => 
-                    <ItemCard 
-                        course={item}
-                    />
-                )}
+                <div className={styles["carousel-track"]} style={{ transform: `translateX(-${currentIndex/items.length * 100}%)`}}>
+                    {items.map((item) => 
+                        <ItemCard 
+                            course={item}
+                            type={type}
+                            scale={scale}
+                        />
+                    )}
+                </div>
             </div>
-        </div>
             <button disabled={!showRightScrollBtn} onClick={nextSlide} className={styles.next}>❯</button>
         </div>
     </> 
