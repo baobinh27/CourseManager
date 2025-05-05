@@ -17,6 +17,7 @@ import CourseManagement from "./frontend/pages/admin/CourseManagement.js";
 import Teaching from "./frontend/pages/teacher/Teaching.js";
 import CreateCourse from "./frontend/pages/teacher/CreateCourse.js";
 import GuidePage from "./frontend/pages/teacher/GuidePage.js";
+import Purchase from "./frontend/pages/Purchase.js";
 
 function App() {
   return <>
@@ -37,6 +38,10 @@ function App() {
         <Route path="/course/:id" element={<>
           <Header />
           <CourseDetail />
+        </>}/>
+        <Route path="/purchase" element={<>
+          <Header />
+          <Purchase />
         </>}/>
         <Route path="/search" element={<>
           <Header />

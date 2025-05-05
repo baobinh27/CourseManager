@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import TagsList from "../elements/TagsList";
 import styles from "./CourseDetail.module.css";
 import { FaCalendarCheck, FaCheck, FaStar, FaTags, FaUserCheck } from "react-icons/fa";
@@ -8,23 +8,46 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 import useGetCourseDetail from "../hooks/useGetCourseDetail";
 import Loading from "./misc/Loading";
 import ErrorPage from "./misc/ErrorPage";
-
-const getStarRate = (ratings) => {
-    return "4.8 (121)";
-}
+import { useAuth } from "../hooks/useAuth";
+import useGetUserDetail from "../hooks/useGetUserDetail";
+import useGetCourseReviews from "../hooks/reviews/useGetCourseReviews";
 
 const CourseDetail = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
 
-    const { course, loading, error } = useGetCourseDetail(id);
+    const { userInfo: userToken, isLoggedIn } = useAuth();
+    const { user, loading: loadingUser, error: userError } = useGetUserDetail(userToken?.userId);
+
+    const { course, loading: loadingCourse, error: courseError } = useGetCourseDetail(id);
+
+    const { reviews, loading: loadingReviews, error: reviewError } = useGetCourseReviews(id);
 
     useDocumentTitle(course?.name);
 
-    if (loading) {
-        return <Loading />
+    const onPurchaseClick = () => {
+        if (!isLoggedIn) {
+            navigate(`/purchase?courseId=${id}`)
+            return;
+        }
+        if (user.ownedCourses.some(course => course.courseId === id)) {
+            navigate('/my-courses');
+            return;
+        }
+        if (user.createdCourses.some(createdId => createdId === id)) {
+            navigate('/my-courses');
+            return;
+        }
+        navigate(`/purchase?courseId=${id}`)
     }
 
-    if (error) return <ErrorPage message={error} />; 
+    if ((isLoggedIn && loadingUser) || loadingCourse || loadingReviews) {
+        return <Loading />
+    }    
+
+    if (courseError) return <ErrorPage message={courseError} />;
+    if (userError) return <ErrorPage message={userError} />;
+    if (reviewError) return <ErrorPage message={reviewError} />;
 
     return <>
         {course ? (<div className={`${styles["flex-row"]} ${styles.page}`}>
@@ -33,7 +56,7 @@ const CourseDetail = () => {
                 <div className={styles["overview-box"]}>
 
                     <h1 className="h1">{course.name}</h1>
-                    
+
                     <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
                         <FaCheck />
                         <p className="h5">{course.description}</p>
@@ -50,8 +73,8 @@ const CourseDetail = () => {
                     </div> : null}
 
                     <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
-                        <FaStar style={{fill: "gold"}} />
-                        <p className="h5">{getStarRate(course.ratings)}</p> 
+                        <FaStar style={{ fill: "gold" }} />
+                        <p className="h5">{`${course.averageRating} (${course.reviewCount})`}</p>
                         <p className="h5">{`${course.enrolCount} đã đăng ký`}</p>
                     </div>
 
@@ -62,20 +85,24 @@ const CourseDetail = () => {
                 </div>
 
                 <div className={styles["detail-box"]}>
-                    <ContentList content={course.content}/>
-                    <CourseRatings />
+                    <ContentList content={course.content} />
+                    <CourseRatings courseId={id} reviews={reviews} commentEnabled={user?.ownedCourses.some(course => course.courseId === id) || false}/>
                 </div>
-                
+
             </div>
             <div className={styles["right-box"]}>
                 <div>
-                    <img src={course.banner} alt="" className={styles["course-img"]}/>
+                    <img src={course.banner} alt="" className={styles["course-img"]} />
                     <div className={styles["price-box"]}>
                         <h1 className={`${styles.price} h2`}>{course.price ? (course.price.toLocaleString("vi-VN") + "₫") : ""}</h1>
-                        <button className={`${styles["buy-btn"]} h3`}>Mua</button>
+                        <button onClick={onPurchaseClick} className={`${styles["buy-btn"]} h4 bold`}>
+                            {
+                                user && (user?.ownedCourses.some(course => course.courseId === id) ||
+                                    user?.createdCourses.some(createdId => createdId === id)) ? "Xem khoá học" : "Mua"
+                            }
+                        </button>
                     </div>
                 </div>
-                
             </div>
         </div>
         ) : (
