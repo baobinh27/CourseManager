@@ -85,10 +85,7 @@ router.get("/courseId/:courseId", optionalAuthMiddleware, async (req, res) => {
             return res.status(404).json({ message: "Course not found!" });
         }
 
-        let isAuthorized = false;
-
-        console.log("user:", user);
-        
+        let isAuthorized = false;        
 
         if (user) {
             const auth = new Authentication(user);
