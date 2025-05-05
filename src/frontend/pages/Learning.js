@@ -12,6 +12,7 @@ import { useAuth } from "../api/auth";
 import useGetUserDetail from "../hooks/useGetUserDetail.js";
 import { useEffect, useState } from "react";
 import { FaCircleCheck } from "react-icons/fa6";
+import useUpdateProgress from "../hooks/useUpdateProgress.js";
 
 const Learning = () => {
     const navigate = useNavigate();
@@ -24,6 +25,8 @@ const Learning = () => {
     const { course, loading: loadingCourse, error: courseError } = useGetCourseDetail(courseId);
     useDocumentTitle(course?.name);
 
+    const { updateProgress, error: progressError } = useUpdateProgress();
+
     const [learningInfo, setLearningInfo] = useState();
 
     useEffect(() => {
@@ -35,8 +38,21 @@ const Learning = () => {
     const videoId = searchParams.get("video") || `${course ? course.content[0].sectionContent[0].videoId : ""}`;
     const videoTitle = useVideoTitle(videoId, course);
 
-    console.log(userData);
-    console.log("learning info:", learningInfo);
+    const onVideoComplete = async (videoId) => {
+        if (learningInfo.completedVideos.includes(videoId)) return;
+        setLearningInfo({
+            ...learningInfo,
+            completedVideos: [...learningInfo.completedVideos, videoId]
+        })
+
+        await updateProgress(courseId, videoId);
+        // if (updated) {
+        //     console.log("Tiến độ cập nhật:", updated);
+        // }
+        if (progressError) {
+            console.log("Cập nhật video thất bại:", progressError);
+        }
+    }
 
     if (!course || !videoId || loadingCourse || loadingUser || !learningInfo) {
         return <Loading />
@@ -70,7 +86,7 @@ const Learning = () => {
                         return <button
                             key={vIndex}
                             onClick={() => navigate(`/learning?courseId=${course._id}&video=${video.videoId}`)}
-                            className={`${styles["nav-content"]} h5 flex-row align-center`}
+                            className={`${styles["nav-content"]} ${isUnlocked && video.videoId === videoId ? styles.selected : ""} h5 flex-row align-center`}
                             disabled={!isUnlocked}
                         >
                             {isUnlocked ?
@@ -94,7 +110,7 @@ const Learning = () => {
             </div>
             <div className={styles["video-box"]}>
                 <div className={styles["video-container"]}>
-                    <VideoPlayer videoId={videoId} />
+                    <VideoPlayer videoId={videoId} onCompleted={onVideoComplete} />
                 </div>
                 <h1 className="h3">{videoTitle ? videoTitle : "null"}</h1>
             </div>
