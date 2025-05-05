@@ -1,18 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import AdminLayout from "./AdminLayout"; // Import the layout component
+import AdminLayout from "./AdminLayout";
 import styles from './CourseManagement.module.css';
 import { useNavigate } from 'react-router-dom';
-
-// Mock data - Replace with actual API call
-const mockCourses = [
-  { _id: '1', name: 'Khóa học React cơ bản', author: 'Admin A', lastModified: '2024-01-15T10:00:00Z', enrolCount: 150 },
-  { _id: '2', name: 'Node.js cho người mới bắt đầu', author: 'Giảng viên B', lastModified: '2024-02-20T14:30:00Z', enrolCount: 95 },
-  { _id: '3', name: 'Thiết kế Web nâng cao', author: 'Admin A', lastModified: '2024-03-10T09:15:00Z', enrolCount: 210 },
-  // For testing pagination, uncomment these or add more mock courses
-  { _id: '4', name: 'JavaScript Advanced', author: 'Admin C', lastModified: '2024-03-15T10:20:00Z', enrolCount: 180 },
-  { _id: '5', name: 'CSS Mastery', author: 'Giảng viên D', lastModified: '2024-03-18T11:30:00Z', enrolCount: 120 },
-  { _id: '6', name: 'Python Basics', author: 'Admin B', lastModified: '2024-03-20T09:00:00Z', enrolCount: 250 },
-];
+import { BASE_API } from '../../utils/constant';
 
 function CourseManagement() {
   
@@ -20,27 +10,49 @@ function CourseManagement() {
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error] = useState(null);
+  const [error, setError] = useState(null);
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [coursesPerPage] = useState(5); // Show 5 courses per page
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setCourses(mockCourses);
-      setFilteredCourses(mockCourses);
-      setLoading(false);
-    }, 500); 
+    // Fetch courses from API
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`${BASE_API}/api/course/search?query=`, {
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Không thể tải danh sách khóa học');
+        }
+        
+        const data = await response.json();
+        setCourses(data);
+        setFilteredCourses(data);
+      } catch (err) {
+        console.error('Lỗi khi tải danh sách khóa học:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    fetchCourses();
   }, []); 
 
   useEffect(() => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const filtered = courses.filter(course =>
       course.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      course.author.toLowerCase().includes(lowerCaseSearchTerm)
+      course.author?.toLowerCase().includes(lowerCaseSearchTerm)
     );
     setFilteredCourses(filtered);
     setCurrentPage(1); // Reset to first page when search changes
@@ -86,14 +98,31 @@ function CourseManagement() {
   const handleDelete = async (courseId, courseName) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa khóa học "${courseName}" không? Hành động này không thể hoàn tác.`)) {
       try {
-        console.log(`(API Call) Xóa khóa học: ${courseId}`);
-        // Update state after successful deletion (simulation)
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Bạn cần đăng nhập để thực hiện hành động này');
+        }
+        
+        const response = await fetch(`${BASE_API}/api/course/delete/${courseId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Không thể xóa khóa học');
+        }
+        
+        // Update state after successful deletion
         const updatedCourses = courses.filter(course => course._id !== courseId);
         setCourses(updatedCourses);
         alert(`Đã xóa khóa học "${courseName}"`);
       } catch (err) {
         console.error(`Lỗi khi xóa khóa học ${courseId}:`, err);
-        alert("Đã xảy ra lỗi khi xóa khóa học.");
+        alert(`Lỗi: ${err.message || "Đã xảy ra lỗi khi xóa khóa học."}`);
       }
     }
   };
