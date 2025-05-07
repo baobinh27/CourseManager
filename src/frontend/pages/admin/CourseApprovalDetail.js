@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import AdminLayout from "./AdminLayout";
 import styles from "./CourseApprovalDetail.module.css";
+import AdminLayout from "./AdminLayout";
 import { FaCheck, FaPlayCircle, FaTags, FaUserCheck } from "react-icons/fa";
 import TagsList from "../../elements/TagsList";
 import ContentList from "../../elements/ContentList";
+import CoursePreview from "../../elements/CoursePreview";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import mockCourses from "../../../mock_data/courses";
 
@@ -14,11 +15,12 @@ const CourseApprovalDetail = () => {
   const [draftCourse, setDraftCourse] = useState(null);
   const [approving, setApproving] = useState(false);
   const [rejecting, setRejecting] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   useDocumentTitle("Admin - Duyệt khóa học");
 
-  // Lấy khóa học từ mock data và kiểm tra trạng thái từ localStorage
   useEffect(() => {
+    // Lấy khóa học từ mock data và kiểm tra trạng thái từ localStorage
     const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
     const course = mockCourses.find(course => course._id === id);
     
@@ -65,8 +67,11 @@ const CourseApprovalDetail = () => {
   };
 
   const handlePreviewCourse = () => {
-    // Chuyển hướng đến trang học với tham số adminPreview=true
-    navigate(`/learning?courseId=${id}&adminPreview=true`);
+    setShowPreview(true);
+  };
+
+  const handleClosePreview = () => {
+    setShowPreview(false);
   };
 
   if (!draftCourse) {
@@ -186,6 +191,13 @@ const CourseApprovalDetail = () => {
           </div>
         </div>
       </div>
+
+      {showPreview && (
+        <CoursePreview 
+          course={draftCourse} 
+          onBack={handleClosePreview} 
+        />
+      )}
     </AdminLayout>
   );
 };
