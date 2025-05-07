@@ -6,8 +6,6 @@ const VideoPlayer = ({videoId, onCompleted}) => {
     const playerRef = useRef(null);
 
     const {
-        watchedTime,
-        isCompleted,
         handlePlayerStateChange
     } = useVideoProgress(playerRef, videoId, onCompleted, 2);
     // hoàn thành sau 2% thời lượng video
@@ -22,11 +20,8 @@ const VideoPlayer = ({videoId, onCompleted}) => {
             rel: 0,        // Không đề xuất video khác sau khi phát xong
         },
     };
-
-    // const onPlayerReady = (event) => {
-    //     playerRef.current = event.target;
-    //     setPlayer(event.target);
-    // };
+    // if (watchedTime % 5 === 0 ) console.log("Đã xem: ", Math.round(watchedTime));
+    // if (isCompleted) console.log("Hoàn thành video!");
     
     return (
         <div>
@@ -36,8 +31,8 @@ const VideoPlayer = ({videoId, onCompleted}) => {
             onReady={(e) => (playerRef.current = e.target)}
             onStateChange={handlePlayerStateChange}
           />
-          <p>Đã xem: {Math.round(watchedTime)} giây</p>
-          <p>Trạng thái: {isCompleted ? "Hoàn thành ✅" : "Chưa hoàn thành ❌"}</p>
+          {/* <p>Đã xem: {Math.round(watchedTime)} giây</p>
+          <p>Trạng thái: {isCompleted ? "Hoàn thành ✅" : "Chưa hoàn thành ❌"}</p> */}
         </div>
       );
 }

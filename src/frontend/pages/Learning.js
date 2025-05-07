@@ -12,7 +12,8 @@ import { useVideoTitle } from "../hooks/useVideoTitle.js";
 import { useAuth } from "../api/auth";
 import useGetUserDetail from "../hooks/useGetUserDetail.js";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { FaCircleCheck } from "react-icons/fa6";
+import useUpdateProgress from "../hooks/useUpdateProgress.js";
 
 const Learning = () => {
     const navigate = useNavigate();
@@ -30,11 +31,11 @@ const Learning = () => {
     
     // Get user data for learning progress
     const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);
-    
-    // Use either the draft course or the regular course based on adminPreview flag
-    const course = adminPreview ? draftCourse : regularCourse;
-    
-    useDocumentTitle((adminPreview && draftCourse) ? `Preview: ${draftCourse.name}` : regularCourse?.name);
+
+    const { course, loading: loadingCourse, error: courseError } = useGetCourseDetail(courseId);
+    useDocumentTitle(course?.name);
+
+    const { updateProgress, error: progressError } = useUpdateProgress();
 
     const [learningInfo, setLearningInfo] = useState();
 
@@ -98,7 +99,23 @@ const Learning = () => {
             
     const videoTitle = useVideoTitle(videoId, course);
 
-    if (!course || !videoId || isLoading || (!adminPreview && !learningInfo)) {
+    const onVideoComplete = async (videoId) => {
+        if (learningInfo.completedVideos.includes(videoId)) return;
+        setLearningInfo({
+            ...learningInfo,
+            completedVideos: [...learningInfo.completedVideos, videoId]
+        })
+
+        await updateProgress(courseId, videoId);
+        // if (updated) {
+        //     console.log("Tiến độ cập nhật:", updated);
+        // }
+        if (progressError) {
+            console.log("Cập nhật video thất bại:", progressError);
+        }
+    }
+
+    if (!course || !videoId || loadingCourse || loadingUser || !learningInfo) {
         return <Loading />
     }
 
@@ -132,57 +149,31 @@ const Learning = () => {
                                 videoId => !completedSet.has(videoId)
                             );
 
-                            const currentVideoId = video.videoId;
-                            isUnlocked = completedSet.has(currentVideoId) || flatIndex === unlockedIndex;
-                        }
+                        const currentVideoId = video.videoId;
+                        const isUnlocked = completedSet.has(currentVideoId) || flatIndex === unlockedIndex;
 
-                        // Trong chế độ adminPreview, tất cả các video đều mở khóa
-                        const videoUrl = `/learning?courseId=${adminPreview ? courseId : course._id}&video=${video.videoId}${adminPreview ? '&adminPreview=true' : ''}`;
-
-                        return adminPreview ? (
-                            // Admin preview chế độ xem - sử dụng Link
-                            <Link 
-                                to={videoUrl}
-                                className="link"
-                                key={video.videoId}
-                            >
-                                <div className={`${styles["nav-content"]} h5 flex-row align-center`}>
+                        return <button
+                            key={vIndex}
+                            onClick={() => navigate(`/learning?courseId=${course._id}&video=${video.videoId}`)}
+                            className={`${styles["nav-content"]} ${isUnlocked && video.videoId === videoId ? styles.selected : ""} h5 flex-row align-center`}
+                            disabled={!isUnlocked}
+                        >
+                            {isUnlocked ?
+                                learningInfo.completedVideos.includes(video.videoId) ?
+                                    <FaCircleCheck fill="forestgreen" /> :
                                     <FaRegPlayCircle fill="#ff7700" />
-                                    <div style={{ width: "90%" }}>
-                                        <div className={`truncate h5`}>
-                                            {video.title}
-                                        </div>
-                                        <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
-                                            <FaPlayCircle fill="#ff7700" />
-                                            <p className="h6">{helper.formatDuration(video.duration)}</p>
-                                        </div>
-                                    </div>
+                                : <FaLock />}
+                            <div style={{ width: "90%" }}>
+                                <div className={`truncate h5`}>
+                                    {video.title}
                                 </div>
-                            </Link>
-                        ) : (
-                            // Regular course với tracking học tập - sử dụng button
-                            <button
-                                key={video.videoId}
-                                onClick={() => navigate(videoUrl)}
-                                className={`${styles["nav-content"]} h5 flex-row align-center`}
-                                disabled={!isUnlocked}
-                            >
-                                {isUnlocked ?
-                                    learningInfo.completedVideos.includes(video.videoId) ?
-                                        <FaCircleCheck fill="forestgreen" /> :
-                                        <FaRegPlayCircle fill="#ff7700" />
-                                    : <FaLock />}
-                                <div style={{ width: "90%" }}>
-                                    <div className={`truncate h5`}>
-                                        {video.title}
-                                    </div>
-                                    <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
-                                        <FaPlayCircle fill={isUnlocked ? "#ff7700" : "#bbb"} />
-                                        <p className="h6">{helper.formatDuration(video.duration)}</p>
-                                    </div>
+                                <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
+                                    <FaPlayCircle fill={isUnlocked ? "#ff7700" : "#bbb"} />
+                                    <p className="h6">{helper.formatDuration(video.duration)}</p>
                                 </div>
-                            </button>
-                        );
+                            </div>
+
+                        </button>
                     })}
                 </>))}
             </div>
@@ -193,7 +184,7 @@ const Learning = () => {
                     </div>
                 )}
                 <div className={styles["video-container"]}>
-                    <VideoPlayer videoId={videoId} />
+                    <VideoPlayer videoId={videoId} onCompleted={onVideoComplete} />
                 </div>
                 <h1 className="h3">{videoTitle ? videoTitle : "null"}</h1>
             </div>

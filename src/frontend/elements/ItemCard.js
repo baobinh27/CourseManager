@@ -10,8 +10,6 @@ function processPrice(price) {
     return price.toLocaleString("vi-VN") + "₫";
 }
 
-
-
 function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, percent = 0}) {
     const navigate = useNavigate();
 
@@ -34,8 +32,9 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
                 <div className={styles["stars-and-price"]}>
                     <div>
                         <div className={styles["flex-row"]}>
-                            <p className={styles.rating}>{course.ratings}</p>
+                            <p className={styles.rating}>{course.averageRating}</p>
                             <img className={styles.star} src={star} alt="" />
+                            <p className={styles.rating}>({course.reviewCount})</p>
                         </div>
                         {course.enrolCount ? <p className={styles["enrol-count"]}>{`${course.enrolCount} đã đăng ký`}</p> : null}
                     </div>
