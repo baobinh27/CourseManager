@@ -11,12 +11,14 @@ import Register from "./frontend/pages/Register.js";
 import Header from "./frontend/elements/Header.js";
 import SearchResult from "./frontend/pages/SearchResult.js";
 import Learning from "./frontend/pages/Learning.js";
-import Dashboard from "./frontend/pages/admin/dashboard.js";
+import Dashboard from "./frontend/pages/admin/dashboard.js"; 
 import Profile from "./frontend/pages/Profile.js";
 import CourseManagement from "./frontend/pages/admin/CourseManagement.js";
 import Teaching from "./frontend/pages/teacher/Teaching.js";
 import CreateCourse from "./frontend/pages/teacher/CreateCourse.js";
 import GuidePage from "./frontend/pages/teacher/GuidePage.js";
+import CourseApproval from "./frontend/pages/admin/CourseApproval.js";
+import CourseApprovalDetail from "./frontend/pages/admin/CourseApprovalDetail.js";
 import Purchase from "./frontend/pages/Purchase.js";
 
 function App() {
@@ -70,6 +72,12 @@ function App() {
         </>}/>
         <Route path="/admin/course-management" element={<>
           <CourseManagement />
+        </>}/>
+        <Route path="/admin/course-approval" element={<>
+          <CourseApproval />
+        </>}/>
+        <Route path="/admin/course-approval/:id" element={<>
+          <CourseApprovalDetail />
         </>}/>
         <Route path="*" element={<>
           <NotFound />
