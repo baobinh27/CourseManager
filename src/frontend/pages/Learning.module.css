@@ -98,3 +98,13 @@
     display: flex;
     justify-content: center;
 }
+
+.adminPreviewBanner {
+    background-color: #ff9800;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
