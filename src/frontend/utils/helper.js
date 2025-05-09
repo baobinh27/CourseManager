@@ -6,7 +6,19 @@ const formatDuration = (duration) => {
     return `${hours > 0 ? hours + "h " : ""}${minutes}m ${seconds}s`;
 }
 
+const countVideosInCourse = (content) => {
+    if (!Array.isArray(content)) return 0;
+
+    return content.reduce((total, section) => {
+        if (Array.isArray(section.sectionContent)) {
+            return total + section.sectionContent.length;
+        }
+        return total;
+    }, 0);
+};
+
 // eslint-disable-next-line
 export default {
     formatDuration,
+    countVideosInCourse
 }

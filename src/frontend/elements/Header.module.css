@@ -21,30 +21,6 @@
     align-items: center;
 }
 
-.explore-menu {
-    display: none;
-    position: absolute;
-    top: 5.75vw;
-    background-color: honeydew;
-    border-radius: 0.5vw;
-}
-
-.explore-box:hover .explore-menu {
-    display: block;
-    
-}
-
-.explore-menu li {
-    padding: 0.5vw;
-}
-
-.explore-menu li:hover {
-    background-color: forestgreen;
-    color: honeydew;
-    border-radius: 0.5vw;
-}
-
-
 #search-bar {
     padding: 1vw;
     margin: 1vw 0;

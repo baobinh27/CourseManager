@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { ImProfile } from "react-icons/im";
 import { FaEdit, FaUser } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import helper from "../utils/helper";
 
 const Profile = () => {
     const { id } = useParams();
@@ -18,6 +19,7 @@ const Profile = () => {
     const { courses: ownedCourses, loading: loadingOwnedCourses, error: ownedCoursesError } = useGetMultipleCourseDetails(ownedCourseIds);
     const [createdCourseIds, setCreatedCourseIds] = useState([]);
     const { courses: createdCourses, loading: loadingCreatedCourses, error: createdCoursesError } = useGetMultipleCourseDetails(createdCourseIds);
+    const [courseProgresses, setCourseProgresses] = useState([]);
 
 
     const [isEditing, setIsEditing] = useState(false);
@@ -33,6 +35,18 @@ const Profile = () => {
             setCreatedCourseIds(user.createdCourses);
         }
     }, [user]);
+
+    useEffect(() => {
+        if (ownedCourses) {
+            const progresses = ownedCourses.map((ownedCourse, index) => {
+                const totalVideos = helper.countVideosInCourse(ownedCourse.content);
+                const completedVideos = user.ownedCourses[index]?.completedVideos?.length || 0;
+                return totalVideos > 0 ? ((completedVideos * 100) / totalVideos).toLocaleString({}, { maximumFractionDigits: 1, minimumFractionDigits: 0 }) : 0;
+            });
+
+            setCourseProgresses(progresses);
+        }
+    }, [user, ownedCourses])
 
     if (loadingUser || loadingOwnedCourses || loadingCreatedCourses) {
         return <Loading />
@@ -113,12 +127,6 @@ const Profile = () => {
                         <p className="italic" style={{ opacity: `${description ? 1 : 0.5}` }}>
                             {description || "Chưa có mô tả."}
                         </p>
-                        {/* <button
-                                className="mt-2 text-sm text-blue-600 underline"
-                                onClick={() => setIsEditing(true)}
-                            >
-                                Chỉnh sửa
-                            </button> */}
                     </>
                 )}
             </section>
@@ -129,7 +137,7 @@ const Profile = () => {
         <div className={`${styles['right-col']}`}>
             <div>
                 <p className={`${styles["list-title"]} h3`}>Khoá học đã mua</p>
-                {ownedCourses && <ScrollList items={ownedCourses} type="owned-viewing" visibleCount={3} scale={16} />}
+                {ownedCourses && <ScrollList items={ownedCourses} type="owned-viewing" visibleCount={3} scale={16} percents={courseProgresses} />}
             </div>
 
             <div>

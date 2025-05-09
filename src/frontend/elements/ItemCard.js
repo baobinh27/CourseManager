@@ -36,7 +36,7 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
                             <img className={styles.star} src={star} alt="" />
                             <p className={styles.rating}>({course.reviewCount})</p>
                         </div>
-                        {course.enrolCount ? <p className={styles["enrol-count"]}>{`${course.enrolCount} đã đăng ký`}</p> : null}
+                        {course.enrollCount ? <p className={styles["enrol-count"]}>{`${course.enrollCount} đã đăng ký`}</p> : null}
                     </div>
                     
                     <div className={styles["flex-row"]}>
@@ -79,7 +79,7 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
                 <p className={`bold multiline-truncate`} style={textScaleH5}>{course.name}</p>
                 <div className="flex-row align-center" style={{gap: "0.5vw", justifyContent: "space-between"}}>
                     <div>
-                        <ProgressBar percent={50}/>
+                        <ProgressBar percent={percent}/>
                     </div>
                 </div>
                 

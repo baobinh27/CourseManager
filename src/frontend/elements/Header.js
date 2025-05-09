@@ -60,14 +60,7 @@ function Header() {
     
     return <header className={styles.header}> 
         <Link to="/"><button className={`${styles["nav-btn"]} h5 bold`}>Trang chủ</button></Link>
-        <div className={styles["explore-box"]}>
-            <Link to="/explore"><button className={`${styles["nav-btn"]} h5 bold ${styles.explore}`}>Khám phá</button></Link>
-            <ul type="none" className={styles["explore-menu"]}>
-                <li>Python</li>
-                <li>Javascript</li>
-            </ul>
-        </div>
-        
+        <Link to="/explore"><button className={`${styles["nav-btn"]} h5 bold ${styles.explore}`}>Khám phá</button></Link>
 
         <div id={styles["search-box"]}>
             <input 

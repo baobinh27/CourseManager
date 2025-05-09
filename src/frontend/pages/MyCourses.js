@@ -9,17 +9,7 @@ import ErrorPage from "./misc/ErrorPage";
 import useGetMultipleCourseDetails from "../hooks/useGetMultipleCourseDetails";
 import useGetUserDetail from "../hooks/useGetUserDetail";
 import ItemCard from "../elements/ItemCard";
-
-const countVideosInCourse = (content) => {
-    if (!Array.isArray(content)) return 0;
-  
-    return content.reduce((total, section) => {
-      if (Array.isArray(section.sectionContent)) {
-        return total + section.sectionContent.length;
-      }
-      return total;
-    }, 0);
-  };
+import helper from "../utils/helper";
 
 function MyCourses() {
     const { user } = useAuth();
@@ -49,7 +39,7 @@ function MyCourses() {
     
         const fetchProgresses = () => {
             const progresses = ownedCourses.map((ownedCourse, index) => {
-                const totalVideos = countVideosInCourse(ownedCourse.content);
+                const totalVideos = helper.countVideosInCourse(ownedCourse.content);
                 const completedVideos = userData.ownedCourses[index]?.completedVideos?.length || 0;
                 return totalVideos > 0 ? ((completedVideos * 100) / totalVideos).toLocaleString({}, {maximumFractionDigits: 1, minimumFractionDigits: 0}) : 0;
             });

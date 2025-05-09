@@ -3,7 +3,7 @@ import ItemCard from "./ItemCard";
 import styles from "./ScrollCourseList.module.css";
 import { useState } from "react";
 
-const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20 }) => {
+const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20, percents = [] }) => {
     const [showLeftScrollBtn, setShowLeftScrollBtn] = useState(false);
     const [showRightScrollBtn, setShowRightScrollBtn] = useState(false);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,11 +30,12 @@ const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20 })
             <button disabled={!showLeftScrollBtn} onClick={prevSlide} className={styles.prev}>❮</button>
             <div className={styles.list}>
                 <div className={styles["carousel-track"]} style={{ transform: `translateX(-${currentIndex/items.length * 100}%)`}}>
-                    {items.map((item) => 
+                    {items.map((item, index) => 
                         <ItemCard 
                             course={item}
                             type={type}
                             scale={scale}
+                            percent={percents[index] || 0}
                         />
                     )}
                 </div>

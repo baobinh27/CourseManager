@@ -10,8 +10,8 @@ const useGetAllCourses = () => {
         const fetchCourse = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`${BASE_API}/api/course/search?query=`);
-                const data = await response.json();                
+                const response = await fetch(`${BASE_API}/api/course/search?query=&sort=enrollCount&limit=10`);
+                const data = await response.json();
 
                 if (!response.ok) {
                     console.log(data.message);

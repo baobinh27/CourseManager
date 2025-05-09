@@ -36,22 +36,30 @@ const test_api = require('../test_api');
 // search courses: phục vụ cho hàm tìm kiếm cho tất cả người dùng, kể cả không đăng nhập
 router.get("/search", async (req, res) => {
     try {
-        const { query } = req.query;
+        const { query, sort, limit } = req.query;
 
-        if (!query || query.trim().length === 0) {
-            return res.status(400).json({ message: "Missing search query." });
-        }
+        // if (!query || query.trim().length === 0) {
+        //     return res.status(400).json({ message: "Missing search query." });
+        // }
         const regex = new RegExp(query.trim(), 'i');
 
-        const courses = await Courses.find({
+        let courses = await Courses.find({
             $or: [
               { name: { $regex: regex } },
               { tags: { $elemMatch: { $regex: regex } } }
             ]
         }).sort({ createdAt: -1 });  
-
+        
         if (!courses || courses.length === 0) {
             return res.status(404).json({ message: "No courses found!" });
+        }
+
+        if (sort === "enrollCount") {
+            courses = courses.sort((a, b) => b.enrollCount - a.enrollCount);
+        }
+          
+        if (limit) {
+            courses = courses.slice(0, parseInt(limit));
         }
 
         return res.status(200).json(courses);
@@ -67,7 +75,7 @@ router.get("/courseId/:courseId", optionalAuthMiddleware, async (req, res) => {
         const { courseId } = req.params;
         const user = req.user;
 
-        const course = await Courses.find({ courseId });
+        const course = await Courses.findOne({ _id: courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found!" });
         }

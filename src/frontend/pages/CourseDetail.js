@@ -75,7 +75,7 @@ const CourseDetail = () => {
                     <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
                         <FaStar style={{ fill: "gold" }} />
                         <p className="h5">{`${course.averageRating} (${course.reviewCount})`}</p>
-                        <p className="h5">{`${course.enrolCount} đã đăng ký`}</p>
+                        <p className="h5">{`${course.enrollCount} đã đăng ký`}</p>
                     </div>
 
                     <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>

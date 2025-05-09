@@ -18,6 +18,7 @@ import Teaching from "./frontend/pages/teacher/Teaching.js";
 import CreateCourse from "./frontend/pages/teacher/CreateCourse.js";
 import GuidePage from "./frontend/pages/teacher/GuidePage.js";
 import Purchase from "./frontend/pages/Purchase.js";
+import Explore from "./frontend/pages/Explore.js";
 
 function App() {
   return <>
@@ -27,8 +28,11 @@ function App() {
         <Route path="/" element={<>
           <Header />
           <Home />
-        </>
-        }/>
+        </>}/>
+        <Route path="/explore" element={<>
+          <Header />
+          <Explore />
+        </>}/>
         <Route path="/login" element={<Login />}/>
         <Route path="/register" element={<Register />}/>
         <Route path="/my-courses" element={<>
