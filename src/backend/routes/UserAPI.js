@@ -1,4 +1,6 @@
 const express = require("express");
+const jwt     = require('jsonwebtoken');
+
 const bcrypt = require("bcrypt");
 const User = require("../../models/UserModel");
 
@@ -9,6 +11,11 @@ const authMiddleware = require("../authMiddleware");
 // signup: POST /signup (username, password, email)
 // change-password: POST /change-password (email, oldPassword, newPassword)
 // login: POST /login (email, password)
+
+// POST /account/refresh-token
+
+const ACCESS_SECRET  = process.env.ACCESS_TOKEN_SECRET;
+const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 // Sign up
 router.post("/sign-up", async (req, res) => {
@@ -88,24 +95,54 @@ router.post("/login", async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
         }
-        // jwt after login
-        const jwt = require("jsonwebtoken");
 
-        // Sinh token kèm payload { userId }
-        const token = jwt.sign(
-            { userId: user._id }, 
-            process.env.JWT_SECRET || "SECRET_KEY",
-            { expiresIn: "1d" }
+        const accessToken = jwt.sign(
+            { userId: user._id, role: user.role },
+            ACCESS_SECRET,
+            { expiresIn: '1h' }
         );
+        const refreshToken = jwt.sign(
+            { userId: user._id },
+            REFRESH_SECRET,
+            { expiresIn: '30d' }
+        );
+        user.refreshTokens.push(refreshToken);
+        await user.save();
+
         res.status(200).json(
             {   message: "Đăng nhập thành công!", 
-                token,
+                accessToken,
+                refreshToken
             });    
         } catch (error) {
         console.error("Error during login:", error);
         res.status(500).json({ message: "Error server!", error: error.message });
     }
 });
+
+// POST /account/refresh-token
+router.post('/refresh-token', async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) return res.status(400).json({ message: 'Missing refreshToken' });
+
+  try {
+    const payload = jwt.verify(refreshToken, REFRESH_SECRET);
+    const user = await User.findById(payload.userId);
+    if (!user || !user.refreshTokens.includes(refreshToken)) {
+      return res.status(403).json({ message: 'Invalid refresh token' });
+    }
+
+    const newAccessToken = jwt.sign(
+      { userId: user._id, role: user.role },
+      ACCESS_SECRET,
+      { expiresIn: '1h' }
+    );
+    return res.json({ accessToken: newAccessToken });
+  } catch (err) {
+    return res.status(403).json({ message: 'Refresh token expired or invalid' });
+  }
+});
+
 
 router.post("/progress", authMiddleware, async (req, res) => {
     try {
