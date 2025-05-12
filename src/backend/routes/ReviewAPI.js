@@ -37,7 +37,7 @@ const updateCourseReviewStats = async (courseId) => {
 router.post("/", authMiddleware, async (req, res) => {
   try {
     const { courseId, rating, comment } = req.body;
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     const review = await Review.findOneAndUpdate(
       { courseId, userId },

@@ -75,12 +75,11 @@ router.get("/courseId/:courseId", optionalAuthMiddleware, async (req, res) => {
         const { courseId } = req.params;
         const user = req.user;
 
-        const course = await Courses.findOne({ courseId });
+        const course = await Courses.findOne({ courseId: courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found!" });
         }
         let isAuthorized = false;
-        // console.log("user:", user);
         
         if (user) {
             const auth = new Authentication(user);

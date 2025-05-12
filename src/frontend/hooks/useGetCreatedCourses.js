@@ -8,7 +8,7 @@ export const useGetCreatedCourses = () => {
 
   useEffect(() => {
     const fetchCreatedCourses = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("accessToken");
       if (!token) return;
 
       try {

@@ -53,9 +53,9 @@ const Login = () => {
             });
 
             const data = await response.json();
-
+            
             if (response.ok) {
-                login(data.token); // Lưu thông tin đăng nhập dưới dạng token
+                login(data.accessToken, data.refreshToken); // Lưu thông tin đăng nhập dưới dạng token
                 setLoginButtonState(2);
                 setTimeout(() => {navigate('/')}, 1000)
                             

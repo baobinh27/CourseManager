@@ -23,7 +23,7 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
     }
 
     if (type === 'not-owned')
-    return <div onClick={() => {navigate(`/course/${course._id}`)}} className={styles.card} style={cardScales}>
+    return <div onClick={() => {navigate(`/course/${course.courseId}`)}} className={styles.card} style={cardScales}>
         <img className={styles.img} src={course.banner} alt="" />
         <div className={styles.info}>
             <h1 className={`${styles.name} multiline-truncate`} style={textScaleH5}>{course.name}</h1>

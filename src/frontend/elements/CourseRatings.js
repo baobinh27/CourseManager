@@ -60,7 +60,7 @@ const CourseRatings = ({ courseId, reviews, commentEnabled }) => {
             ) : (
                 reviews.map((r, i) => (
                     <div key={i} className={styles.reviewItem}>
-                        <p className={`${styles.author} h4 bold`}>{r.userId.username || "Ẩn danh"}</p>
+                        <p className={`${styles.author} h4 bold`}>{r.userId?.username || "Ẩn danh"}</p>
                         <div className="flex-row">
                             {[...Array(5)].map((_, index) => (
                                 <FaStar

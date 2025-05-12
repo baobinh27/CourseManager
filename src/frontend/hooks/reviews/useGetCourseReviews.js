@@ -12,7 +12,7 @@ const useGetCourseReviews = (courseId) => {
                 setLoading(true);
 
                 const response = await fetch(`${BASE_API}/api/review/course/${courseId}`);
-                const data = await response.json();                
+                const data = await response.json();
 
                 if (!response.ok) {
                     console.log(data.message);

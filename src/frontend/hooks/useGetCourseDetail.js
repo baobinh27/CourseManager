@@ -12,7 +12,7 @@ const useGetCourseDetail = (courseId) => {
                 setLoading(true);
 
                 // Lấy token (nếu có)
-                const token = localStorage.getItem("token");
+                const token = localStorage.getItem("accessToken");                
 
                 const response = await fetch(`${BASE_API}/api/course/courseId/${courseId}`, {
                     headers: {
