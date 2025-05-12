@@ -2,7 +2,7 @@ import { useRef } from "react";
 import YouTube from "react-youtube";
 import useVideoProgress from "../hooks/videos/useVideoProgress";
 
-const VideoPlayer = ({videoId, onCompleted}) => {
+const VideoPlayer = ({videoId, onCompleted, width = 960}) => {
     const playerRef = useRef(null);
 
     const {
@@ -11,8 +11,8 @@ const VideoPlayer = ({videoId, onCompleted}) => {
     // hoàn thành sau 2% thời lượng video
 
     const options = {
-        height: "540",
-        width: "960",
+        height: Math.round(width / 16 * 9),
+        width: width,
         playerVars: {
             autoplay: 0,  // 1 = tự động phát
             controls: 1,  // 0 = ẩn nút điều khiển

@@ -7,11 +7,18 @@ import useGetAllCourses from "../hooks/useGetAllCourses";
 import Loading from "./misc/Loading";
 import ErrorPage from "./misc/ErrorPage";
 import { useNavigate } from "react-router-dom";
+import useIsMobile from "../hooks/useIsMobile";
+import PaginatedCourseList from "../elements/PaginatedCourseList";
+import VerticalCourseList from "../elements/VerticalCourseList";
 
 function Home() {
     useDocumentTitle("Online Learning");
     const navigate = useNavigate();
     const { courses, loading, error } = useGetAllCourses();
+
+    const isDesktop = useIsMobile('(max-width: 1450px)');
+    const isTablet = useIsMobile('(max-width: 1024px)');
+    const isMobile = useIsMobile('(max-width: 768px)');
 
     if (loading) {
         return <Loading />
@@ -22,7 +29,6 @@ function Home() {
     if (!courses || courses.length === 0) return <p>Không có khoá học nào.</p>;
 
     return <div className={styles.page}>
-        {/* <img className={styles.banner} src={banner} alt="banner" /> */}
         <div className={styles.bannerContainer}>
             <img className={styles.bannerImage} src={banner} alt="banner" />
             <div className={styles.overlay}>
@@ -32,20 +38,36 @@ function Home() {
             </div>
         </div>
         <div className={styles["scroll-list"]}>
-            <p className={`${styles.title} h2`}>Phổ biến</p>
-            <ScrollCourseList items={courses} />
+            <p className={`${styles.title}`}>Phổ biến</p>
+            {isMobile ? <VerticalCourseList items={courses} visibleCount={10} /> :
+                isTablet ? <PaginatedCourseList courses={courses} columns={2} maxItemPerPage={10} /> :
+                    isDesktop ? <ScrollCourseList items={courses} visibleCount={3} scale={18} /> :
+                        <ScrollCourseList items={courses} visibleCount={4} />
+            }
         </div>
         <div className={styles["scroll-list"]}>
             <p className={`${styles.title} h2`}>Sơ đẳng</p>
-            <ScrollCourseList items={courses} />
+            {isMobile ? <VerticalCourseList items={courses} visibleCount={10} /> :
+                isTablet ? <PaginatedCourseList courses={courses} columns={2} maxItemPerPage={10} /> :
+                    isDesktop ? <ScrollCourseList items={courses} visibleCount={3} scale={18} /> :
+                        <ScrollCourseList items={courses} visibleCount={4} />
+            }
         </div>
         <div className={styles["scroll-list"]}>
             <p className={`${styles.title} h2`}>Trung cấp</p>
-            <ScrollCourseList items={courses} />
+            {isMobile ? <VerticalCourseList items={courses} visibleCount={10} /> :
+                isTablet ? <PaginatedCourseList courses={courses} columns={2} maxItemPerPage={10} /> :
+                    isDesktop ? <ScrollCourseList items={courses} visibleCount={3} scale={18} /> :
+                        <ScrollCourseList items={courses} visibleCount={4} />
+            }
         </div>
         <div className={styles["scroll-list"]}>
             <p className={`${styles.title} h2`}>Chuyên sâu</p>
-            <ScrollCourseList items={courses} />
+            {isMobile ? <VerticalCourseList items={courses} visibleCount={10} /> :
+                isTablet ? <PaginatedCourseList courses={courses} columns={2} maxItemPerPage={10} /> :
+                    isDesktop ? <ScrollCourseList items={courses} visibleCount={3} scale={18} /> :
+                        <ScrollCourseList items={courses} visibleCount={4} />
+            }
         </div>
         <footer style={{ marginTop: "50px" }}><img style={{ width: "100%" }} src={banner} alt=""></img></footer>
     </div>

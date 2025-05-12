@@ -26,9 +26,9 @@ const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20, p
     };
 
     return <>
-        <div className={`${styles["flex-row"]} ${styles.track}`}>
+        <div className={`${styles["flex-row"]} ${styles.track}`} style={{width: `${(scale + 1) * visibleCount + 6}rem`}}>
             <button disabled={!showLeftScrollBtn} onClick={prevSlide} className={styles.prev}>❮</button>
-            <div className={styles.list}>
+            <div className={styles.list} style={{width: `${(scale + 1) * visibleCount}rem`}}>
                 <div className={styles["carousel-track"]} style={{ transform: `translateX(-${currentIndex/items.length * 100}%)`}}>
                     {items.map((item, index) => 
                         <ItemCard 

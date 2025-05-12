@@ -1,14 +1,7 @@
 .tags-list {
     display: flex;
     flex-direction: row;
-    gap: 0.1vw;
-}
-
-.chip {
-    padding: 0.25vw 0.5vw;
-    background-color: #eeeeee;
-    border: 0;
-    border-radius: 0.5vw;
+    gap: 0.1rem;
 }
 
 .chip:hover {
@@ -16,6 +9,5 @@
 }
 
 .tag {
-    font-size: 0.7vw;
     color: black !important;
 }

@@ -4,9 +4,9 @@
     border: 0;
     /* background-color: transparent; */
     /* background-color: #ffe89b; */
-    width: 2vw;
-    height: 2vw;
-    border-radius: 0.5vw;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
 }
 
 .page-bar {
@@ -18,10 +18,10 @@
     border: 0;
     background-color: forestgreen;
     fill: white;
-    width: 2vw;
-    height: 2vw;
-    margin: 0 1vw;
-    border-radius: 0.5vw;
+    width: 2rem;
+    height: 2rem;
+    margin: 0 1rem;
+    border-radius: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;

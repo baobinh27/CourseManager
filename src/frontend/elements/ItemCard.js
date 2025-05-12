@@ -14,29 +14,29 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
     const navigate = useNavigate();
 
     const cardScales = {
-        width: `${scale}vw`,
-        height: `${scale * 0.9}vw`
+        width: `calc(${scale}rem - 2px)`,
+        height: `${scale * 0.9}rem`
     }
 
     const textScaleH5 = {
-        fontSize: `${scale / 20.0}vw`
+        fontSize: `${scale / 20.0}rem`
     }
 
     if (type === 'not-owned')
-    return <div onClick={() => {navigate(`/course/${course._id}`)}} className={styles.card}>
+    return <div onClick={() => {navigate(`/course/${course._id}`)}} className={styles.card} style={cardScales}>
         <img className={styles.img} src={course.banner} alt="" />
         <div className={styles.info}>
-            <h1 className={`${styles.name} multiline-truncate`}>{course.name}</h1>
+            <h1 className={`${styles.name} multiline-truncate`} style={textScaleH5}>{course.name}</h1>
             <div>
                 <TagsList tags={course.tags} />
                 <div className={styles["stars-and-price"]}>
                     <div>
                         <div className={styles["flex-row"]}>
-                            <p className={styles.rating}>{course.averageRating}</p>
+                            <p className="h7">{course.averageRating}</p>
                             <img className={styles.star} src={star} alt="" />
-                            <p className={styles.rating}>({course.reviewCount})</p>
+                            <p className="h7">({course.reviewCount})</p>
                         </div>
-                        {course.enrollCount ? <p className={styles["enrol-count"]}>{`${course.enrollCount} đã đăng ký`}</p> : null}
+                        {course.enrollCount ? <p className="h7">{`${course.enrollCount} đã đăng ký`}</p> : null}
                     </div>
                     
                     <div className={styles["flex-row"]}>
@@ -45,7 +45,7 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
                             {/* <p className={styles.price}>{processPrice(discountedPrice)}</p> */}
                         </>
                         ) : (<>
-                            <p className={styles.price}>{processPrice(course.price)}</p>
+                            <p className={`${styles.price} h3`}>{processPrice(course.price)}</p>
                         </>)
                         }
                     </div>
@@ -59,11 +59,11 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
             <img src={course.banner} alt={course.name} className={styles.img} />
             <div className={styles.info}>
                 <p className={`bold multiline-truncate`} style={textScaleH5}>{course.name}</p>
-                <div className="flex-row align-center" style={{gap: "0.5vw", justifyContent: "space-between"}}>
+                <div className="flex-row align-center" style={{gap: "0.5rem", justifyContent: "space-between"}}>
                     <Link to={`/learning?courseId=${course._id}`} className={`${styles.continueButton} h7 bold`}>
                         Tiếp tục học
                     </Link>
-                    <div>
+                    <div style={{width: "50%"}}>
                         <ProgressBar percent={percent}/>
                     </div>
                 </div>
@@ -77,8 +77,8 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
             <img src={course.banner} alt={course.name} className={styles.img} />
             <div className={styles.info}>
                 <p className={`bold multiline-truncate`} style={textScaleH5}>{course.name}</p>
-                <div className="flex-row align-center" style={{gap: "0.5vw", justifyContent: "space-between"}}>
-                    <div>
+                <div className="flex-row align-center" style={{gap: "0.5rem", justifyContent: "space-between"}}>
+                    <div style={{width: "50%"}}>
                         <ProgressBar percent={percent}/>
                     </div>
                 </div>

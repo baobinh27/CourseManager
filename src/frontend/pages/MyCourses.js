@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import styles from "./MyCourses.module.css";
-// import CourseCard from "../elements/CourseCard";
 import { useAuth } from "../api/auth";
 import UnAuthorized from "./misc/UnAuthorized";
 import { useEffect } from "react";
@@ -8,19 +7,25 @@ import Loading from "./misc/Loading";
 import ErrorPage from "./misc/ErrorPage";
 import useGetMultipleCourseDetails from "../hooks/useGetMultipleCourseDetails";
 import useGetUserDetail from "../hooks/useGetUserDetail";
-import ItemCard from "../elements/ItemCard";
 import helper from "../utils/helper";
+import useIsMobile from "../hooks/useIsMobile";
+import VerticalCourseList from "../elements/VerticalCourseList";
+import PaginatedCourseList from "../elements/PaginatedCourseList";
 
 function MyCourses() {
     const { user } = useAuth();
 
-    const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);    
+    const { user: userData, loading: loadingUser, error: userError } = useGetUserDetail(user?.userId);
 
     const [ownedCourseIds, setOwnedCourseIds] = useState([]);
     const { courses: ownedCourses, loading: loadingOwnedCourses, error: ownedCoursesError } = useGetMultipleCourseDetails(ownedCourseIds);
     const [courseProgresses, setCourseProgresses] = useState([]);
     const [createdCourseIds, setCreatedCourseIds] = useState([]);
     const { courses: createdCourses, loading: loadingCreatedCourses, error: createdCoursesError } = useGetMultipleCourseDetails(createdCourseIds);
+
+    const isLaptop = useIsMobile('(max-width: 1450px)')
+    const isTablet = useIsMobile('(max-width: 1024px)');
+    const isMobile = useIsMobile('(max-width: 768px)');
 
     useEffect(() => {
         if (userData && userData.ownedCourses) {
@@ -30,29 +35,27 @@ function MyCourses() {
         if (userData && userData.createdCourses) {
             setCreatedCourseIds(userData.createdCourses);
         }
-        userData && console.log("user data:", userData);
-        
     }, [userData]);
 
     useEffect(() => {
         if (!ownedCourses || !userData) return;
-    
+
         const fetchProgresses = () => {
             const progresses = ownedCourses.map((ownedCourse, index) => {
                 const totalVideos = helper.countVideosInCourse(ownedCourse.content);
                 const completedVideos = userData.ownedCourses[index]?.completedVideos?.length || 0;
-                return totalVideos > 0 ? ((completedVideos * 100) / totalVideos).toLocaleString({}, {maximumFractionDigits: 1, minimumFractionDigits: 0}) : 0;
+                return totalVideos > 0 ? ((completedVideos * 100) / totalVideos).toLocaleString({}, { maximumFractionDigits: 1, minimumFractionDigits: 0 }) : 0;
             });
-    
+
             setCourseProgresses(progresses);
         };
-    
+
         fetchProgresses();
     }, [ownedCourses, userData]);
 
-    useEffect(() => {
-        console.log(courseProgresses);
-    }, [courseProgresses])
+    // useEffect(() => {
+    //     console.log(courseProgresses);
+    // }, [courseProgresses])
 
     if (!user) {
         return <UnAuthorized />
@@ -62,37 +65,43 @@ function MyCourses() {
         return <Loading />
     }
 
-    if (userError) return <ErrorPage message={userError} />;    
-    if (ownedCoursesError) return <ErrorPage message={ownedCoursesError} />;   
-    if (createdCoursesError) return <ErrorPage message={createdCoursesError} />; 
-    
-    return (
-        <div className={styles.container}>
-            <div className={styles.content}>
-                <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Khóa học đã mua</h2>
-                    <div className={styles.courseGrid}>
-                        {ownedCourses && ownedCourses.map((courseData, index) => (
-                            <div key={courseData._id} className={styles.courseItem}>
-                                {/* <CourseCard courseId={courseData.courseId} type={"purchased"} /> */}
-                                <ItemCard course={courseData} type="owned" scale={18} percent={courseProgresses[index]}/>
-                            </div>
-                        ))}
-                    </div>
-                </section>
+    if (userError) return <ErrorPage message={userError} />;
+    if (ownedCoursesError) return <ErrorPage message={ownedCoursesError} />;
+    if (createdCoursesError) return <ErrorPage message={createdCoursesError} />;
 
-                <section className={styles.section}>
-                    <h2 className={styles.sectionTitle}>Khóa học đã tạo</h2>
-                    <div className={styles.courseGrid}>
-                        {createdCourses && createdCourses.map((courseData) => (
-                            <div key={courseData._id} className={styles.courseItem}>
-                                {/* <CourseCard courseId={courseId} type={"created"}/> */}
-                                <ItemCard course={courseData} type="created" scale={18}/>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            </div>
+    return (
+        <div className={`${styles.container} flex-col align-center`}>
+            <section className={styles.section}>
+                <h2 className={`${styles.sectionTitle} ${isMobile ? "h4" : "h2"}`}>Khóa học đã mua</h2>
+                {isMobile ?
+                    <VerticalCourseList
+                        items={ownedCourses}
+                        type={"owned"}
+                        percents={courseProgresses}
+                    /> :
+                    <PaginatedCourseList
+                        courses={ownedCourses}
+                        scale={isTablet ? 18 : 20}
+                        columns={isTablet ? 2 : isLaptop ? 3 : 4}
+                        type={"owned"}
+                        percents={courseProgresses}
+                    />}
+            </section>
+
+            <section className={styles.section}>
+                <h2 className={`${styles.sectionTitle} ${isMobile ? "h4" : "h2"}`}>Khóa học đã tạo</h2>
+                {isMobile ?
+                    <VerticalCourseList
+                        items={createdCourses}
+                        type={"created"}
+                    /> :
+                    <PaginatedCourseList
+                        courses={createdCourses}
+                        scale={isTablet ? 18 : 20}
+                        columns={isTablet ? 2 : isLaptop ? 3 : 4}
+                        type={"created"}
+                    />}
+            </section>
         </div>
     );
 }

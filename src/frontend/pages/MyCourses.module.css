@@ -1,53 +1,52 @@
 .container {
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
     background-color: #f5f5f5;
 }
 
-.content {
+/* .content {
     flex: 1;
     width: 90%;
     max-width: 1200px;
     margin: 2rem auto;
     padding: 1rem;
-}
+} */
 
 .section {
-    margin-bottom: 2rem;
+    width: 87rem;
+    margin: 2rem 1rem;
     background-color: white;
-    border-radius: 12px;
-    padding: 1.5rem;
+    border-radius: 1rem;
+    padding: 1rem 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .sectionTitle {
     color: #2e7d32;
-    font-size: 1.5rem;
     margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #e0e0e0;
 }
 
-.courseGrid {
+/* .courseGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 1.5rem;
-}
+} */
 
-.courseItem {
+/* .courseItem {
     width: 100%;
-}
+} */
 
-.courseLink {
+/* .courseLink {
     text-decoration: none;
     color: inherit;
     transition: transform 0.2s ease;
-}
+} */
 
-.courseLink:hover {
+/* .courseLink:hover {
     transform: translateY(-5px);
-}
+} */
 
 .emptyState {
     padding: 2rem;
@@ -63,14 +62,21 @@
     margin: 0;
 }
 
+@media (max-width: 1450px) {
+    .section {
+        width: 65rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .section {
+        width: 39rem;
+    }
+}
+
 @media (max-width: 768px) {
-    .content {
+    .section {
         width: 95%;
         padding: 0.5rem;
-    }
-
-    .courseGrid {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1rem;
     }
 }

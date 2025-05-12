@@ -83,8 +83,8 @@ const Login = () => {
     return (
         <div className={styles["login-container"]}>
             <div className={styles["login-background"]}></div>
-            {error ? <div className={`${styles["error-dialog"]} flex-row justify-center align-center`}>
-                <FaExclamationCircle />
+            {error ? <div className={`${styles["error-dialog"]} ${error ? styles["slide-down"] : styles["slide-up"]} h4 flex-row justify-center align-center`}>
+                <FaExclamationCircle style={{width: "2rem", height: "2rem"}}/>
                 {error}
             </div> : null}
             <div className={styles["login-box"]}>

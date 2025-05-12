@@ -10,6 +10,7 @@
 }
 
 .track {
+    /* width: 100%; */
     position: relative;
 }
 
@@ -17,21 +18,20 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 0 3vw;
-    padding: 1.5vw 0;
-    width: 84vw;
+    margin: 0 3rem;
+    padding: 1.5rem 0;
+    /* width: 84rem; */
     overflow-x: hidden;
 }
 
 .title {
-    font-size: 2vw;
+    font-size: 2rem;
     font-weight: 700;
-    padding: 0 8vw;
+    padding: 0 8rem;
 }
 
 .carousel-track {
     display: flex;
-    /* gap: 1vw; */
     flex-direction: row;
     transition: transform 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); /* Hiệu ứng chuyển động */
 }
@@ -41,10 +41,10 @@
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     border: none;
-    width: 3vw;
-    height: 3vw;
+    width: 3rem;
+    height: 3rem;
     cursor: pointer;
-    font-size: 1.5vw;
+    font-size: 1.5rem;
     z-index: 1;
 }
 
@@ -54,9 +54,7 @@
 
 .prev {
     left: 0;
-    /* margin: 0 0vw 0 3vw; */
 }
 .next {
     right: 0;
-    /* margin: 0 3vw 0 0vw; */
 }

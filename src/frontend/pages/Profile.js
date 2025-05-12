@@ -61,11 +61,11 @@ const Profile = () => {
         setIsEditing(false);
     };
 
-    console.log(user);
-    console.log(ownedCourses);
+    // console.log(user);
+    // console.log(ownedCourses);
 
 
-    return <div className={`${styles.page} flex-row`}>
+    return <div className={`${styles.page} flex-row justify-center`}>
         <div className={`${styles["left-col"]}`}>
             <h1 className="h3">Thông tin cá nhân</h1>
 

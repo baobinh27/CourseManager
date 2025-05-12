@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./ContentList.module.css";
 import { FaAngleDown, FaAngleUp, FaClock, FaPlayCircle, FaThList } from "react-icons/fa";
 import helper from "../utils/helper";
+import useIsMobile from "../hooks/useIsMobile";
 
 function getContentOverview(content) {
     let totalSeconds = 0, totalMinutes = 0, totalHours = 0;
@@ -27,6 +28,8 @@ function getContentOverview(content) {
 }
 
 const ContentList = ({content}) => {
+
+    const isMobile = useIsMobile('(max-width: 768px)');
     const [showSectionDetail, setShowSectionDetail] = useState([]);    
 
     useEffect(() => {
@@ -40,9 +43,9 @@ const ContentList = ({content}) => {
         );
     };
 
-    return <div className={`${styles["flex-col"]} ${styles.gap}`}>
+    return <div className={`flex-col ${styles.gap}`}>
         <h3 className="h3">Nội dung khoá học</h3>
-        {content && <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
+        {content && <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
             <FaThList />
             <h1 className="h5">{getContentOverview(content)}</h1>
         </div>}
@@ -53,7 +56,7 @@ const ContentList = ({content}) => {
                     onClick={() => toggleSection(index)}
                     className={styles.section}
                 >
-                    <p className="h4">{`${index + 1}. ${section.sectionTitle}`}</p> 
+                    <p className="h4 truncate">{`${index + 1}. ${section.sectionTitle}`}</p> 
                     
                     {showSectionDetail[index] ? <FaAngleUp /> : <FaAngleDown />}
                 </button>
@@ -62,13 +65,13 @@ const ContentList = ({content}) => {
                     <ul type="none">
                         {section.sectionContent.map(video => (
                             <li key={video.videoId} className={styles.item}>
-                                <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap} h5`} style={{width: "80%"}}>
-                                    <FaPlayCircle style={{fill: "#ff7700"}} />
-                                    <p className="h5 truncate">{video.title}</p>
+                                <div className={`flex-row justify-center ${styles.gap} h5`} style={{width: `${isMobile ? "calc(100% - 6rem)" : "80%"}`}}>
+                                    <FaPlayCircle style={{fill: "#ff7700", width: "1.5rem"}} />
+                                    <p className={`${isMobile ? "h6" : "h5"} truncate`}>{video.title}</p>
                                 </div>
-                                <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap} h5`}>
+                                <div className={`flex-row "justify-center" ${styles.gap} ${isMobile ? "h6" : "h5"}`}>
                                     {helper.formatDuration(video.duration)}
-                                    <FaClock style={{fill: "forestgreen"}}/>
+                                    <FaClock style={{fill: "forestgreen", width: "1.5rem"}}/>
                                 </div>
                             </li>
                         ))}

@@ -1,28 +1,28 @@
 .page {
-    margin: 2vw 7vw 0;
-    gap: 4vw;
+    margin-top: 2rem;
+    gap: 4rem;
 }
 
 .list-title {
-    margin-left: 2vw;
+    margin-left: 2rem;
 }
 
 .left-col {
-    width: 22vw;
-    max-width: 22vw;
-    padding: 2vw;
-    border-radius: 1vw;
+    width: 22rem;
+    max-width: 22rem;
+    padding: 2rem;
+    border-radius: 1rem;
     background-color: white;
     height: min-content;
 }
 
 .section {
     border-top: 1px solid gray;
-    margin-top: 0.5vw;
-    padding-top: 0.5vw;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
     display: flex;
     flex-direction: column;
-    gap: 0.5vw;
+    gap: 0.5rem;
 }
 
 .description-input {
@@ -34,8 +34,8 @@
     background-color: forestgreen;
     color: honeydew;
     border: 0;
-    padding: 0.25vw 1vw;
-    border-radius: 0.5vw;
+    padding: 0.25rem 1rem;
+    border-radius: 0.5rem;
     cursor: pointer;
 }
 
@@ -43,8 +43,8 @@
     background-color: honeydew;
     color: forestgreen;
     border: 1px solid forestgreen;
-    padding: 0.25vw 1vw;
-    border-radius: 0.5vw;
+    padding: 0.25rem 1rem;
+    border-radius: 0.5rem;
     cursor: pointer;
 }
 
@@ -53,9 +53,9 @@
 }
 
 .right-col {
-    width: 57vw;
-    padding: 2vw 0.5vw;
-    border-radius: 1vw;
+    width: 57rem;
+    padding: 2rem 0.5rem;
+    border-radius: 1rem;
     background-color: white;
 }
 

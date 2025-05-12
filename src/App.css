@@ -49,36 +49,40 @@ body {
 }
 
 .h1 {
-  font-size: 2vw;
+  font-size: 1.6rem;
   font-weight: bold;
 }
 
 .h2 {
-  font-size: 1.75vw;
+  font-size: 1.4rem;
   font-weight: bold;
 }
 
 .h3 {
-  font-size: 1.5vw;
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
 .h4 {
-  font-size: 1.25vw;
+  font-size: 1rem;
 }
 
 .h5 {
-  font-size: 1vw;
+  font-size: 0.8rem;
   font-weight: normal;
 }
 
 .h6 {
-  font-size: 0.85vw;
+  font-size: 0.7rem;
   font-weight: normal;
 }
 
 .h7 {
-  font-size: 0.75vw;
+  font-size: 0.6rem;
+}
+
+.h8 {
+  font-size: 0.5rem;
 }
 
 .bold {

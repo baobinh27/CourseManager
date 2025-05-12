@@ -25,29 +25,6 @@ const CourseRatings = ({ courseId, reviews, commentEnabled }) => {
         <div className={styles.ratingBox}>
             <h3 className={styles.title}>Đánh giá</h3>
 
-            {!reviews || reviews.length === 0 ? (
-                <p className={styles.noRating}>Chưa có đánh giá</p>
-            ) : (
-                reviews.map((r, i) => (
-                    <div key={i} className={styles.reviewItem}>
-                        <p className={`${styles.author} h4 bold`}>{r.userId.username || "Ẩn danh"}</p>
-                        <div className="flex-row">
-                            {[...Array(5)].map((_, index) => (
-                                <FaStar
-                                    key={index}
-                                    style={{
-                                        fill: index < r.rating ? "gold" : "#ccc", // sao vàng hoặc xám
-                                        marginRight: 4
-                                    }}
-                                />
-                            ))}
-                        </div>
-                        <p className={styles.comment}>{r.comment}</p>
-
-                    </div>
-                ))
-            )}
-
             {commentEnabled ? <form onSubmit={handleSubmit} className={styles.form}>
                 <label>Đánh giá: </label>
                 <div className="flex-row" style={{gap: "2px"}}>
@@ -75,6 +52,31 @@ const CourseRatings = ({ courseId, reviews, commentEnabled }) => {
 
                 <button type="submit" onClick={handleSubmit} disabled={stars === 0}>Gửi đánh giá</button>
             </form> : <div>Vui lòng mua khoá học để đánh giá</div>}
+
+            <p className="h5 bold">Đánh giá từ học viên</p>
+
+            {!reviews || reviews.length === 0 ? (
+                <p className={styles.noRating}>Chưa có đánh giá</p>
+            ) : (
+                reviews.map((r, i) => (
+                    <div key={i} className={styles.reviewItem}>
+                        <p className={`${styles.author} h4 bold`}>{r.userId.username || "Ẩn danh"}</p>
+                        <div className="flex-row">
+                            {[...Array(5)].map((_, index) => (
+                                <FaStar
+                                    key={index}
+                                    style={{
+                                        fill: index < r.rating ? "gold" : "#ccc", // sao vàng hoặc xám
+                                        marginRight: 4
+                                    }}
+                                />
+                            ))}
+                        </div>
+                        <p className={styles.comment}>{r.comment}</p>
+
+                    </div>
+                ))
+            )}
         </div>
     )
 }

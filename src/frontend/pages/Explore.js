@@ -1,4 +1,4 @@
-import styles from "./Explore.module.css";
+// import styles from "./Explore.module.css";
 
 const Explore = () => {
 

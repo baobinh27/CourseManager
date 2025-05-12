@@ -13,6 +13,7 @@ import useGetUserDetail from "../hooks/useGetUserDetail.js";
 import { useEffect, useState } from "react";
 import { FaCircleCheck } from "react-icons/fa6";
 import useUpdateProgress from "../hooks/useUpdateProgress.js";
+import useIsMobile from "../hooks/useIsMobile";
 
 const Learning = () => {
     const navigate = useNavigate();
@@ -37,6 +38,10 @@ const Learning = () => {
     // Tự động lấy video đầu tiên nếu không truy vấn videoId
     const videoId = searchParams.get("video") || `${course ? course.content[0].sectionContent[0].videoId : ""}`;
     const videoTitle = useVideoTitle(videoId, course);
+
+    const isLaptop = useIsMobile('(max-width: 1450px)')
+    const isTablet = useIsMobile('(max-width: 1024px)');
+    const isMobile = useIsMobile('(max-width: 768px)');
 
     const onVideoComplete = async (videoId) => {
         if (learningInfo.completedVideos.includes(videoId)) return;
@@ -63,7 +68,19 @@ const Learning = () => {
 
     return <>
         <LearningHeader courseName={course.name} />
-        <div className={`${styles["flex-row"]}`}>
+        <div className={`${isTablet ? 'flex-col align-center' : 'flex-row'}`}>
+
+            {isTablet && <div className={styles["video-box"]}>
+                <div className={styles["video-container"]}>
+                    <VideoPlayer
+                        width={isMobile ? "375" : "750"}
+                        videoId={videoId}
+                        onCompleted={onVideoComplete}
+                    />
+                </div>
+                <h1 className={`h3 truncate ${styles.videoName}`}>{videoTitle ? videoTitle : "null"}</h1>
+            </div>}
+
             <div className={styles["content-list"]}>
                 {course.content.map((section, sIndex) => (<>
                     <div className={`${styles["nav-section"]} h4 bold truncate`}>{`${sIndex + 1}. ${section.sectionTitle}`}</div>
@@ -95,10 +112,10 @@ const Learning = () => {
                                     <FaRegPlayCircle fill="#ff7700" />
                                 : <FaLock />}
                             <div style={{ width: "90%" }}>
-                                <div className={`truncate h5`}>
+                                <div className={`truncate h5`} style={{ textAlign: "start" }}>
                                     {video.title}
                                 </div>
-                                <div className={`${styles["flex-row"]} ${styles["align-center"]}`}>
+                                <div className={`flex-row align-center`}>
                                     <FaPlayCircle fill={isUnlocked ? "#ff7700" : "#bbb"} />
                                     <p className="h6">{helper.formatDuration(video.duration)}</p>
                                 </div>
@@ -108,26 +125,31 @@ const Learning = () => {
                     })}
                 </>))}
             </div>
-            <div className={styles["video-box"]}>
+
+            {!isTablet && <div className={styles["video-box"]}>
                 <div className={styles["video-container"]}>
-                    <VideoPlayer videoId={videoId} onCompleted={onVideoComplete} />
+                    <VideoPlayer
+                        width={isLaptop ? "750" : "960"}
+                        videoId={videoId}
+                        onCompleted={onVideoComplete}
+                    />
                 </div>
-                <h1 className="h3">{videoTitle ? videoTitle : "null"}</h1>
-            </div>
+                <h1 className={`h3 ${styles.videoName}`}>{videoTitle ? videoTitle : "null"}</h1>
+            </div>}
         </div>
     </>
 }
 
 const LearningHeader = ({ courseName }) => {
-    return <div className={`${styles["flex-row"]} ${styles["align-center"]} ${styles["learning-header"]}`}>
+    return <div className={`flex-row align-center ${styles["learning-header"]}`}>
         <Link to="/my-courses" className="link">
-            <button className={`${styles["flex-row"]} ${styles["align-center"]} ${styles["back-btn"]} h5`}>
-                <div className={`${styles["back-icon-box"]}`}><FaChevronLeft size={"1.5vw"} /></div>
+            <button className={`flex-row align-center ${styles["back-btn"]} h5`}>
+                <div className={`${styles["back-icon-box"]}`}><FaChevronLeft size={"1.5rem"} /></div>
                 <div className="h5">Quay lại</div>
             </button>
         </Link>
 
-        <div className={`${styles["course-name"]} h4`}>{courseName}</div>
+        <div className={`${styles["course-name"]} h4 truncate`}>{courseName}</div>
     </div>
 }
 

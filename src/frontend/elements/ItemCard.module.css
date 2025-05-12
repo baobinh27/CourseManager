@@ -8,17 +8,19 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.2vw;
+    gap: 0.2rem;
 }
 
 .card {
-    width: 20vw;
-    height: 18vw;
+    /* width: 20rem;
+    height: 18rem; */
     border: 0;
-    border-radius: 1vw;
+    border-radius: 1rem;
     background-color: white;
-    margin: 0 0.5vw;
+    margin: 0 0.5rem;
     cursor: pointer;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     /* box-shadow: 0 0 1.25vw #aaa; */
     /* transition: transform 0.1s ease-in-out; */
 }
@@ -30,7 +32,7 @@
 
 .info {
     margin: 0;
-    padding: 0 0.9vw 0 0.9vw;
+    padding: 0 0.9rem 0 0.9rem;
     height: 35%;
     max-height: 35%;
     display: flex;
@@ -39,7 +41,7 @@
 }
 
 .img {
-    border-radius: 1vw 1vw 0 0;
+    border-radius: 1rem 1rem 0 0;
     border: 0;
     margin: 0;
     width: 100%;
@@ -48,8 +50,8 @@
 }
 
 .name {
-    font-size: 1.1vw;
-    height: 3vw;
+    /* font-size: 1.1vw; */
+    height: 3rem;
 }
 
 .stars-and-price {
@@ -63,31 +65,22 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.2vw;
-}
-
-.rating {
-    font-size: 0.6vw;
+    gap: 0.2rem;
 }
 
 .star {
-    width: 0.6vw;
-    height: 0.6vw;
-}
-
-.enrol-count {
-    font-size: 0.6vw;
+    width: 0.6rem;
+    height: 0.6rem;
 }
 
 .price {
     font-weight: bold;
-    font-size: 1.3vw;
     color: forestgreen;
 }
 
 .old-price {
     font-weight: normal;
-    font-size: 0.8vw;
+    font-size: 0.8rem;
     color: gray;
     text-decoration: line-through;
 }
@@ -96,8 +89,8 @@
     display: inline-block;
     background-color: #2e7d32;
     color: white;
-    padding: 0.5vw 0.75vw;
-    border-radius: 0.5vw;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
     text-decoration: none;
     transition: background-color 0.2s ease;
 }

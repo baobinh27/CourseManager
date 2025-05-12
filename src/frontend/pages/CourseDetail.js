@@ -11,6 +11,7 @@ import ErrorPage from "./misc/ErrorPage";
 import { useAuth } from "../hooks/useAuth";
 import useGetUserDetail from "../hooks/useGetUserDetail";
 import useGetCourseReviews from "../hooks/reviews/useGetCourseReviews";
+import useIsMobile from "../hooks/useIsMobile";
 
 const CourseDetail = () => {
     const navigate = useNavigate();
@@ -24,6 +25,10 @@ const CourseDetail = () => {
     const { reviews, loading: loadingReviews, error: reviewError } = useGetCourseReviews(id);
 
     useDocumentTitle(course?.name);
+
+    // const isDesktop = useIsMobile('(max-width: 1450px)');
+    const isTablet = useIsMobile('(max-width: 1024px)');
+    const isMobile = useIsMobile('(max-width: 768px)');
 
     const onPurchaseClick = () => {
         if (!isLoggedIn) {
@@ -43,50 +48,101 @@ const CourseDetail = () => {
 
     if ((isLoggedIn && loadingUser) || loadingCourse || loadingReviews) {
         return <Loading />
-    }    
+    }
 
     if (courseError) return <ErrorPage message={courseError} />;
     if (userError) return <ErrorPage message={userError} />;
     if (reviewError) return <ErrorPage message={reviewError} />;
 
-    return <>
-        {course ? (<div className={`${styles["flex-row"]} ${styles.page}`}>
+    return (
+        isMobile ? <div className={`flex-col ${styles.page}`}>
+            <div className={`${styles["right-box"]} flex-row justify-between`}>
+                <img src={course.banner} alt="" className={styles["course-img"]} />
+                <h1 className={`${styles.price} h4 bold`}>{course.price ? (course.price.toLocaleString("vi-VN") + "₫") : ""}</h1>
+                <button onClick={onPurchaseClick} className={`${styles["buy-btn"]} h5 bold`}>
+                    {
+                        user && (user?.ownedCourses.some(course => course.courseId === id) ||
+                            user?.createdCourses.some(createdId => createdId === id)) ? "Xem khoá học" : "Mua"
+                    }
+                </button>
+            </div>
+
             <div className={styles["left-box"]}>
 
                 <div className={styles["overview-box"]}>
 
-                    <h1 className="h1">{course.name}</h1>
+                    <h1 className={`${isTablet ? "h2" : "h1"}`}>{course.name}</h1>
 
-                    <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
                         <FaCheck />
-                        <p className="h5">{course.description}</p>
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{course.description}</p>
                     </div>
 
-                    <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
                         <FaUserCheck />
-                        <h1 className="h5">{"Tạo bởi " + course.author}</h1>
+                        <h1 className={`${isTablet ? "h6" : "h5"}`}>{"Tạo bởi " + course.author}</h1>
                     </div>
 
-                    {course.tags ? <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
+                    {course.tags ? <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
                         <FaTags />
-                        <TagsList tags={course.tags} shorten={false}/>
+                        <TagsList tags={course.tags} shorten={false} mini={isMobile}/>
                     </div> : null}
 
-                    <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
                         <FaStar style={{ fill: "gold" }} />
-                        <p className="h5">{`${course.averageRating} (${course.reviewCount})`}</p>
-                        <p className="h5">{`${course.enrollCount} đã đăng ký`}</p>
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{`${course.averageRating} (${course.reviewCount})`}</p>
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{`${course.enrollCount} đã đăng ký`}</p>
                     </div>
 
-                    <div className={`${styles["flex-row"]} ${styles["justify-center"]} ${styles.gap}`}>
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
                         <FaCalendarCheck />
-                        <p className="h5">{`Cập nhật lần cuối: ${course.lastModified?.slice(0, 10).split('-').reverse().join('/')}`}</p>
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{`Cập nhật lần cuối: ${course.lastModified?.slice(0, 10).split('-').reverse().join('/')}`}</p>
                     </div>
                 </div>
 
                 <div className={styles["detail-box"]}>
                     <ContentList content={course.content} />
-                    <CourseRatings courseId={id} reviews={reviews} commentEnabled={user?.ownedCourses.some(course => course.courseId === id) || false}/>
+                    <CourseRatings courseId={id} reviews={reviews} commentEnabled={user?.ownedCourses.some(course => course.courseId === id) || false} />
+                </div>
+
+            </div>
+        </div> : <div className={`flex-row ${styles.page}`}>
+            <div className={styles["left-box"]}>
+
+                <div className={styles["overview-box"]}>
+
+                    <h1 className={`${isTablet ? "h2" : "h1"}`}>{course.name}</h1>
+
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
+                        <FaCheck/>
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{course.description}</p>
+                    </div>
+
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
+                        <FaUserCheck />
+                        <h1 className={`${isTablet ? "h6" : "h5"}`}>{"Tạo bởi " + course.author}</h1>
+                    </div>
+
+                    {course.tags ? <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
+                        <FaTags />
+                        <TagsList tags={course.tags} shorten={false} mini={isMobile}/>
+                    </div> : null}
+
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
+                        <FaStar style={{ fill: "gold" }} />
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{`${course.averageRating} (${course.reviewCount})`}</p>
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{`${course.enrollCount} đã đăng ký`}</p>
+                    </div>
+
+                    <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
+                        <FaCalendarCheck />
+                        <p className={`${isTablet ? "h6" : "h5"}`}>{`Cập nhật lần cuối: ${course.lastModified?.slice(0, 10).split('-').reverse().join('/')}`}</p>
+                    </div>
+                </div>
+
+                <div className={styles["detail-box"]}>
+                    <ContentList content={course.content} />
+                    <CourseRatings courseId={id} reviews={reviews} commentEnabled={user?.ownedCourses.some(course => course.courseId === id) || false} />
                 </div>
 
             </div>
@@ -94,8 +150,8 @@ const CourseDetail = () => {
                 <div>
                     <img src={course.banner} alt="" className={styles["course-img"]} />
                     <div className={styles["price-box"]}>
-                        <h1 className={`${styles.price} h2`}>{course.price ? (course.price.toLocaleString("vi-VN") + "₫") : ""}</h1>
-                        <button onClick={onPurchaseClick} className={`${styles["buy-btn"]} h4 bold`}>
+                        <h1 className={`${styles.price} ${isTablet ? "h4 bold" : "h2"}`}>{course.price ? (course.price.toLocaleString("vi-VN") + "₫") : ""}</h1>
+                        <button onClick={onPurchaseClick} className={`${styles["buy-btn"]} ${isTablet ? "h5" : "h4"} bold`}>
                             {
                                 user && (user?.ownedCourses.some(course => course.courseId === id) ||
                                     user?.createdCourses.some(createdId => createdId === id)) ? "Xem khoá học" : "Mua"
@@ -104,11 +160,7 @@ const CourseDetail = () => {
                     </div>
                 </div>
             </div>
-        </div>
-        ) : (
-            <div>Loading...</div>
-        )}
-    </>
+        </div>)
 }
 
 export default CourseDetail;

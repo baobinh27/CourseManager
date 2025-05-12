@@ -28,7 +28,7 @@ const SearchResult = () => {
             <div className={styles["left-box"]}>
                 {courses && 
                     (courses.length !== 0 ? 
-                        <PaginatedCourseList courses={courses} columns={3} maxItemPerPage={15}/> 
+                        <PaginatedCourseList courses={courses} columns={3} maxItemPerPage={3}/> 
                     : <div className="h4">Không tìm thấy kết quả.</div>)
                 }
             </div>

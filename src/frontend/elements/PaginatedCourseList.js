@@ -3,7 +3,7 @@ import ItemCard from "./ItemCard"
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 import styles from "./PaginatedCourseList.module.css";
 
-const PaginatedCourseList = ({courses, columns = 4, maxItemPerPage = 20}) => {
+const PaginatedCourseList = ({courses, columns = 4, type = 'not-owned', maxItemPerPage = 20, scale = 20, percents = []}) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
 
@@ -35,10 +35,13 @@ const PaginatedCourseList = ({courses, columns = 4, maxItemPerPage = 20}) => {
     const currentCourses = courses?.slice(startIndex, startIndex + maxItemPerPage);
 
     return <>
-        <div style={{display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, rowGap: "2vw", columnGap: "1vw"}}>
-            {currentCourses && currentCourses.map((course) => (
+        <div style={{display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, rowGap: "2rem", columnGap: "1rem"}}>
+            {currentCourses && currentCourses.map((course, index) => (
                 <ItemCard 
                     course={course}
+                    scale={scale}
+                    type={type}
+                    percent={percents[index] || 0}
                 />
             ))}
         </div>
@@ -57,7 +60,7 @@ const PaginatedCourseList = ({courses, columns = 4, maxItemPerPage = 20}) => {
                     backgroundColor: currentPage === index + 1 ? "#FFCF2C" : "#FFE89B",
                     fontWeight: currentPage === index + 1 ? "bold" : "normal",
                     cursor: currentPage === index + 1 ? "auto" : "pointer",
-                    margin: "0 0.5vw",
+                    margin: "0 0.5rem",
                 }}
             >
             {index + 1}
