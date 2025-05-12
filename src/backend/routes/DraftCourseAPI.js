@@ -182,7 +182,7 @@ router.post('/approve/:courseId', authMiddleware, async (req, res) => {
         // Kết hợp cả hai phiên bản: bỏ courseId như nhánh main đề xuất
         // nhưng giữ lại cấu trúc xử lý content từ nhánh của bạn
         const course = new Courses({
-            // Bỏ courseId và để MongoDB tự tạo _id
+            courseId: draft.courseId,
             userId: draft.userId,
             name: draft.name,
             author: draft.author,

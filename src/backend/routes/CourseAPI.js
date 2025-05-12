@@ -75,7 +75,7 @@ router.get("/courseId/:courseId", optionalAuthMiddleware, async (req, res) => {
         const { courseId } = req.params;
         const user = req.user;
 
-        const course = await Courses.findOne({ _id: courseId });
+        const course = await Courses.findOne({ courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found!" });
         }
