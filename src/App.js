@@ -1,5 +1,5 @@
 // import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import React from "react";
 import './App.css';
 import Home from "./frontend/pages/Home.js";
@@ -22,11 +22,11 @@ import CourseApprovalDetail from "./frontend/pages/admin/CourseApprovalDetail.js
 import Purchase from "./frontend/pages/Purchase.js";
 import Explore from "./frontend/pages/Explore.js";
 import EditCourse from "./frontend/pages/admin/EditCourse.js";
+import ProtectedRoute from "./frontend/components/ProtectedRoute.js";
 
 function App() {
   return <>
     <BrowserRouter>
-      
       <Routes>
         <Route path="/" element={<>
           <Header />
@@ -72,24 +72,19 @@ function App() {
         <Route path="/teaching/create" element={<>
           <CreateCourse />
         </>}/>
-        <Route path="/admin" element={<>
-          <Dashboard />
-        </>}/>
-        <Route path="/admin/course-management" element={<>
-          <CourseManagement />
-        </>}/>
-        <Route path="/admin/course-approval" element={<>
-          <CourseApproval />
-        </>}/>
-        <Route path="/admin/course-approval/:id" element={<>
-          <CourseApprovalDetail />
-        </>}/>
-        <Route path="/admin/edit-course/:courseId" element={<>
-          <EditCourse />
-        </>}/>
-        <Route path="*" element={<>
-          <NotFound />
-        </>}/>
+        
+        {/* Admin Routes - Protected */}
+        <Route element={<ProtectedRoute requireAdmin={true} />}>
+          <Route path="/admin" element={<Dashboard />}/>
+          <Route path="/admin/course-management" element={<CourseManagement />}/>
+          <Route path="/admin/course-approval" element={<CourseApproval />}/>
+          <Route path="/admin/course-approval/:id" element={<CourseApprovalDetail />}/>
+          <Route path="/admin/edit-course/:courseId" element={<EditCourse />}/>
+          <Route path="/admin/payment-verification" element={<Dashboard />}/>
+          <Route path="/admin/user-management" element={<Dashboard />}/>
+        </Route>
+        
+        <Route path="*" element={<NotFound />}/>
       </Routes>
     </BrowserRouter>
   </>

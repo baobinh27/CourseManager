@@ -10,6 +10,7 @@ export const AuthProvider = ({ children }) => {
     const decoded = jwtDecode(token);
     const userData = {
       userId: decoded.userId,
+      role: decoded.role,
       token,
     };
     setUser(userData);
@@ -28,10 +29,11 @@ export const AuthProvider = ({ children }) => {
       try {
         const decoded = jwtDecode(token);
 
-        // Kiểm tra token hết hạn chưa (nếu muốn chắc chắn hơn)
+        // Kiểm tra token hết hạn chưa
         if (decoded.exp * 1000 > Date.now()) {
           setUser({
             userId: decoded.userId,
+            role: decoded.role,
             token,
           });
         } else {

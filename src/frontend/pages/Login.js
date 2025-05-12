@@ -5,6 +5,7 @@ import styles from './Login.module.css';
 import { useAuth } from '../api/auth';
 import useDocumentTitle from '../hooks/useDocumentTitle';
 import { BASE_API } from '../utils/constant';
+import { jwtDecode } from 'jwt-decode';
 
 const Login = () => {
     useDocumentTitle("Đăng nhập");
@@ -55,10 +56,31 @@ const Login = () => {
             const data = await response.json();
 
             if (response.ok) {
-                login(data.token); // Lưu thông tin đăng nhập dưới dạng token
+                // Lưu token vào localStorage
+                await login(data.accessToken);
                 setLoginButtonState(2);
-                setTimeout(() => {navigate('/')}, 1000)
-                            
+
+                // Giải mã token để lấy thông tin quyền của người dùng
+                try {
+                    const decoded = jwtDecode(data.accessToken);
+                    
+                    // Nếu là admin, chuyển hướng đến trang dashboard admin
+                    if (decoded.role === 'admin') {
+                        setTimeout(() => {
+                            navigate('/admin');
+                        }, 1000);
+                    } else {
+                        // Người dùng thông thường chuyển về trang chủ
+                        setTimeout(() => {
+                            navigate('/');
+                        }, 1000);
+                    }
+                } catch (err) {
+                    console.error('Error decoding token:', err);
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 1000);
+                }
             } else {
                 setLoginButtonState(0);
                 setError(data.message || 'Login failed. Please try again.');

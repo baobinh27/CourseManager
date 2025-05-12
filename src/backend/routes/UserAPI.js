@@ -6,6 +6,7 @@ const User = require("../../models/UserModel");
 
 const router = express.Router();
 const authMiddleware = require("../authMiddleware");
+const Authentication = require("../auth/Authentication");
 
 // API USER:  /api/user
 // signup: POST /signup (username, password, email)
@@ -178,6 +179,75 @@ router.post("/progress", authMiddleware, async (req, res) => {
     }
   });
 
+// Get all users (admin only)
+router.get("/admin/all-users", authMiddleware, async (req, res) => {
+    try {
+        const user = req.user;
+        const auth = new Authentication(user);
+        
+        if (!auth.isAdmin()) {
+            return res.status(403).json({ message: "Forbidden: Admins only" });
+        }
+        
+        const users = await User.find({}, {
+            password: 0, 
+            refreshTokens: 0
+        }).sort({ createdAt: -1 });
+        
+        res.status(200).json(users);
+    } catch (error) {
+        console.error("Error fetching all users:", error);
+        res.status(500).json({ message: "Server error!" });
+    }
+});
+
+// Update user (admin only)
+router.put("/:id", authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { role, status } = req.body;
+        const admin = req.user;
+        const auth = new Authentication(admin);
+        
+        if (!auth.isAdmin()) {
+            return res.status(403).json({ message: "Forbidden: Admins only" });
+        }
+        
+        const allowedRoles = ['user', 'teacher', 'admin'];
+        const allowedStatuses = ['active', 'suspended', 'banned'];
+        
+        if (role && !allowedRoles.includes(role)) {
+            return res.status(400).json({ message: "Invalid role value" });
+        }
+        
+        if (status && !allowedStatuses.includes(status)) {
+            return res.status(400).json({ message: "Invalid status value" });
+        }
+        
+        const updateFields = {};
+        if (role) updateFields.role = role;
+        if (status) updateFields.status = status;
+        
+        const updatedUser = await User.findByIdAndUpdate(
+            id, 
+            updateFields, 
+            { 
+                new: true,
+                select: '-password -refreshTokens' 
+            }
+        );
+        
+        if (!updatedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error("Error updating user:", error);
+        res.status(500).json({ message: "Server error!" });
+    }
+});
+
 // Get User Info
 router.get("/:id", async (req, res) => {
     try {
@@ -190,8 +260,6 @@ router.get("/:id", async (req, res) => {
         res.status(500).json({ message: "Server error!", error: error.message});
     }
 })
-
-
 
 module.exports = router;
 

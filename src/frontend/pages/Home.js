@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import banner from "../assets/banner.jpg";
 import styles from "./Home.module.css";
 import ScrollCourseList from "../elements/ScrollCourseList";
@@ -10,15 +10,23 @@ import { useNavigate } from "react-router-dom";
 import useIsMobile from "../hooks/useIsMobile";
 import PaginatedCourseList from "../elements/PaginatedCourseList";
 import VerticalCourseList from "../elements/VerticalCourseList";
+import { useAuth } from '../api/auth';
 
 function Home() {
     useDocumentTitle("Online Learning");
+    const { user } = useAuth();
     const navigate = useNavigate();
     const { courses, loading, error } = useGetAllCourses();
 
     const isDesktop = useIsMobile('(max-width: 1450px)');
     const isTablet = useIsMobile('(max-width: 1024px)');
     const isMobile = useIsMobile('(max-width: 768px)');
+
+    useEffect(() => {
+        if (user?.role === 'admin') {
+            navigate('/admin');
+        }
+    }, [user, navigate]);
 
     if (loading) {
         return <Loading />

@@ -3,7 +3,7 @@ import AdminLayout from "./AdminLayout"; // Import the layout component
 import styles from './CourseManagement.module.css';
 import { useNavigate } from 'react-router-dom';
 import { BASE_API } from '../../utils/constant';
-import { FaEdit, FaTrashAlt, FaSearch, FaPlus } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaSearch } from 'react-icons/fa';
 import { BiLoaderCircle } from 'react-icons/bi';
 
 function CourseManagement() {
@@ -15,7 +15,7 @@ function CourseManagement() {
   const [error, setError] = useState(null);
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [coursesPerPage] = useState(5); // Show 5 courses per page
+  const [coursesPerPage] = useState(10); // Tăng lên 10 khóa học mỗi trang
   const navigate = useNavigate();
 
   // State for editing
@@ -127,16 +127,13 @@ function CourseManagement() {
         const updatedCourses = courses.filter(course => course._id !== courseId);
         setCourses(updatedCourses);
         setFilteredCourses(prevFiltered => prevFiltered.filter(course => course._id !== courseId));
+        
         alert(`Đã xóa khóa học "${courseName}"`);
       } catch (err) {
         console.error(`Lỗi khi xóa khóa học ${courseId}:`, err);
         alert("Đã xảy ra lỗi khi xóa khóa học: " + err.message);
       }
     }
-  };
-
-  const createNewCourse = () => {
-    navigate('/teaching/create');
   };
 
   const formatDate = (dateString) => {
@@ -149,9 +146,6 @@ function CourseManagement() {
       <div className={styles.courseManagementContainer}>
         <div className={styles.headerSection}>
           <h1>Quản lý Khóa học</h1>
-          <button className={styles.createCourseButton} onClick={createNewCourse}>
-            <FaPlus /> Tạo khóa học mới
-          </button>
         </div>
 
         <div className={styles.filterContainer}>
@@ -192,7 +186,7 @@ function CourseManagement() {
                     <td className={styles.courseName}>{course.name}</td>
                     <td>{course.author}</td>
                     <td>{formatDate(course.lastModified)}</td>
-                    <td className={styles.enrollCount}>{course.enrolCount}</td>
+                    <td className={styles.enrollCount}>{course.enrolCount || 0}</td>
                     <td className={styles.actions}>
                       <button onClick={() => handleEdit(course._id)} className={`${styles.actionButton} ${styles.editButton}`}>
                         <FaEdit /> Sửa
@@ -245,9 +239,6 @@ function CourseManagement() {
         ) : (
           <div className={styles.message}>
             <p>Không tìm thấy khóa học nào khớp với tìm kiếm.</p>
-            <button className={styles.createCourseButton} onClick={createNewCourse}>
-              <FaPlus /> Tạo khóa học mới
-            </button>
           </div>
         )}
       </div>
