@@ -33,6 +33,7 @@ const useUpdateProgress = () => {
       return data.ownedCourse; // Trả về bản ghi ownedCourse đã cập nhật
     } catch (err) {
       setError(err.message);
+      console.error(err.message);
       return null;
     } finally {
       setLoading(false);
