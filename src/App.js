@@ -21,6 +21,7 @@ import CourseApproval from "./frontend/pages/admin/CourseApproval.js";
 import CourseApprovalDetail from "./frontend/pages/admin/CourseApprovalDetail.js";
 import Purchase from "./frontend/pages/Purchase.js";
 import Explore from "./frontend/pages/Explore.js";
+import EditCourse from "./frontend/pages/admin/EditCourse.js";
 
 function App() {
   return <>
@@ -82,6 +83,9 @@ function App() {
         </>}/>
         <Route path="/admin/course-approval/:id" element={<>
           <CourseApprovalDetail />
+        </>}/>
+        <Route path="/admin/edit-course/:courseId" element={<>
+          <EditCourse />
         </>}/>
         <Route path="*" element={<>
           <NotFound />

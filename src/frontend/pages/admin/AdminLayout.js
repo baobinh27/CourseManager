@@ -14,10 +14,9 @@ const AdminLayout = ({ children }) => {
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>Admin Panel</div>
         <nav className={styles.nav}>
-          <a href="/admin/dashboard" className={styles.navItem}>📊 Dashboard</a>
+          <a href="/admin" className={styles.navItem}>📊 Dashboard</a>
           <a href="/admin/payment-verification" className={styles.navItem}>💳 Xác thực thanh toán</a>
           <a href="/admin/course-approval" className={styles.navItem}>📚 Kiểm duyệt khóa học</a>
-          <a href="/admin/reports" className={styles.navItem}>🚨 Xử lý báo cáo</a>
           <a href="/admin/user-management" className={styles.navItem}>👥 Quản lý người dùng</a>
           <a href="/admin/course-management" className={styles.navItem}>📝 Quản lý khóa học</a>
         </nav>

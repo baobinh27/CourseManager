@@ -1,0 +1,165 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #f5f5f5;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4a6bff;
+  font-size: 14px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #f0f2ff;
+}
+
+.backIcon {
+  margin-right: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.courseName {
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: auto;
+  color: #333;
+}
+
+.contentWrapper {
+  display: flex;
+  height: calc(100vh - 70px);
+  overflow: hidden;
+}
+
+.contentList {
+  width: 28%;
+  min-width: 300px;
+  background-color: #fff;
+  overflow-y: auto;
+  box-shadow: 1px 0 5px rgba(0, 0, 0, 0.05);
+  padding: 20px 0;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.sectionTitle {
+  padding: 10px 20px;
+  font-weight: 600;
+  color: #333;
+  font-size: 15px;
+  border-bottom: 1px solid #eee;
+  background-color: #f9f9f9;
+}
+
+.videoList {
+  display: flex;
+  flex-direction: column;
+}
+
+.videoItem {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s;
+}
+
+.videoItem:hover {
+  background-color: #f5f7ff;
+}
+
+.activeVideo {
+  background-color: #eff2ff;
+  border-left: 4px solid #4a6bff;
+  padding-left: 16px;
+}
+
+.activeVideo .videoTitle {
+  font-weight: 600;
+  color: #4a6bff;
+}
+
+.videoIcon {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  color: #4a6bff;
+  font-size: 18px;
+}
+
+.videoInfo {
+  flex: 1;
+}
+
+.videoTitle {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.videoDuration {
+  font-size: 12px;
+  color: #777;
+}
+
+.playerSection {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+  position: relative;
+}
+
+.videoContainer {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.videoTitle {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+.adminBanner {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  background-color: rgba(74, 107, 255, 0.8);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
