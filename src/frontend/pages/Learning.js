@@ -35,8 +35,8 @@ const Learning = () => {
         setLearningInfo(userData.ownedCourses.find((ownedCourse) => ownedCourse.courseId === courseId))
     }, [userData, courseId])
 
-    // Tự động lấy video đầu tiên nếu không truy vấn videoId
-    const videoId = searchParams.get("video") || `${course ? course.content[0].sectionContent[0].videoId : ""}`;
+    // Tự động lấy video đầu tiên nếu không truy vấn videoId hoặc không có video xem cuối cùng
+    const videoId = searchParams.get("video") || learningInfo?.lastWatchedVideo || `${course ? course.content[0].sectionContent[0].videoId : ""}`;
     const videoTitle = useVideoTitle(videoId, course);
 
     const isLaptop = useIsMobile('(max-width: 1450px)')

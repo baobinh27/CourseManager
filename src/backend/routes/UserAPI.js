@@ -8,6 +8,8 @@ const router = express.Router();
 const authMiddleware = require("../authMiddleware");
 const Authentication = require("../auth/Authentication");
 
+const mongoose = require('mongoose');
+
 // API USER:  /api/user
 // signup: POST /signup (username, password, email)
 // change-password: POST /change-password (email, oldPassword, newPassword)
@@ -147,35 +149,51 @@ router.post('/refresh-token', async (req, res) => {
 
 router.post("/progress", authMiddleware, async (req, res) => {
     try {
-      const userId = req.user._id;
-      const { courseId, videoId } = req.body;
+        const userId = req.user.id;
+        const { courseId, videoId } = req.body;
   
-      if (!courseId || !videoId) {
-        return res.status(400).json({ message: "courseId và videoId là bắt buộc." });
-      }
+        if (!courseId || !videoId) {
+            return res.status(400).json({ message: "courseId và videoId là bắt buộc." });
+        }
+
+        const courseObjectId = new mongoose.Types.ObjectId(courseId);
   
-      const user = await User.findById(userId);
+        const user = await User.findOne({
+            _id: userId,
+            "ownedCourses.courseId": courseObjectId,
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: "User chưa đăng ký khóa học này." });
+        }
+
+        // Thêm videoId nếu chưa có & cập nhật lastWatchedVideo
+        await User.updateOne(
+            {
+                _id: userId,
+                "ownedCourses.courseId": courseObjectId,
+                "ownedCourses.completedVideos": { $ne: videoId }, // đảm bảo chưa có videoId
+            },
+            {
+                $push: { "ownedCourses.$.completedVideos": videoId },
+                $set: { "ownedCourses.$.lastWatchedVideo": videoId },
+            }
+        );
+
+        await User.updateOne(
+            {
+                _id: userId,
+                "ownedCourses.courseId": courseObjectId,
+            },
+            {
+                $set: { "ownedCourses.$.lastWatchedVideo": videoId },
+            }
+        );
   
-      const ownedCourse = user.ownedCourses.find(oc => oc.courseId.toString() === courseId);
-      if (!ownedCourse) {
-        return res.status(404).json({ message: "User chưa đăng ký khóa học này." });
-      }
-  
-      // Nếu video chưa hoàn thành, thêm vào danh sách
-      if (!ownedCourse.completedVideos.includes(videoId)) {
-        ownedCourse.completedVideos.push(videoId);
-        // ownedCourse.progress = ownedCourse.completedVideos.length;
-      }
-  
-      // Cập nhật video cuối cùng đã xem
-      ownedCourse.lastWatchedVideo = videoId;
-  
-      await user.save();
-  
-      res.status(200).json({ message: "Cập nhật tiến độ thành công.", ownedCourse });
+        res.status(200).json({ message: "Cập nhật tiến độ thành công." });
     } catch (error) {
-      console.error("Lỗi khi cập nhật tiến độ:", error);
-      res.status(500).json({ message: "Lỗi server." });
+        console.error("Lỗi khi cập nhật tiến độ:", error);
+        res.status(500).json({ message: "Lỗi server." });
     }
   });
 

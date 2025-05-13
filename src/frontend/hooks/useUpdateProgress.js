@@ -10,7 +10,7 @@ const useUpdateProgress = () => {
       setLoading(true);
       setError(null);
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("accessToken");
       if (!token) {
         throw new Error("Bạn chưa đăng nhập.");
       }
@@ -33,6 +33,7 @@ const useUpdateProgress = () => {
       return data.ownedCourse; // Trả về bản ghi ownedCourse đã cập nhật
     } catch (err) {
       setError(err.message);
+      console.error(err.message);
       return null;
     } finally {
       setLoading(false);

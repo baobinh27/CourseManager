@@ -8,7 +8,7 @@ const useGetMultipleCourseDetails = (courseIds) => {
 
   useEffect(() => {
     const fetchCourses = async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("accessToken");
       try {
         setLoading(true);
 

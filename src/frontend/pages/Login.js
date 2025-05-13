@@ -54,10 +54,9 @@ const Login = () => {
             });
 
             const data = await response.json();
-
+            
             if (response.ok) {
-                // Lưu token vào localStorage
-                await login(data.accessToken);
+                login(data.accessToken, data.refreshToken); // Lưu thông tin đăng nhập dưới dạng token
                 setLoginButtonState(2);
 
                 // Giải mã token để lấy thông tin quyền của người dùng

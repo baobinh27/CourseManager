@@ -5,7 +5,7 @@ import { FaChevronLeft, FaPlus } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import useCreateDraftCourse from '../../hooks/draft_courses/useCreateDraftCourse';
 import { useAuth } from '../../hooks/useAuth';
-import UnAuthorized from '../misc/UnAuthorized';
+import LoginRequired from '../misc/LoginRequired';
 import Header from '../../elements/Header';
 import { BiLoaderCircle } from 'react-icons/bi';
 import useGetUserDetail from '../../hooks/useGetUserDetail';
@@ -87,7 +87,7 @@ const CreateCourse = () => {
     if (!isLoggedIn) {
         return <>
             <Header />
-            <UnAuthorized />
+            <LoginRequired />
         </>
     }
 

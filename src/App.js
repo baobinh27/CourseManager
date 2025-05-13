@@ -21,6 +21,8 @@ import CourseApproval from "./frontend/pages/admin/CourseApproval.js";
 import CourseApprovalDetail from "./frontend/pages/admin/CourseApprovalDetail.js";
 import Purchase from "./frontend/pages/Purchase.js";
 import Explore from "./frontend/pages/Explore.js";
+import AdminRoute from "./AdminRoute.js";
+import UnAuthorized from "./frontend/pages/misc/UnAuthorized.js";
 import EditCourse from "./frontend/pages/admin/EditCourse.js";
 import ProtectedRoute from "./frontend/components/ProtectedRoute.js";
 
@@ -31,60 +33,73 @@ function App() {
         <Route path="/" element={<>
           <Header />
           <Home />
-        </>}/>
+        </>} />
         <Route path="/explore" element={<>
           <Header />
           <Explore />
-        </>}/>
-        <Route path="/login" element={<Login />}/>
-        <Route path="/register" element={<Register />}/>
+        </>} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/my-courses" element={<>
           <Header />
           <MyCourses />
-        </>}/>
+        </>} />
         <Route path="/course/:id" element={<>
           <Header />
           <CourseDetail />
-        </>}/>
+        </>} />
         <Route path="/purchase" element={<>
           <Header />
           <Purchase />
-        </>}/>
+        </>} />
         <Route path="/search" element={<>
           <Header />
           <SearchResult />
         </>} />
         <Route path="/learning" element={<>
           <Learning />
-        </>}/>
+        </>} />
         <Route path="/profile/:id" element={<>
           <Header />
           <Profile />
-        </>}/>
+        </>} />
         <Route path="/teaching" element={<>
           <Header />
           <Teaching />
-        </>}/>
+        </>} />
         <Route path="/teaching/guide" element={<>
           <Header />
           <GuidePage />
-        </>}/>
+        </>} />
         <Route path="/teaching/create" element={<>
           <CreateCourse />
-        </>}/>
-        
-        {/* Admin Routes - Protected */}
-        <Route element={<ProtectedRoute requireAdmin={true} />}>
-          <Route path="/admin" element={<Dashboard />}/>
-          <Route path="/admin/course-management" element={<CourseManagement />}/>
-          <Route path="/admin/course-approval" element={<CourseApproval />}/>
-          <Route path="/admin/course-approval/:id" element={<CourseApprovalDetail />}/>
-          <Route path="/admin/edit-course/:courseId" element={<EditCourse />}/>
-          <Route path="/admin/payment-verification" element={<Dashboard />}/>
-          <Route path="/admin/user-management" element={<Dashboard />}/>
-        </Route>
-        
-        <Route path="*" element={<NotFound />}/>
+        </>} />
+        <Route path="/admin" element={
+          <AdminRoute>
+            <Dashboard />
+          </AdminRoute>
+        } />
+        <Route path="/admin/course-management" element={
+          <AdminRoute>
+            <CourseManagement />
+          </AdminRoute>
+        } />
+        <Route path="/admin/course-approval" element={
+          <AdminRoute>
+            <CourseApproval />
+          </AdminRoute>
+        } />
+        <Route path="/admin/course-approval/:id" element={
+          <AdminRoute>
+            <CourseApprovalDetail />
+          </AdminRoute>
+        } />
+        <Route path="/unauthorized" element={<>
+          <UnAuthorized />
+        </>} />
+        <Route path="*" element={<>
+          <NotFound />
+        </>} />
       </Routes>
     </BrowserRouter>
   </>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styles from "./MyCourses.module.css";
 import { useAuth } from "../api/auth";
-import UnAuthorized from "./misc/UnAuthorized";
+import LoginRequired from "./misc/LoginRequired";
 import { useEffect } from "react";
 import Loading from "./misc/Loading";
 import ErrorPage from "./misc/ErrorPage";
@@ -53,12 +53,8 @@ function MyCourses() {
         fetchProgresses();
     }, [ownedCourses, userData]);
 
-    // useEffect(() => {
-    //     console.log(courseProgresses);
-    // }, [courseProgresses])
-
     if (!user) {
-        return <UnAuthorized />
+        return <LoginRequired />
     }
 
     if (loadingUser || loadingOwnedCourses || loadingCreatedCourses) {
