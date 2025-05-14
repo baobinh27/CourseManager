@@ -15,7 +15,7 @@ const UserSchema = new Schema({
   password: { type: String, required: true },  //required password
   email: { type: String, required: true },
   description: String,
-  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  role: { type: String, enum: ['user', 'banned', 'admin'], default: 'user' },
   ownedCourses: [ownedCourses], 
   createdCourses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   cart: Array,
