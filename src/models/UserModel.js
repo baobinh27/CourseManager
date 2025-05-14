@@ -19,9 +19,7 @@ const UserSchema = new Schema({
   ownedCourses: [ownedCourses], 
   createdCourses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   cart: Array,
-
   refreshTokens: [{ type: String }],
-
 });
 
 module.exports = mongoose.model("user", UserSchema, "Users");

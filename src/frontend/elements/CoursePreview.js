@@ -1,8 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./CoursePreview.module.css";
-import { FaArrowLeft, FaChevronDown, FaChevronUp, FaLock, FaPlayCircle, FaRegPlayCircle } from "react-icons/fa";
-import { FaCircleCheck } from "react-icons/fa6";
-import VideoPlayer from "./VideoPlayer";
+import { FaArrowLeft, FaChevronDown, FaChevronUp, FaPlayCircle } from "react-icons/fa";
 import YouTube from "react-youtube";
 
 /**
