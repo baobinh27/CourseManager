@@ -98,6 +98,10 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ message: "Tên đăng nhập hoặc mật khẩu không đúng!" });
         }
 
+        if (user.role === "banned") {
+            return res.status(403).json({ message: "Tài khoản của bạn đã bị khóa, vui lòng liên hệ admin." });
+        }
+
         const accessToken = jwt.sign(
             { userId: user._id, role: user.role },
             ACCESS_SECRET,
@@ -209,7 +213,53 @@ router.get("/:id", async (req, res) => {
     }
 })
 
+// admin ban user
+router.post('/ban/:userId', authMiddleware, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const admin = req.user;
+    const auth = new Authentication(admin);
 
+    if (!auth.isAdmin()) {
+      return res.status(403).json({ message: 'Forbidden: Admins only' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    user.role = 'banned';
+    await user.save();
+    res.status(200).json({ message: 'User has been banned', userId });
+  } catch (error) {
+    console.error('Error banning user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+// admin ban user
+router.delete('/delete/:userId', authMiddleware, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const admin = req.user;
+    const auth = new Authentication(admin);
+
+    if (!auth.isAdmin()) {
+      return res.status(403).json({ message: 'Forbidden: Admins only' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ message: 'User deleted successfully', userId });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
 
 module.exports = router;
 
