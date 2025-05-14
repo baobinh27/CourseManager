@@ -1,10 +1,16 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "./frontend/hooks/useAuth";
+import { jwtDecode } from 'jwt-decode';
 
 const AdminRoute = ({ children }) => {
-  const { userInfo } = useAuth();
+  let token = localStorage.getItem('accessToken');
+  if (!token) return <Navigate to="/unauthorized" replace />;
 
-  if (userInfo?.role !== "admin") {
+  const decoded = jwtDecode(token);
+  const currentTime = Date.now() / 1000;
+
+  if (decoded.exp < currentTime) return <Navigate to="/unauthorized" replace />;
+
+  if (decoded?.role !== "admin") {
     return <Navigate to="/unauthorized" replace />;
   }
 
