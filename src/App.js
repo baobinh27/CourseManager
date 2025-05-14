@@ -24,7 +24,7 @@ import Explore from "./frontend/pages/Explore.js";
 import AdminRoute from "./AdminRoute.js";
 import UnAuthorized from "./frontend/pages/misc/UnAuthorized.js";
 import EditCourse from "./frontend/pages/admin/EditCourse.js";
-import ProtectedRoute from "./frontend/components/ProtectedRoute.js";
+
 
 function App() {
   return <>
@@ -92,6 +92,11 @@ function App() {
         <Route path="/admin/course-approval/:id" element={
           <AdminRoute>
             <CourseApprovalDetail />
+          </AdminRoute>
+        } />
+        <Route path="/admin/edit-course/:courseId" element={
+          <AdminRoute>
+            <EditCourse />
           </AdminRoute>
         } />
         <Route path="/unauthorized" element={<>

@@ -155,13 +155,26 @@ router.delete("/delete/:courseId", authMiddleware, async (req, res) => {
         const user = req.user;
         const auth = new Authentication(user);
 
-        if (!auth.isCourseCreator(courseId)) {
-            return res.status(403).json({ message: "No permission!!" });
+        // Admin có thể xóa bất kỳ khóa học nào
+        if (auth.isAdmin()) {
+            const course = await Courses.findOneAndDelete({ courseId });
+            if (!course) {
+                return res.status(404).json({ message: "Course not found!" });
+            }
+            return res.status(200).json({ message: "Course deleted successfully!" });
         }
-        const course = await Courses.findOneAndDelete({ courseId });
+
+        // Nếu không phải admin, kiểm tra xem có phải người tạo khóa học không
+        const course = await Courses.findOne({ courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found!" });
         }
+        
+        if (!auth.isCourseCreator(course)) {
+            return res.status(403).json({ message: "No permission!!" });
+        }
+        
+        await Courses.findOneAndDelete({ courseId });
         res.status(200).json({ message: "Course deleted successfully!" });
     } catch (error) {
         console.error("Error deleting course:", error);
@@ -170,23 +183,42 @@ router.delete("/delete/:courseId", authMiddleware, async (req, res) => {
 });
 
 // Update a created course by user
-router.put("/update/:courseId", test_api, async (req, res) => {
+router.put("/update/:courseId", authMiddleware, async (req, res) => {
     try {
         const { courseId } = req.params;
         const user = req.user;
         const auth = new Authentication(user);
 
-        if (!auth.isCourseCreator(courseId)) {
+        // Kiểm tra quyền admin
+        if (auth.isAdmin()) {
+            // Admin có thể cập nhật bất kỳ khóa học nào
+            const updatedCourse = await Courses.findOneAndUpdate(
+                { courseId },
+                req.body,
+                { new: true }
+            );
+            if (!updatedCourse) {
+                return res.status(404).json({ message: "Course not found!" });
+            }
+            return res.status(200).json({ message: "Course updated successfully!" });
+        }
+
+        // Nếu không phải admin, kiểm tra xem người dùng có phải là người tạo khóa học không
+        const course = await Courses.findOne({ courseId });
+        if (!course) {
+            return res.status(404).json({ message: "Course not found!" });
+        }
+
+        if (!auth.isCourseCreator(course)) {
             return res.status(403).json({ message: "No permission!!" });
         }
+        
         const updatedCourse = await Courses.findOneAndUpdate(
             { courseId },
             req.body,
             { new: true }
         );
-        if (!updatedCourse) {
-            return res.status(404).json({ message: "Course not found!" });
-        }
+        
         res.status(200).json({ message: "Course updated successfully!" });
     } catch (error) {
         console.error("Error updating course:", error);

@@ -31,7 +31,7 @@ const EditCourse = () => {
     const fetchCourseDetails = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         
         if (!token) {
           setError('Bạn cần đăng nhập để chỉnh sửa khóa học');
@@ -125,7 +125,6 @@ const EditCourse = () => {
   const addVideo = (sectionIndex) => {
     const updatedContent = [...course.content];
     updatedContent[sectionIndex].sectionContent.push({
-      videoId: '',
       title: '',
       duration: ''
     });
@@ -161,11 +160,18 @@ const EditCourse = () => {
       setError(null);
       setSuccessMessage('');
 
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem('accessToken');
       if (!token) {
         setError('Bạn cần đăng nhập để cập nhật khóa học');
         return;
       }
+
+      // Log để debug trước khi gửi request
+      console.log('Đang gửi cập nhật khóa học:', {
+        courseId,
+        token: token ? 'Token đã được đặt' : 'Không có token',
+        courseData: JSON.stringify(course)
+      });
 
       const response = await fetch(`${BASE_API}/api/course/update/${courseId}`, {
         method: 'PUT',
@@ -177,6 +183,7 @@ const EditCourse = () => {
       });
 
       const data = await response.json();
+      console.log('Kết quả từ API:', data);
 
       if (!response.ok) {
         throw new Error(data.message || 'Lỗi khi cập nhật khóa học');
@@ -372,14 +379,6 @@ const EditCourse = () => {
                   <div className={styles.videosContainer}>
                     {section.sectionContent.map((video, videoIndex) => (
                       <div key={videoIndex} className={styles.videoItem}>
-                        <input
-                          type="text"
-                          value={video.videoId}
-                          onChange={(e) => updateVideo(sectionIndex, videoIndex, 'videoId', e.target.value)}
-                          placeholder="ID video YouTube"
-                          className={styles.videoInput}
-                          required
-                        />
                         <input
                           type="text"
                           value={video.title}
