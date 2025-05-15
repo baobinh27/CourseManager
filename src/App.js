@@ -11,7 +11,7 @@ import Register from "./frontend/pages/Register.js";
 import Header from "./frontend/elements/Header.js";
 import SearchResult from "./frontend/pages/SearchResult.js";
 import Learning from "./frontend/pages/Learning.js";
-import Dashboard from "./frontend/pages/admin/dashboard.js"; 
+import Dashboard from "./frontend/pages/admin/dashboard.js";
 import Profile from "./frontend/pages/Profile.js";
 import CourseManagement from "./frontend/pages/admin/CourseManagement.js";
 import Teaching from "./frontend/pages/teacher/Teaching.js";
@@ -26,6 +26,8 @@ import UnAuthorized from "./frontend/pages/misc/UnAuthorized.js";
 import EditCourse from "./frontend/pages/admin/EditCourse.js";
 import UserManagement from "./frontend/pages/admin/UserManagement.js";
 
+import ForgotPassword from "./frontend/pages/ForgotPassword.js";
+import ResetPassword from "./frontend/pages/ResetPassword.js";
 
 function App() {
   return <>
@@ -41,6 +43,8 @@ function App() {
         </>} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/my-courses" element={<>
           <Header />
           <MyCourses />

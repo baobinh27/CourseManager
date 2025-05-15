@@ -12,40 +12,39 @@ const test_api = require('../test_api');
 
 
 // API ORDER:  /api/order
-// enroll a course: POST /enroll
-// get my orders: GET /my-orders
 
+// get my orders: GET /my-orders
 // get all orders for admin: GET /all-orders
 // admin process order: POST /approve/:orderId
 
 // enroll a course
-router.post("/enroll", authMiddleware, async (req, res) => {
-    try {
-        const userId = req.user._id; 
-        const { courseId, amount, paymentMethod, paymentProof, note } = req.body;
-        // Check if the course exists
-        const course = await Courses.findOne({ courseId });
-        if (!course) {
-            return res.status(404).json({ message: "Course not found" });
-        }
+// router.post("/enroll", authMiddleware, async (req, res) => {
+//     try {
+//         const userId = req.user._id; 
+//         const { courseId, amount, paymentMethod, paymentProof, note } = req.body;
+//         // Check if the course exists
+//         const course = await Courses.findOne({ courseId });
+//         if (!course) {
+//             return res.status(404).json({ message: "Course not found" });
+//         }
 
-        // Create a new order
-        const newOrder = new Orders({
-            userId,
-            courseId,
-            amount,
-            paymentMethod,
-            paymentProof,
-            note,
-        });
+//         // Create a new order
+//         const newOrder = new Orders({
+//             userId,
+//             courseId,
+//             amount,
+//             paymentMethod,
+//             paymentProof,
+//             note,
+//         });
 
-        await newOrder.save();
-        res.status(201).json({ message: "Order created successfully", order: newOrder });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Server error" });
-    }
-});
+//         await newOrder.save();
+//         res.status(201).json({ message: "Order created successfully", order: newOrder });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: "Server error" });
+//     }
+// });
 
 // get my orders
 router.get("/my-orders", authMiddleware, async (req, res) => {
@@ -57,6 +56,34 @@ router.get("/my-orders", authMiddleware, async (req, res) => {
         console.error(error);
         res.status(500).json({ message: "Server error" });
     }
+});
+
+router.put('/update/:orderId', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { orderId } = req.params;
+    const { note } = req.body;
+
+    const order = await Orders.findOne({ _id: orderId, userId });
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+    if (order.status !== 'rejected') {
+      return res.status(400).json({ message: 'Only rejected orders can be updated' });
+    }
+
+    order.status = 'pending';
+    order.note = note || order.note;
+    order.approveAt = undefined;
+    order.noteFromAdmin = undefined;
+
+    await order.save();
+
+    return res.status(200).json({ message: 'Order updated and resubmitted for approval', order });
+  } catch (error) {
+    console.error('Error updating order:', error);
+    res.status(500).json({ message: 'Server error while updating order' });
+  }
 });
 
 // get all orders for admin
