@@ -113,6 +113,18 @@
 
 }
 
+.iconButton:disabled {
+    color: #aaa;
+    border: 1px solid #aaa;
+}
+
+.iconButton:hover:disabled {
+    color: #aaa;
+    border: 1px solid #aaa;
+    background-color: #2e7d3211;
+    cursor: not-allowed;
+}
+
 .danger {
     background-color: #fff0f0;
     border: 0.1vw solid #ff0000cc;
