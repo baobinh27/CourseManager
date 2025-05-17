@@ -9,9 +9,9 @@ import { ImProfile } from "react-icons/im";
 import useGetUserDetail from "../hooks/useGetUserDetail";
 import Loading from "../pages/misc/Loading";
 import ErrorPage from "../pages/misc/ErrorPage";
-import { IoMdSettings } from "react-icons/io";
+// import { IoMdSettings } from "react-icons/io";
 import useIsMobile from "../hooks/useIsMobile";
-import { MdExplore } from "react-icons/md";
+// import { MdExplore } from "react-icons/md";
 
 function Header() {
     const [nameInput, setNameInput] = useState("");
@@ -126,19 +126,19 @@ function Header() {
                             </button>
                         </div>
                         <div className={styles["menu-section"]}>
-                            <button onClick={() => { handleToggleMenu(); navigate(`/explore`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
+                            {/* <button onClick={() => { handleToggleMenu(); navigate(`/explore`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
                                 <MdExplore />
                                 Khám phá
-                            </button>
+                            </button> */}
                             <button onClick={() => { handleToggleMenu(); navigate(`/teaching`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
                                 <FaChalkboard />
                                 Giảng dạy
                             </button>
                         </div>
-                        <button onClick={() => { handleToggleMenu(); navigate(`/settings`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
+                        {/* <button onClick={() => { handleToggleMenu(); navigate(`/settings`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
                             <IoMdSettings />
                             Cài đặt
-                        </button>
+                        </button> */}
                         <button onClick={handleLogout} className={`${styles["logout-btn"]} h5 bold flex-row align-center`}>
                             <FiLogOut />
                             Đăng xuất
@@ -155,12 +155,12 @@ function Header() {
                 Trang chủ
             </button>
 
-            <button
+            {/* <button
                 onClick={() => navigate('/explore')}
                 className={`${styles["nav-btn"]} ${isTablet ? "h5" : "h4"} bold`}
             >
                 Khám phá
-            </button>
+            </button> */}
 
             <div id={styles["search-box"]}>
                 <input
@@ -228,10 +228,10 @@ function Header() {
                             </button>
 
                         </div>
-                        <button onClick={() => { handleToggleMenu(); navigate(`/settings`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
+                        {/* <button onClick={() => { handleToggleMenu(); navigate(`/settings`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
                             <IoMdSettings />
                             Cài đặt
-                        </button>
+                        </button> */}
                         <button onClick={handleLogout} className={`${styles["logout-btn"]} h5 bold flex-row align-center`}>
                             <FiLogOut />
                             Đăng xuất

@@ -1,25 +1,26 @@
 .banner {
-    width: 60vw;
-    height: calc(100vh - 5.25vw);
+    width: 60rem;
+    height: calc(100vh - 5.25rem);
     object-fit: cover;
 }
 
 .content {
-    height: calc(100vh - 10.25vw);
-    padding: 2.5vw 2.5vw;
-    width: 35vw;
-    gap: 3vw;
+    height: calc(100vh - 10.25rem);
+    padding: 1.5rem 1.5rem;
+    width: 37rem;
+    gap: 3rem;
 }
 
-.guide-btn, .start-btn {
-    width: 30vw;
-    padding: 1vw 0;
-    border-radius: 2vw;
+.guide-btn,
+.start-btn {
+    width: 30rem;
+    padding: 1rem 0;
+    border-radius: 1rem;
     cursor: pointer;
 }
 
 .guide-btn {
-    border: 0.15vw solid forestgreen;
+    border: 1px solid forestgreen;
     color: forestgreen;
     background-color: honeydew;
 }
@@ -29,7 +30,7 @@
 }
 
 .start-btn {
-    border: 0.15vw solid forestgreen;
+    border: 1px solid forestgreen;
     color: honeydew;
     background-color: forestgreen;
 }
@@ -37,4 +38,46 @@
 .start-btn:hover {
     background-color: rgb(28, 116, 28);
     border: 2px solid rgb(28, 116, 28);
+}
+
+@media (max-width: 1450px) {
+    .banner {
+        width: 35rem;
+    }
+
+    .content {
+        width: 35rem;
+    }
+
+    .guide-btn,
+    .start-btn {
+        width: 24rem;
+        padding: 1rem 0;
+        border-radius: 1rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .banner {
+        width: 100%;
+        height: 30rem;
+    }
+
+    .content {
+        width: auto;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner {
+        height: 25rem;
+    }
+
+    .guide-btn,
+    .start-btn {
+        width: 16rem;
+        padding: 1rem 0;
+        border-radius: 1rem;
+    }
 }
