@@ -1,35 +1,163 @@
-.flex-row {
-    display: flex;
-    flex-direction: row;
-}
-
 .gap {
-    gap: 1vw;
+    gap: 1rem;
 }
 
 .search-header {
-    margin: 4vw 5vw 2vw;
+    margin: 4rem 5rem 2rem;
 }
 
 .page {
-    width: 84vw;
-    margin: 0 8vw 4vw;
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto 4rem;
     align-items: flex-start;
-    gap: 2vw;
+    gap: 1.5rem;
 }
 
 .left-box {
-    width: 65vw;
+    width: 65rem;
     display: flex;
     flex-direction: column;
-    border-radius: 1vw;
+    border-radius: 1rem;
 }
 
-.right-box {
+/* .right-box {
     position: sticky;
-    top: 2vw;
+    top: 2rem;
     background-color: white;
-    width: 17vw;
-    padding: 1vw;
-    border-radius: 1vw;
+    width: 17rem;
+    padding: 1rem;
+    border-radius: 1rem;
+} */
+
+.right-box {
+    width: 15rem;
+    background-color: #f8fff8;
+    padding: 1rem;
+    border: 1px solid forestgreen;
+    border-radius: 8px;
+    color: #222;
+}
+
+.right-box p {
+    margin-bottom: 1rem;
+    font-weight: bold;
+    /* color: forestgreen; */
+    font-size: 1.2rem;
+}
+
+/* Filter fields */
+.filter-group label {
+    display: block;
+    /* margin-top: 1rem; */
+    font-weight: 500;
+    /* color: forestgreen; */
+}
+
+.filter-group input[type="number"],
+.filter-group select {
+    width: calc(100% - 1rem);
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border: 1px solid forestgreen;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+}
+
+.filter-group input[type="radio"] {
+    margin-right: 0.5rem;
+}
+
+.filter-group .mt-3 {
+    margin-top: 1.5rem;
+}
+
+/* Radio label spacing */
+.filter-group div {
+    margin-top: 0.5rem;
+}
+
+/* Apply button */
+.filter-group button {
+    margin-top: 1.5rem;
+    padding: 0.5rem 1rem;
+    background-color: forestgreen;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.filter-group button:hover {
+    background-color: #228b22;
+}
+
+@media (max-width: 1450px) {
+    .left-box {
+        width: 43rem;
+    }
+}
+
+@media (max-width: 1024px) {
+    .page {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .right-box {
+        width: calc(100% - 2rem - 2px);
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
+}
+
+@media (max-width: 768px) {
+    /* .right-box {
+        max-width: 500px;
+        margin: auto;
+    } */
+
+    .right-box {
+        width: calc(100% - 3rem);
+    }
+
+    .filter-group {
+        max-width: 500px;
+        gap: 1rem;
+    }
+
+    .filter-group label {
+        font-size: 0.75rem;
+    }
+
+    .filter-group input[type="number"],
+    .filter-group select {
+        font-size: 0.75rem;
+    }
+
+    .filter-group button {
+        margin-top: 0.5rem;
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .left-box {
+        width: auto;
+    }
+
+    .search-header {
+        margin: 2rem 2rem 1rem;
+        font-size: 1rem;
+    }
+
+    .right-box p {
+        font-size: 0.75rem;
+    }
 }
