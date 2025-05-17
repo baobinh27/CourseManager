@@ -223,52 +223,6 @@ router.get("/admin/all-users", authMiddleware, async (req, res) => {
     }
 });
 
-// Update user (admin only)
-router.put("/:id", authMiddleware, async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { role, status } = req.body;
-        const admin = req.user;
-        const auth = new Authentication(admin);
-        
-        if (!auth.isAdmin()) {
-            return res.status(403).json({ message: "Forbidden: Admins only" });
-        }
-        
-        const allowedRoles = ['user', 'teacher', 'admin'];
-        const allowedStatuses = ['active', 'suspended', 'banned'];
-        
-        if (role && !allowedRoles.includes(role)) {
-            return res.status(400).json({ message: "Invalid role value" });
-        }
-        
-        if (status && !allowedStatuses.includes(status)) {
-            return res.status(400).json({ message: "Invalid status value" });
-        }
-        
-        const updateFields = {};
-        if (role) updateFields.role = role;
-        if (status) updateFields.status = status;
-        
-        const updatedUser = await User.findByIdAndUpdate(
-            id, 
-            updateFields, 
-            { 
-                new: true,
-                select: '-password -refreshTokens' 
-            }
-        );
-        
-        if (!updatedUser) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        
-        res.status(200).json(updatedUser);
-    } catch (error) {
-        console.error("Error updating user:", error);
-        res.status(500).json({ message: "Server error!" });
-    }
-});
 
 // Get User Info
 router.get("/:id", async (req, res) => {
@@ -307,8 +261,46 @@ router.post('/ban/:userId', authMiddleware, async (req, res) => {
   }
 });
 
+// admin update user role
+router.post('/update-role/:userId', authMiddleware, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { role } = req.body;
+    const admin = req.user;
+    const auth = new Authentication(admin);
 
-// admin ban user
+    if (!auth.isAdmin()) {
+      return res.status(403).json({ message: 'Forbidden: Admins only' });
+    }
+
+    if (!role || !['admin', 'user', 'banned'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role value' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.role = role;
+    await user.save();
+
+    res.status(200).json({ 
+      message: 'User role updated successfully', 
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// admin delete user
 router.delete('/delete/:userId', authMiddleware, async (req, res) => {
   try {
     const { userId } = req.params;
@@ -323,6 +315,35 @@ router.delete('/delete/:userId', authMiddleware, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    
+    // Xóa người dùng
+    await User.findByIdAndDelete(userId);
+
+    res.status(200).json({ message: 'User deleted successfully', userId });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// API alternative for deleting users
+router.post('/delete/:userId', authMiddleware, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const admin = req.user;
+    const auth = new Authentication(admin);
+
+    if (!auth.isAdmin()) {
+      return res.status(403).json({ message: 'Forbidden: Admins only' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Xóa người dùng
+    await User.findByIdAndDelete(userId);
 
     res.status(200).json({ message: 'User deleted successfully', userId });
   } catch (error) {

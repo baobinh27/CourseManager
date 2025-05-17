@@ -14,7 +14,6 @@ const UserManagement = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [deletingUser, setDeletingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
   const [roleFilter, setRoleFilter] = useState('all');
   
   const navigate = useNavigate();
@@ -47,6 +46,7 @@ const UserManagement = () => {
         return;
       }
 
+      console.log('Fetching users from API');
       const response = await fetch(`${BASE_API}/api/user/admin/all-users`, {
         method: 'GET',
         headers: {
@@ -54,11 +54,13 @@ const UserManagement = () => {
         }
       });
 
+      console.log('Response status:', response.status);
       if (!response.ok) {
         throw new Error(`Lỗi: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('Fetched users:', data);
       setUsers(data);
       setError(null);
     } catch (err) {
@@ -72,8 +74,7 @@ const UserManagement = () => {
   const handleEdit = (user) => {
     setEditingUser({
       ...user,
-      originalRole: user.role,
-      originalStatus: user.status || 'active'
+      originalRole: user.role
     });
   };
 
@@ -91,29 +92,39 @@ const UserManagement = () => {
         return;
       }
 
-      const response = await fetch(`${BASE_API}/api/user/${editingUser._id}`, {
-        method: 'PUT',
+      // Log request details
+      console.log('Cập nhật người dùng:', editingUser._id);
+      console.log('Vai trò mới:', editingUser.role);
+
+      // Sử dụng API mới thêm vào backend
+      const updateEndpoint = `${BASE_API}/api/user/update-role/${editingUser._id}`;
+      console.log('API endpoint:', updateEndpoint);
+
+      const response = await fetch(updateEndpoint, {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          role: editingUser.role,
-          status: editingUser.status
+          role: editingUser.role
         })
       });
 
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Lỗi API response text:', errorText);
         throw new Error(`Lỗi: ${response.status}`);
       }
 
       const updatedUser = await response.json();
+      console.log('Cập nhật thành công:', updatedUser);
       
       // Cập nhật danh sách người dùng
-      setUsers(users.map(user => 
-        user._id === updatedUser._id ? updatedUser : user
-      ));
-      
+      fetchUsers();
+
       setEditingUser(null);
       setError(null);
     } catch (err) {
@@ -142,19 +153,34 @@ const UserManagement = () => {
         return;
       }
 
-      const response = await fetch(`${BASE_API}/api/user/${deletingUser._id}`, {
-        method: 'DELETE',
+      // Log request details
+      console.log('Xóa người dùng:', deletingUser._id);
+
+      // Sử dụng API mới thêm vào backend
+      const deleteEndpoint = `${BASE_API}/api/user/delete/${deletingUser._id}`;
+      console.log('API endpoint:', deleteEndpoint);
+
+      const response = await fetch(deleteEndpoint, {
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         }
       });
 
+      console.log('Response status:', response.status);
+      
       if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Lỗi API response text:', errorText);
         throw new Error(`Lỗi: ${response.status}`);
       }
 
+      console.log('Xóa thành công');
+      
       // Cập nhật danh sách người dùng sau khi xóa
-      setUsers(users.filter(user => user._id !== deletingUser._id));
+      fetchUsers();
+      
       setDeletingUser(null);
       setError(null);
     } catch (err) {
@@ -172,19 +198,8 @@ const UserManagement = () => {
     });
   };
 
-  const handleStatusChange = (e) => {
-    setEditingUser({
-      ...editingUser,
-      status: e.target.value
-    });
-  };
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-  };
-
-  const handleStatusFilterChange = (e) => {
-    setStatusFilter(e.target.value);
   };
 
   const handleRoleFilterChange = (e) => {
@@ -197,37 +212,27 @@ const UserManagement = () => {
       user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesStatus = statusFilter === 'all' || user.status === statusFilter || 
-      (statusFilter === 'active' && !user.status); // Xử lý trường hợp không có trạng thái coi như 'active'
-    
     const matchesRole = roleFilter === 'all' || user.role === roleFilter;
     
-    return matchesSearch && matchesStatus && matchesRole;
+    return matchesSearch && matchesRole;
   });
 
   const getRoleLabel = (role) => {
     switch(role) {
       case 'admin': return 'Quản trị viên';
       case 'user': return 'Người dùng';
-      default: return 'Không xác định';
+      case 'banned': return 'Bị khóa';
+      case 'undefined': return 'Không xác định';
+      default: return 'Người dùng';
     }
   };
 
-  const getStatusLabel = (status) => {
-    switch(status) {
-      case 'active': return 'Hoạt động';
-      case 'suspended': return 'Tạm khóa';
-      case 'banned': return 'Cấm vĩnh viễn';
-      default: return 'Hoạt động';
-    }
-  };
-
-  const getStatusClassName = (status) => {
-    switch(status) {
-      case 'active': return styles.statusActive;
-      case 'suspended': return styles.statusSuspended;
-      case 'banned': return styles.statusBanned;
-      default: return styles.statusActive;
+  const getRoleClassName = (role) => {
+    switch(role) {
+      case 'admin': return styles.roleadmin;
+      case 'user': return styles.roleuser;
+      case 'banned': return styles.rolebanned;
+      default: return styles.roleuser;
     }
   };
 
@@ -263,17 +268,6 @@ const UserManagement = () => {
           
           <div className={styles.filterGroup}>
             <select 
-              value={statusFilter} 
-              onChange={handleStatusFilterChange}
-              className={styles.filterSelect}
-            >
-              <option value="all">Tất cả trạng thái</option>
-              <option value="active">Hoạt động</option>
-              <option value="suspended">Tạm khóa</option>
-              <option value="banned">Cấm vĩnh viễn</option>
-            </select>
-            
-            <select 
               value={roleFilter} 
               onChange={handleRoleFilterChange}
               className={styles.filterSelect}
@@ -281,6 +275,7 @@ const UserManagement = () => {
               <option value="all">Tất cả vai trò</option>
               <option value="admin">Quản trị viên</option>
               <option value="user">Người dùng</option>
+              <option value="banned">Bị khóa</option>
             </select>
           </div>
         </div>
@@ -299,7 +294,6 @@ const UserManagement = () => {
                   <th>Tên người dùng</th>
                   <th>Email</th>
                   <th>Vai trò</th>
-                  <th>Trạng thái</th>
                   <th>Thao tác</th>
                 </tr>
               </thead>
@@ -311,13 +305,8 @@ const UserManagement = () => {
                       <td>{user.username}</td>
                       <td>{user.email}</td>
                       <td className={styles.roleCell}>
-                        <span className={`${styles.roleLabel} ${styles[`role${user.role}`]}`}>
+                        <span className={`${styles.roleLabel} ${getRoleClassName(user.role)}`}>
                           {getRoleLabel(user.role)}
-                        </span>
-                      </td>
-                      <td>
-                        <span className={`${styles.statusLabel} ${getStatusClassName(user.status)}`}>
-                          {getStatusLabel(user.status)}
                         </span>
                       </td>
                       <td>
@@ -342,7 +331,7 @@ const UserManagement = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="6" className={styles.noData}>
+                    <td colSpan="5" className={styles.noData}>
                       Không tìm thấy người dùng nào
                     </td>
                   </tr>
@@ -375,19 +364,7 @@ const UserManagement = () => {
                 >
                   <option value="user">Người dùng</option>
                   <option value="admin">Quản trị viên</option>
-                </select>
-              </div>
-              
-              <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Trạng thái:</label>
-                <select 
-                  value={editingUser.status || 'active'} 
-                  onChange={handleStatusChange}
-                  className={styles.formSelect}
-                >
-                  <option value="active">Hoạt động</option>
-                  <option value="suspended">Tạm khóa</option>
-                  <option value="banned">Cấm vĩnh viễn</option>
+                  <option value="banned">Bị khóa</option>
                 </select>
               </div>
               
