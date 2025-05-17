@@ -102,7 +102,7 @@ const Learning = () => {
 
                         return <button
                             key={vIndex}
-                            onClick={() => navigate(`/learning?courseId=${course._id}&video=${video.videoId}`)}
+                            onClick={() => navigate(`/learning?courseId=${course.courseId}&video=${video.videoId}`)}
                             className={`${styles["nav-content"]} ${isUnlocked && video.videoId === videoId ? styles.selected : ""} h5 flex-row align-center`}
                             disabled={!isUnlocked}
                         >

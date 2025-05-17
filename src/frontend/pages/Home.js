@@ -13,12 +13,19 @@ import VerticalCourseList from "../elements/VerticalCourseList";
 
 function Home() {
     useDocumentTitle("Online Learning");
+
+    // eslint-disable-next-line
     const navigate = useNavigate();
     const { courses, loading, error } = useGetAllCourses();
 
     const isDesktop = useIsMobile('(max-width: 1450px)');
     const isTablet = useIsMobile('(max-width: 1024px)');
     const isMobile = useIsMobile('(max-width: 768px)');
+
+    const handleExploreClick = () => {
+        window.scrollTo({ top: 500, behavior: "smooth" });
+        // navigate('/explore');
+    }
 
     if (loading) {
         return <Loading />
@@ -34,7 +41,7 @@ function Home() {
             <div className={styles.overlay}>
                 <h1 className={styles.bannerTitle}>Chào mừng bạn đến với khóa học!</h1>
                 <p className={styles.subtitle}>Khám phá hàng trăm khóa học hấp dẫn ngay hôm nay.</p>
-                <button onClick={() => navigate('/explore')} className={styles.ctaButton}>Bắt đầu khám phá</button>
+                <button onClick={handleExploreClick} className={styles.ctaButton}>Bắt đầu khám phá</button>
             </div>
         </div>
         <div className={styles["scroll-list"]}>

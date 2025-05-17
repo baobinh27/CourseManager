@@ -18,7 +18,7 @@ function HorizontalItemCard({ course, discountedPrice, type = 'not-owned', perce
     }
 
     return (
-        <div onClick={() => { if (type === "not-owned") navigate(`/course/${course._id}`) }} className={`${styles.card} flex-col`}>
+        <div onClick={() => { if (type === "not-owned") navigate(`/course/${course.courseId}`) }} className={`${styles.card} flex-col`}>
             <div className="flex-row justify-between">
                 <img className={styles.image} src={course.banner} alt={course.name} />
                 <div className={`${styles.info} ${type === 'not-owned' ? 'justify-evenly' : 'justify-between'}`}>
@@ -26,7 +26,7 @@ function HorizontalItemCard({ course, discountedPrice, type = 'not-owned', perce
                     {type === 'not-owned' && <TagsList tags={course.tags} mini />}
 
                     {type === "owned" && <div className={`${styles.bottom} flex-row justify-between align-center`} style={{ gap: "0.5rem" }}>
-                        <button onClick={() => navigate(`/learning?courseId=${course._id}`)} className={`${styles.continueButton} h7 bold`}>
+                        <button onClick={() => navigate(`/learning?courseId=${course.courseId}`)} className={`${styles.continueButton} h7 bold`}>
                             Tiếp tục học
                         </button>
                         <div style={{width: "40%"}}>
@@ -39,7 +39,7 @@ function HorizontalItemCard({ course, discountedPrice, type = 'not-owned', perce
                         </div>
                     </div>}
                     {type === "created" && <div className={`${styles.bottom} flex-row justify-between align-center`} style={{ gap: "0.5rem" }}>
-                        <button onClick={() => navigate(`/course/${course._id}`)} className={`${styles.continueButton} h7 bold`}>
+                        <button onClick={() => navigate(`/course/${course.courseId}`)} className={`${styles.continueButton} h7 bold`}>
                             Xem chi tiết
                         </button>
                     </div>}
