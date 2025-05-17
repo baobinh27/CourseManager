@@ -43,12 +43,12 @@ router.post('/create', authMiddleware, async (req, res) => {
       const courseId = new mongoose.Types.ObjectId();
 
       // Optional: prevent duplicate draft for same user & course
-      const exists = await DraftCourses.findOne({ name, userId: user._id });
+      const exists = await DraftCourses.findOne({ name, userId: user.id });
       if (exists) {
         return res.status(409).json({ message: 'Draft already exists for this course' });
       }
   
-      const draft = new DraftCourses({ courseId, userId: user._id, name, author, tags, description, content, price, banner });
+      const draft = new DraftCourses({ courseId, userId: user.id, name, author, tags, description, content, price, banner });
       await draft.save();
   
       res.status(201).json({ message: 'Draft course created successfully', draft });
@@ -65,7 +65,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
       const user = req.user;
       const auth = new Authentication(user);
   
-      const draft = await DraftCourses.findOne({ courseId, userId: user._id });
+      const draft = await DraftCourses.findOne({ courseId, userId: user.id });
       if (!draft) {
         return res.status(404).json({ message: 'Draft course not found' });
       }
@@ -78,7 +78,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
         ({ name, author, tags, description, content, price, banner }))(req.body);
   
       const updated = await DraftCourses.findOneAndUpdate(
-        { courseId, userId: user._id },
+        { courseId, userId: user.id },
         updates,
         { new: true }
       );
@@ -97,7 +97,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
       const user = req.user;
       const auth = new Authentication(user);
   
-      const draft = await DraftCourses.findOne({ courseId, userId: user._id });
+      const draft = await DraftCourses.findOne({ courseId, userId: user.id });
       if (!draft) {
         return res.status(404).json({ message: 'Draft course not found' });
       }
@@ -106,7 +106,7 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
         return res.status(403).json({ message: 'Forbidden: No permission' });
       }
   
-      await DraftCourses.deleteOne({ courseId, userId: user._id });
+      await DraftCourses.deleteOne({ courseId, userId: user.id });
       res.status(200).json({ message: 'Draft course deleted successfully' });
     } catch (error) {
       console.error('Error deleting draft course:', error);
@@ -114,29 +114,11 @@ router.put('/update/:courseId', authMiddleware, async (req, res) => {
     }
   });
 
-// User get a draft course by courseId
-router.get('/:courseId', authMiddleware, async (req, res) => {
-    try {
-      const { courseId } = req.params;
-      const user = req.user;
-  
-      const draft = await DraftCourses.findOne({ courseId, userId: user._id });
-      if (!draft) {
-        return res.status(404).json({ message: 'Draft course not found' });
-      }
-  
-      res.status(200).json(draft);
-    } catch (error) {
-      console.error('Error fetching draft course:', error);
-      res.status(500).json({ message: 'Server error' });
-    }
-});
-
 // User get all user's draft courses       
 router.get('/all', authMiddleware, async (req, res) => {
     try {
       const user = req.user;
-      const drafts = await DraftCourses.find({ userId: user._id });
+      const drafts = await DraftCourses.find({ userId: user.id });
   
       res.status(200).json(drafts);
     } catch (error) {
@@ -242,6 +224,24 @@ router.post('/reject/:courseId', authMiddleware, async (req, res) => {
     console.error('Error rejecting draft course:', error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+// User get a draft course by courseId
+router.get('/:courseId', authMiddleware, async (req, res) => {
+    try {
+      const { courseId } = req.params;
+      const user = req.user;
+  
+      const draft = await DraftCourses.findOne({ courseId, userId: user.id });
+      if (!draft) {
+        return res.status(404).json({ message: 'Draft course not found' });
+      }
+  
+      res.status(200).json(draft);
+    } catch (error) {
+      console.error('Error fetching draft course:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
 });
 
 module.exports = router;

@@ -25,6 +25,8 @@ const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20, p
         }
     };
 
+    if (items.length === 0) return <div className="h4" style={{padding: "2rem"}}>Không có khoá học nào.</div>
+
     return <>
         <div className={`${styles["flex-row"]} ${styles.track}`} style={{width: `${(scale + 1) * visibleCount + 6}rem`}}>
             <button disabled={!showLeftScrollBtn} onClick={prevSlide} className={styles.prev}>❮</button>

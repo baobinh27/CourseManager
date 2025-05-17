@@ -37,6 +37,7 @@ const useGetMultipleCourseDetails = (courseIds) => {
     if (courseIds && courseIds.length > 0) {
       fetchCourses();
     }
+    if (courseIds.length === 0) setLoading(false);
   }, [courseIds]);
 
   return { courses, loading, error };

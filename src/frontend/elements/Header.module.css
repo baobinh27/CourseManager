@@ -170,6 +170,11 @@
     #search-box {
         width: 35%;
     }
+
+    #login-btn {
+        padding: 0.5rem;
+        height: 3.25rem;
+    }
 }
 
 @media (max-width: 1024px) {
@@ -180,7 +185,7 @@
 
     #login-btn {
         padding: 0.5rem;
-        height: 3.25rem;
+        height: 2.25rem;
     }
     
     .menu-toggle-btn {
@@ -228,8 +233,9 @@
     }
 
     #login-btn {
-        padding: 0.5rem;
-        height: 2.25rem;
+        padding: 0.25rem;
+        margin: 0;
+        height: 1.75rem;
     }
     
     .menu-toggle-btn {

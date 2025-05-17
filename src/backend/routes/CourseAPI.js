@@ -36,31 +36,68 @@ const test_api = require('../test_api');
 // search courses: phục vụ cho hàm tìm kiếm cho tất cả người dùng, kể cả không đăng nhập
 router.get("/search", async (req, res) => {
     try {
-        const { query, sort, limit } = req.query;
+        // const { query, sort, limit } = req.query;
+
+        const { query, min, max, rating, sort, limit } = req.query;
 
         // if (!query || query.trim().length === 0) {
         //     return res.status(400).json({ message: "Missing search query." });
         // }
         const regex = new RegExp(query.trim(), 'i');
 
-        let courses = await Courses.find({
-            $or: [
-              { name: { $regex: regex } },
-              { tags: { $elemMatch: { $regex: regex } } }
-            ]
-        }).sort({ createdAt: -1 });  
-        
-        if (!courses || courses.length === 0) {
-            return res.status(404).json({ message: "No courses found!" });
+        // let courses = await Courses.find({
+        //     $or: [
+        //       { name: { $regex: regex } },
+        //       { tags: { $elemMatch: { $regex: regex } } }
+        //     ]
+        // }).sort({ createdAt: -1 });  
+
+        // if (sort === "enrollCount") {
+        //     courses = courses.sort((a, b) => b.enrollCount - a.enrollCount);
+        // }
+          
+        // if (limit) {
+        //     courses = courses.slice(0, parseInt(limit));
+        // }
+        const filter = {};
+
+        if (regex) {
+            filter.$or = [
+                { name: { $regex: regex } },
+                { tags: { $elemMatch: { $regex: regex } } },
+            ];
         }
 
-        if (sort === "enrollCount") {
-            courses = courses.sort((a, b) => b.enrollCount - a.enrollCount);
+        if (min) {
+            filter.price = { ...filter.price, $gte: parseFloat(min) };
         }
-          
+
+        if (max) {
+            filter.price = { ...filter.price, $lte: parseFloat(max) };
+        }
+
+        if (rating) {
+            filter.averageRating = { $gte: parseFloat(rating) };
+        }
+
+        let queryBuilder = Courses.find(filter);
+
+        // Sorting logic
+        if (sort === "price_asc") {
+            queryBuilder = queryBuilder.sort({ price: 1 });
+        } else if (sort === "price_desc") {
+            queryBuilder = queryBuilder.sort({ price: -1 });
+        } else if (sort === "enroll_desc") {
+            queryBuilder = queryBuilder.sort({ enrollCount: -1 });
+        } else {
+            queryBuilder = queryBuilder.sort({ createdAt: -1 }); // Default sort
+        }
+
         if (limit) {
-            courses = courses.slice(0, parseInt(limit));
+            queryBuilder = queryBuilder.limit(parseInt(limit));
         }
+
+        const courses = await queryBuilder.exec();
 
         return res.status(200).json(courses);
     } catch (error) {

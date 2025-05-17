@@ -29,6 +29,22 @@ const CreateCourse = () => {
 
     const [showBackWarning, setShowBackWarning] = useState(false);
 
+    const addTag = () => {
+        setCourse({ ...course, tags: [...course.tags, ''] });
+    }
+
+    const updateTag = (index, tag) => {
+        const updated = [...course.tags];
+        updated[index] = tag;
+        setCourse({ ...course, tags: updated });
+    }
+
+    const removeTag = (index) => {
+        const updated = [...course.tags];
+        updated.splice(index, 1);
+        setCourse({ ...course, tags: updated });
+    }
+
     const handleChange = (e) => {
         setCourse({ ...course, [e.target.name]: e.target.value });
     };
@@ -75,13 +91,13 @@ const CreateCourse = () => {
         createDraftCourse({
             name: course.name,
             author: user.username,
-            tags: ["Test"], // Tạm thời hardcode tags cho đến khi xử lý được tags
+            tags: course.tags,
             description: course.description,
             content: course.content,
             price: course.price,
             banner: course.banner
         })
-        
+
     };
 
     if (!isLoggedIn) {
@@ -96,7 +112,7 @@ const CreateCourse = () => {
     }
 
     if (userError) {
-        return <ErrorPage error={userError}/>
+        return <ErrorPage error={userError} />
     }
 
     return (<div className={`${styles.page}`}>
@@ -125,8 +141,22 @@ const CreateCourse = () => {
 
             {/* TODO: Xử lý tags */}
             <div className={styles.fieldGroup}>
-                <label className={styles.label}>Chọn các thẻ (tối đa 5) !Cần xử lý quản lý thẻ</label>
-                {/* <input type="text" className={styles.input} name="tags" value={course.tags} onChange={handleChange} /> */}
+                <label className={styles.label}>Chọn các thẻ (tối đa 5)</label>
+                
+                {course.tags.map((tag, index) => <div className={styles.videoInputGroup}>
+                    <input type="text" className={styles.input} name="tags" value={tag} onChange={(e) => updateTag(index, e.target.value)} />
+                    <button type="button" className={`${styles.button} ${styles.danger} h5`} onClick={() => removeTag(index)}>Xoá</button>
+                </div>)}
+
+                <button
+                    type="button"
+                    className={`${styles.iconButton} h5`}
+                    onClick={addTag}
+                    disabled={course.tags.length >= 5}
+                >
+                    <FaPlus />
+                    Thêm thẻ
+                </button>
             </div>
 
             <div className={styles.fieldGroup}>

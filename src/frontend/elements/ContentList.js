@@ -65,12 +65,12 @@ const ContentList = ({content}) => {
                     <ul type="none">
                         {section.sectionContent.map(video => (
                             <li key={video.videoId} className={styles.item}>
-                                <div className={`flex-row justify-center ${styles.gap} h5`} style={{width: `${isMobile ? "calc(100% - 6rem)" : "80%"}`}}>
+                                <div className={`flex-row align-center ${styles.gap} h5`} style={{width: `${isMobile ? "calc(100% - 6rem)" : "80%"}`}}>
                                     <FaPlayCircle style={{fill: "#ff7700", width: "1.5rem"}} />
                                     <p className={`${isMobile ? "h6" : "h5"} truncate`}>{video.title}</p>
                                 </div>
-                                <div className={`flex-row "justify-center" ${styles.gap} ${isMobile ? "h6" : "h5"}`}>
-                                    {helper.formatDuration(video.duration)}
+                                <div className={`flex-row "align-center" ${styles.gap} ${isMobile ? "h6" : "h5"}`}>
+                                    <p style={{ width: `${isMobile ? "3rem" : "4rem"}`}}>{helper.formatDuration(video.duration)}</p>
                                     <FaClock style={{fill: "forestgreen", width: "1.5rem"}}/>
                                 </div>
                             </li>

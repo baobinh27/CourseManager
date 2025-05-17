@@ -28,6 +28,7 @@ import UserManagement from "./frontend/pages/admin/UserManagement.js";
 
 import ForgotPassword from "./frontend/pages/ForgotPassword.js";
 import ResetPassword from "./frontend/pages/ResetPassword.js";
+import ChangePassword from "./frontend/pages/ChangePassword.js";
 
 function App() {
   return <>
@@ -67,6 +68,10 @@ function App() {
         <Route path="/profile/:id" element={<>
           <Header />
           <Profile />
+        </>} />
+        <Route path="/change-password" element={<>
+          <Header />
+          <ChangePassword />
         </>} />
         <Route path="/teaching" element={<>
           <Header />

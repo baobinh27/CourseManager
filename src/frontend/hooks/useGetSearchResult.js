@@ -1,39 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { BASE_API } from "../utils/constant";
 
-const useGetSearchResult = (query) => {
+const useGetSearchResult = () => {
     const [courses, setCourse] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!query || query === "") {
-            setCourse(null);
-            return;
-        }
+    const fetchCourse = useCallback(async ({ query, minPrice, maxPrice, minRating, sortBy }) => {
+        try {
+            setLoading(true);
+            setError(null);
 
-        const fetchCourse = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(`${BASE_API}/api/course/search?query=${query}`);
-                const data = await response.json();                
+            const params = new URLSearchParams();
 
-                if (!response.ok) {
-                    console.log(data.message);
-                    throw new Error(data.message || "Lỗi khi lấy dữ liệu khóa học");
-                }
+            if (query) params.append("query", query);
+            if (minPrice) params.append("min", minPrice);
+            if (maxPrice) params.append("max", maxPrice);
+            if (minRating) params.append("rating", minRating);
+            if (sortBy) params.append("sort", sortBy);
 
-                setCourse(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
+            const response = await fetch(`${BASE_API}/api/course/search?${params.toString()}`);
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Lỗi khi lấy dữ liệu khóa học");
             }
-        };
-        fetchCourse();
-    }, [query]);
 
-    return { courses, loading, error };
+            setCourse(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    return { courses, loading, error, fetchCourse };
 };
 
 export default useGetSearchResult;
