@@ -200,19 +200,6 @@ router.post("/progress", authMiddleware, async (req, res) => {
     }
   });
 
-// Get User Info
-router.get("/:id", async (req, res) => {
-    try {
-        const userId = req.params.id;
-        const user = await User.findOne({ _id: userId});
-
-        res.status(200).json(user);
-    } catch (error) {
-        console.log("Error getting user:", error);
-        res.status(500).json({ message: "Server error!", error: error.message});
-    }
-})
-
 // admin ban user
 router.post('/ban/:userId', authMiddleware, async (req, res) => {
   try {
@@ -260,6 +247,19 @@ router.delete('/delete/:userId', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// Get User Info
+router.get("/:id", async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findOne({ _id: userId});
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.log("Error getting user:", error);
+        res.status(500).json({ message: "Server error!", error: error.message});
+    }
+})
 
 module.exports = router;
 

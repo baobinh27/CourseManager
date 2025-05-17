@@ -33,6 +33,11 @@ function HorizontalItemCard({ course, discountedPrice, type = 'not-owned', perce
                             <ProgressBar percent={percent} />
                         </div>
                     </div>}
+                    {type === "owned-viewing" && <div className={`${styles.bottom} flex-row justify-between align-center`} style={{ gap: "0.5rem" }}>
+                        <div style={{width: "40%"}}>
+                            <ProgressBar percent={percent} />
+                        </div>
+                    </div>}
                     {type === "created" && <div className={`${styles.bottom} flex-row justify-between align-center`} style={{ gap: "0.5rem" }}>
                         <button onClick={() => navigate(`/course/${course._id}`)} className={`${styles.continueButton} h7 bold`}>
                             Xem chi tiết

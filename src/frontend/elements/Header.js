@@ -146,7 +146,7 @@ function Header() {
                     </div>}
 
                 </div>
-            ) : <button onClick={handleLogin} id={styles["login-btn"]} className="h4 bold">Đăng nhập</button>}
+            ) : <button onClick={handleLogin} id={styles["login-btn"]} className="h6 bold">Đăng nhập</button>}
         </div> : <div className={styles.header}>
             <button
                 onClick={() => navigate('/')}
@@ -239,7 +239,7 @@ function Header() {
                     </div>}
 
                 </div>
-            ) : <button onClick={handleLogin} id={styles["login-btn"]} className="h4 bold">Đăng nhập</button>}
+            ) : <button onClick={handleLogin} id={styles["login-btn"]} className={`${isTablet ? "h5" : "h4"} bold`}>Đăng nhập</button>}
         </div>
     )
 }
