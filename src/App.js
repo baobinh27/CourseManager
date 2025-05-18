@@ -25,6 +25,7 @@ import AdminRoute from "./AdminRoute.js";
 import UnAuthorized from "./frontend/pages/misc/UnAuthorized.js";
 import EditCourse from "./frontend/pages/admin/EditCourse.js";
 import UserManagement from "./frontend/pages/admin/UserManagement.js";
+import PaymentVerification from "./frontend/pages/admin/PaymentVerification.js";
 
 import ForgotPassword from "./frontend/pages/ForgotPassword.js";
 import ResetPassword from "./frontend/pages/ResetPassword.js";
@@ -117,6 +118,11 @@ function App() {
         <Route path="/admin/user-management" element={
           <AdminRoute>
             <UserManagement />
+          </AdminRoute>
+        } />
+        <Route path="/admin/payment-verification" element={
+          <AdminRoute>
+            <PaymentVerification />
           </AdminRoute>
         } />
         <Route path="/unauthorized" element={<>
