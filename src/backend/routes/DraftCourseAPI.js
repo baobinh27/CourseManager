@@ -11,6 +11,7 @@ const DraftCourses = require("../../models/DraftCourseModel");
 const Courses = require("../../models/CourseModel");
 const User = require("../../models/UserModel");
 
+const YOUTUBE_API_KEY = process.env.YOUTUBE_DATA_API;
 
 // API DRAFT COURSE:  /api/draftCourse
 
@@ -145,6 +146,33 @@ router.get('/allDraftCourses', authMiddleware, async (req, res) => {
     }
   });
 
+function extractVideoId(url) {
+  const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
+
+async function fetchVideoMetadata(videoId) {
+  try {
+    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${YOUTUBE_API_KEY}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    const item = data.items[0];
+
+    if (!item) return null;
+
+    const title = item.snippet.title;
+    // const duration = parseYouTubeDuration(item.contentDetails.duration); // ISO 8601 → hh:mm:ss
+    const duration = item.contentDetails.duration;
+
+    return { videoId, title, duration };
+  } catch (err) {
+    console.error(`Error fetching metadata for videoId ${videoId}:`, err.message);
+    return null;
+  }
+}
+
 // admin approve a draft course
 router.post('/approve/:courseId', authMiddleware, async (req, res) => {
   try {
@@ -156,10 +184,30 @@ router.post('/approve/:courseId', authMiddleware, async (req, res) => {
       return res.status(403).json({ message: 'Forbidden: Admins only' });
     }
 
-    const draft = await DraftCourses.findOne({ courseId });
+    const draft = await DraftCourses.findOne({ courseId: courseId });
     if (!draft) {
       return res.status(404).json({ message: 'Draft course not found' });
     }
+
+    const contentWithMetadata = [];
+
+    for (const section of draft.content) {
+      const sectionData = {
+        sectionTitle: section.sectionTitle,
+        sectionContent: []
+      };
+
+      for (const link of section.sectionContent) {
+        const videoId = extractVideoId(link);
+        if (!videoId) continue;
+
+        const metadata = await fetchVideoMetadata(videoId);
+        if (metadata) {
+          sectionData.sectionContent.push(metadata);
+        }
+      }
+      contentWithMetadata.push(sectionData);
+    }    
 
     // Kết hợp cả hai phiên bản: bỏ courseId như nhánh main đề xuất
     // nhưng giữ lại cấu trúc xử lý content từ nhánh của bạn
@@ -170,14 +218,7 @@ router.post('/approve/:courseId', authMiddleware, async (req, res) => {
       author: draft.author,
       tags: draft.tags,
       description: draft.description,
-      content: draft.content.map(section => ({
-        sectionTitle: section.sectionTitle,
-        sectionContent: section.sectionContent.map(videoId => ({
-          videoId,
-          title: videoId, // Use videoId as title initially
-          duration: "0:00" // Set default duration
-        }))
-      })),
+      content: contentWithMetadata,
       ratings: [],
       enrollCount: 0,
       price: draft.price,
@@ -190,7 +231,7 @@ router.post('/approve/:courseId', authMiddleware, async (req, res) => {
     const courseOwner = await User.findById(draft.userId);
     if (courseOwner) {
       courseOwner.createdCourses = courseOwner.createdCourses || [];
-      courseOwner.createdCourses.push(course._id);
+      courseOwner.createdCourses.push(course.courseId);
       await courseOwner.save();
     }
     await DraftCourses.deleteOne({ courseId });

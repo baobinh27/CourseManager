@@ -15,6 +15,8 @@ import { useAuth } from '../api/auth';
 function Home() {
     useDocumentTitle("Online Learning");
     const { user } = useAuth();
+
+    // eslint-disable-next-line
     const navigate = useNavigate();
     const { courses, loading, error } = useGetAllCourses();
 
@@ -27,6 +29,11 @@ function Home() {
             navigate('/admin');
         }
     }, [user, navigate]);
+
+    const handleExploreClick = () => {
+        window.scrollTo({ top: 500, behavior: "smooth" });
+        // navigate('/explore');
+    }
 
     if (loading) {
         return <Loading />
@@ -42,7 +49,7 @@ function Home() {
             <div className={styles.overlay}>
                 <h1 className={styles.bannerTitle}>Chào mừng bạn đến với khóa học!</h1>
                 <p className={styles.subtitle}>Khám phá hàng trăm khóa học hấp dẫn ngay hôm nay.</p>
-                <button onClick={() => navigate('/explore')} className={styles.ctaButton}>Bắt đầu khám phá</button>
+                <button onClick={handleExploreClick} className={styles.ctaButton}>Bắt đầu khám phá</button>
             </div>
         </div>
         <div className={styles["scroll-list"]}>

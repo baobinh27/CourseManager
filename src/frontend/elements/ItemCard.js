@@ -60,7 +60,7 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
             <div className={styles.info}>
                 <p className={`bold multiline-truncate`} style={textScaleH5}>{course.name}</p>
                 <div className="flex-row align-center" style={{gap: "0.5rem", justifyContent: "space-between"}}>
-                    <Link to={`/learning?courseId=${course._id}`} className={`${styles.continueButton} h7 bold`}>
+                    <Link to={`/learning?courseId=${course.courseId}`} className={`${styles.continueButton} h7 bold`}>
                         Tiếp tục học
                     </Link>
                     <div style={{width: "50%"}}>
@@ -93,7 +93,7 @@ function ItemCard({course, discountedPrice, type = 'not-owned', scale = 20, perc
             <div className={styles.info}>
                 <p className={`bold multiline-truncate`} style={textScaleH5}>{course.name}</p>
                 <div>
-                    <Link to={`/course/${course._id}`} className={` ${styles.continueButton} h7 bold`}>
+                    <Link to={`/course/${course.courseId}`} className={` ${styles.continueButton} h7 bold`}>
                         Xem chi tiết
                     </Link>
                 </div>

@@ -24,7 +24,7 @@ const useGetMultipleCourseDetails = (courseIds) => {
         const results = await Promise.all(promises);
 
         // Optional: filter các khóa học bị lỗi hoặc không tồn tại
-        const validCourses = results.filter(course => course && course._id);
+        const validCourses = results.filter(course => course && course.courseId);
 
         setCourses(validCourses);
       } catch (err) {
