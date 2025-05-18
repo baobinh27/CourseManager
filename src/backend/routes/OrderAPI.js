@@ -13,7 +13,9 @@ const test_api = require('../test_api');
 
 // API ORDER:  /api/order
 
+// POST enroll: call when user enroll any courses
 // get my orders: GET /my-orders
+// PUT orderID (approve transaction )
 // get all orders for admin: GET /all-orders
 // admin process order: POST /approve/:orderId
 
@@ -50,9 +52,7 @@ router.post("/enroll", authMiddleware, async (req, res) => {
 router.get("/my-orders", authMiddleware, async (req, res) => {
     try {
         const userId = req.user.id;
-        // const orders = await Orders.find({ userId }).populate("courseId", "name price banner").sort({ createdAt: -1 });
 
-        // Tìm tất cả các đơn hàng
         const orders = await Orders.find({ userId }).sort({ createdAt: -1 });
 
         // populate thủ công
