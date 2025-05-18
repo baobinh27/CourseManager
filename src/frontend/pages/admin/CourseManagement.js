@@ -195,7 +195,7 @@ function CourseManagement() {
                     <td>{formatDate(course.lastModified)}</td>
                     <td className={styles.enrollCount}>{course.enrollCount || 0}</td>
                     <td className={styles.actions}>
-                      <button onClick={() => handleEdit(course._id)} className={`${styles.actionButton} ${styles.editButton}`}>
+                      <button onClick={() => handleEdit(course.courseId)} className={`${styles.actionButton} ${styles.editButton}`}>
                         <FaEdit /> Sửa
                       </button>
                       <button onClick={() => handleDelete(course.courseId, course.name)} className={`${styles.actionButton} ${styles.deleteButton}`}>
