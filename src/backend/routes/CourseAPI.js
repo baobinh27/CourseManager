@@ -261,15 +261,8 @@ router.post("/enroll", authMiddleware, async (req, res) => {
             note
           });
           await order.save();
-        // ownedCourses: [
-        //     {
-        //       courseId: { type: Schema.Types.ObjectId, ref: 'Course' },
-        //       progress: Number, // số video đã hoàn thành
-        //       lastWatchedVideo: String, // videoId cuối cùng xem
-        //       completedVideos: [String], // danh sách videoId đã hoàn thành
-        //       enrolledAt: { type: Date, default: Date.now }
-        //     }
-        //   ],
+        // ownedCourses:
+        
         res.status(201).json({ message: "Enrollment request created. Please wait for admin approval.", order });
 
     } catch (error) {

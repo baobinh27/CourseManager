@@ -16,6 +16,7 @@ const mongoose = require('mongoose');
 
 // POST /account/refresh-token
 
+// encrypt access/refresh token
 const ACCESS_SECRET  = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
@@ -25,14 +26,14 @@ router.post("/sign-up", async (req, res) => {
         const { username, password, email } = req.body;
  
         if (!username || !password || !email) {
-            return res.status(400).json({ message: "Vui lòng điền đầy đủ thông tin." });
+            return res.status(400).json({ message: "Please fill required field fully." });
         }   
         if (password.length < 6) {
-            return res.status(400).json({ message: "Mật khẩu cần có ít nhất 6 ký tự." });
+            return res.status(400).json({ message: "Password least 6 characters." });
         }
 
         const existingUser = await User.findOne({ username });
-        if (existingUser) return res.status(400).json({ message: "Tên đăng nhập đã tồn tại!" });
+        if (existingUser) return res.status(400).json({ message: "Username exist!" });
 
         // hash password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -40,7 +41,7 @@ router.post("/sign-up", async (req, res) => {
         const newUser = new User({ username, password: hashedPassword, email, description: "" });
         await newUser.save();
 
-        res.status(201).json({ message: "Đăng ký thành công!" });
+        res.status(201).json({ message: "Successfully!" });
     } catch (error) {
         console.error("Error during signup:", error);
         res.status(500).json({ message: "Error server!" });
