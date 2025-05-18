@@ -13,9 +13,11 @@ const mongoose = require('mongoose');
 // API USER:  /api/user
 // signup: POST /signup (username, password, email)
 // change-password: POST /change-password (email, oldPassword, newPassword)
+// refresh-token (auto-call)
 // login: POST /login (email, password)
 
 // POST /account/refresh-token
+// ban/delete user 
 
 // encrypt access/refresh token
 const ACCESS_SECRET  = process.env.ACCESS_TOKEN_SECRET;

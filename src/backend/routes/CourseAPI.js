@@ -40,25 +40,8 @@ router.get("/search", async (req, res) => {
 
         const { query, min, max, rating, sort, limit } = req.query;
 
-        // if (!query || query.trim().length === 0) {
-        //     return res.status(400).json({ message: "Missing search query." });
-        // }
         const regex = new RegExp(query?.trim() || "", 'i');
 
-        // let courses = await Courses.find({
-        //     $or: [
-        //       { name: { $regex: regex } },
-        //       { tags: { $elemMatch: { $regex: regex } } }
-        //     ]
-        // }).sort({ createdAt: -1 });  
-
-        // if (sort === "enrollCount") {
-        //     courses = courses.sort((a, b) => b.enrollCount - a.enrollCount);
-        // }
-          
-        // if (limit) {
-        //     courses = courses.slice(0, parseInt(limit));
-        // }
         const filter = {};
 
         if (regex) {
@@ -194,7 +177,6 @@ router.delete("/delete/:courseId", authMiddleware, async (req, res) => {
         const user = req.user;
         const auth = new Authentication(user);
 
-        // Admin có thể xóa bất kỳ khóa học nào
         if (auth.isAdmin()) {
             const course = await Courses.findOneAndDelete({ courseId });
             if (!course) {
@@ -203,7 +185,6 @@ router.delete("/delete/:courseId", authMiddleware, async (req, res) => {
             return res.status(200).json({ message: "Course deleted successfully!" });
         }
 
-        // Nếu không phải admin, kiểm tra xem có phải người tạo khóa học không
         const course = await Courses.findOne({ courseId });
         if (!course) {
             return res.status(404).json({ message: "Course not found!" });
@@ -230,7 +211,6 @@ router.put("/update/:courseId", authMiddleware, async (req, res) => {
 
         // Kiểm tra quyền admin
         if (auth.isAdmin()) {
-            // Admin có thể cập nhật bất kỳ khóa học nào
             const updatedCourse = await Courses.findOneAndUpdate(
                 { courseId },
                 req.body,
