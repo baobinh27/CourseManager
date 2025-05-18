@@ -272,8 +272,18 @@ router.get('/:courseId', authMiddleware, async (req, res) => {
     try {
       const { courseId } = req.params;
       const user = req.user;
-  
-      const draft = await DraftCourses.findOne({ courseId, userId: user.id });
+      const auth = new Authentication(user);
+      
+      let draft;
+      
+      // Nếu là admin, cho phép xem bất kỳ draftCourse nào
+      if (auth.isAdmin()) {
+        draft = await DraftCourses.findOne({ courseId });
+      } else {
+        // Người dùng thường chỉ có thể xem draftCourse của họ
+        draft = await DraftCourses.findOne({ courseId, userId: user.id });
+      }
+      
       if (!draft) {
         return res.status(404).json({ message: 'Draft course not found' });
       }

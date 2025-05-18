@@ -1,39 +1,77 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import AdminLayout from "./AdminLayout";
 import styles from "./CourseApproval.module.css";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { FaList, FaCheck } from "react-icons/fa";
-import mockCourses from "../../../mock_data/courses";
+import { FaList, FaCheck, FaSpinner } from "react-icons/fa";
+import useGetAllDraftCourses from "../../hooks/draft_courses/useGetAllDraftCourses";
 
 const CourseApproval = () => {
   useDocumentTitle("Admin - Kiểm duyệt khóa học");
+  const location = useLocation();
   
-  // Sử dụng state để lưu trạng thái của các khóa học
+  // Sử dụng hook để lấy dữ liệu từ API
+  const { drafts, loading, error, refetch } = useGetAllDraftCourses();
   const [courses, setCourses] = useState([]);
   
-  // Khởi tạo danh sách khóa học từ mock data
+  // Tự động refetch khi người dùng quay lại trang này
   useEffect(() => {
+    // Fetch dữ liệu khi component được mount hoặc khi location thay đổi
+    refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.key]);
+  
+  // Áp dụng trạng thái từ localStorage vào danh sách khóa học
+  useEffect(() => {
+    if (!drafts) return;
+    
     // Kiểm tra localStorage để xem có khóa học nào đã được xử lý trước đó không
     const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
     
-    // Áp dụng trạng thái từ localStorage vào danh sách khóa học
-    const mappedCourses = mockCourses.map(course => {
-      const courseId = course._id;
+    // Map các draft courses
+    const mappedCourses = drafts.map(draft => {
+      const courseId = draft.courseId;
       const status = processedCourses[courseId] || 'pending'; // pending, approved, rejected
       
       return {
-        ...course,
+        ...draft,
         courseId,
         status
       };
     });
     
     setCourses(mappedCourses);
-  }, []);
+  }, [drafts]);
   
   // Lọc các khóa học chưa bị từ chối
   const pendingCourses = courses.filter(course => course.status !== 'rejected');
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className={styles.container}>
+          <div className={styles.loading}>
+            <FaSpinner className={styles.spinner} />
+            <p>Đang tải dữ liệu...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout>
+        <div className={styles.container}>
+          <div className={styles.error}>
+            <h2>Có lỗi xảy ra</h2>
+            <p>{error}</p>
+            <button onClick={refetch} className={styles.retryButton}>Thử lại</button>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -43,6 +81,10 @@ const CourseApproval = () => {
           <div className={styles.subtitle}>
             <FaList /> <span>{pendingCourses.filter(c => c.status === 'pending').length} khóa học chờ duyệt</span>
           </div>
+          <button onClick={refetch} className={styles.refreshButton}>
+            <FaSpinner className={!loading ? styles.refreshIcon : styles.spinner} />
+            Làm mới dữ liệu
+          </button>
         </div>
 
         <div className={styles.courseGrid}>

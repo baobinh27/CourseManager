@@ -100,7 +100,9 @@ function CourseManagement() {
   const handleDelete = async (courseId, courseName) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa khóa học "${courseName}" không? Hành động này không thể hoàn tác.`)) {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+        
         if (!token) {
           alert("Bạn cần đăng nhập để thực hiện hành động này");
           return;
@@ -109,24 +111,29 @@ function CourseManagement() {
         const response = await fetch(`${BASE_API}/api/course/delete/${courseId}`, {
           method: 'DELETE',
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
+            "x-refresh-token": refreshToken
           },
         });
+        
+        if (response.status === 401 || response.status === 403) {
+          // Token might be expired
+          alert("Phiên đăng nhập đã hết hạn hoặc bạn không có quyền xóa khóa học này");
+          // Redirect to login if needed
+          return;
+        }
         
         const data = await response.json();
         
         if (!response.ok) {
-          if (response.status === 403) {
-            throw new Error("Bạn không có quyền xóa khóa học này");
-          } else {
-            throw new Error(data.message || "Lỗi khi xóa khóa học");
-          }
+          throw new Error(data.message || "Lỗi khi xóa khóa học");
         }
         
         // Update state after successful deletion
-        const updatedCourses = courses.filter(course => course._id !== courseId);
+        const updatedCourses = courses.filter(course => course.courseId !== courseId);
         setCourses(updatedCourses);
-        setFilteredCourses(prevFiltered => prevFiltered.filter(course => course._id !== courseId));
+        setFilteredCourses(prevFiltered => prevFiltered.filter(course => course.courseId !== courseId));
         
         alert(`Đã xóa khóa học "${courseName}"`);
       } catch (err) {
@@ -191,7 +198,7 @@ function CourseManagement() {
                       <button onClick={() => handleEdit(course._id)} className={`${styles.actionButton} ${styles.editButton}`}>
                         <FaEdit /> Sửa
                       </button>
-                      <button onClick={() => handleDelete(course._id, course.name)} className={`${styles.actionButton} ${styles.deleteButton}`}>
+                      <button onClick={() => handleDelete(course.courseId, course.name)} className={`${styles.actionButton} ${styles.deleteButton}`}>
                         <FaTrashAlt /> Xóa
                       </button>
                     </td>

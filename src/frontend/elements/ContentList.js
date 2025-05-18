@@ -5,18 +5,35 @@ import helper from "../utils/helper";
 import useIsMobile from "../hooks/useIsMobile";
 
 function getContentOverview(content) {
+    if (!content || !Array.isArray(content) || content.length === 0) {
+        return "Không có nội dung";
+    }
+
     let totalSeconds = 0, totalMinutes = 0, totalHours = 0;
     let totalItems = 0;
-    const regex = /PT(\d+H)?(\d+M)?(\d+S)?/;
+    const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
     
     content.forEach(section => {
-        section.sectionContent.forEach(item => {
-            totalItems++;
-            const match = item.duration.match(regex);
-            totalHours += match[1] ? parseInt(match[1]) : 0;
-            totalMinutes += match[2] ? parseInt(match[2]) : 0;
-            totalSeconds += match[3] ? parseInt(match[3]) : 0;
-        })
+        if (section.sectionContent && Array.isArray(section.sectionContent)) {
+            section.sectionContent.forEach(item => {
+                totalItems++;
+                // Kiểm tra xem duration có tồn tại không
+                if (item.duration) {
+                    const match = item.duration.match(regex);
+                    if (match) {
+                        // Kết quả match[1], match[2], match[3] có thể là undefined
+                        // Chuyển sang cách truy cập an toàn hơn
+                        const hours = match[1] ? parseInt(match[1]) : 0;
+                        const minutes = match[2] ? parseInt(match[2]) : 0;
+                        const seconds = match[3] ? parseInt(match[3]) : 0;
+                        
+                        totalHours += hours;
+                        totalMinutes += minutes;
+                        totalSeconds += seconds;
+                    }
+                }
+            });
+        }
     });
 
     totalMinutes += Math.floor(totalSeconds / 60);
@@ -28,7 +45,6 @@ function getContentOverview(content) {
 }
 
 const ContentList = ({content}) => {
-
     const isMobile = useIsMobile('(max-width: 768px)');
     const [showSectionDetail, setShowSectionDetail] = useState([]);    
 
@@ -43,42 +59,60 @@ const ContentList = ({content}) => {
         );
     };
 
-    return <div className={`flex-col ${styles.gap}`}>
-        <h3 className="h3">Nội dung khoá học</h3>
-        {content && <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
-            <FaThList />
-            <h1 className="h5">{getContentOverview(content)}</h1>
-        </div>}
-        {content && content.map((section, index) => (
-            <div key={index}>
-
-                <button
-                    onClick={() => toggleSection(index)}
-                    className={styles.section}
-                >
-                    <p className="h4 truncate">{`${index + 1}. ${section.sectionTitle}`}</p> 
-                    
-                    {showSectionDetail[index] ? <FaAngleUp /> : <FaAngleDown />}
-                </button>
-
-                {showSectionDetail[index] && 
-                    <ul type="none">
-                        {section.sectionContent.map(video => (
-                            <li key={video.videoId} className={styles.item}>
-                                <div className={`flex-row align-center ${styles.gap} h5`} style={{width: `${isMobile ? "calc(100% - 6rem)" : "80%"}`}}>
-                                    <FaPlayCircle style={{fill: "#ff7700", width: "1.5rem"}} />
-                                    <p className={`${isMobile ? "h6" : "h5"} truncate`}>{video.title}</p>
-                                </div>
-                                <div className={`flex-row "align-center" ${styles.gap} ${isMobile ? "h6" : "h5"}`}>
-                                    <p style={{ width: `${isMobile ? "3rem" : "4rem"}`}}>{helper.formatDuration(video.duration)}</p>
-                                    <FaClock style={{fill: "forestgreen", width: "1.5rem"}}/>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>}
+    if (!content || !Array.isArray(content) || content.length === 0) {
+        return (
+            <div className={`flex-col ${styles.gap}`}>
+                <h3 className="h3">Nội dung khoá học</h3>
+                <p>Chưa có nội dung cho khóa học này</p>
             </div>
-        ))}
-    </div>
-}
+        );
+    }
+
+    return (
+        <div className={`flex-col ${styles.gap}`}>
+            <h3 className="h3">Nội dung khoá học</h3>
+            <div className={`flex-row ${styles["justify-center"]} ${styles.gap}`}>
+                <FaThList />
+                <h1 className="h5">{getContentOverview(content)}</h1>
+            </div>
+            {content.map((section, index) => (
+                <div key={index}>
+                    <button
+                        onClick={() => toggleSection(index)}
+                        className={styles.section}
+                    >
+                        <p className="h4 truncate">{`${index + 1}. ${section.sectionTitle || 'Chương không có tiêu đề'}`}</p> 
+                        
+                        {showSectionDetail[index] ? <FaAngleUp /> : <FaAngleDown />}
+                    </button>
+
+                    {showSectionDetail[index] && 
+                        <ul type="none">
+                            {section.sectionContent && Array.isArray(section.sectionContent) ? 
+                                section.sectionContent.map((video, videoIndex) => (
+                                    <li key={video.videoId || `video-${videoIndex}`} className={styles.item}>
+                                        <div className={`flex-row align-center ${styles.gap} h5`} style={{width: `${isMobile ? "calc(100% - 6rem)" : "80%"}`}}>
+                                            <FaPlayCircle style={{fill: "#ff7700", width: "1.5rem"}} />
+                                            <p className={`${isMobile ? "h6" : "h5"} truncate`}>{video.title || `Nội dung ${videoIndex + 1}`}</p>
+                                        </div>
+                                        <div className={`flex-row "align-center" ${styles.gap} ${isMobile ? "h6" : "h5"}`}>
+                                            <p style={{ width: `${isMobile ? "3rem" : "4rem"}`}}>
+                                                {video.duration ? helper.formatDuration(video.duration) : "00:00"}
+                                            </p>
+                                            <FaClock style={{fill: "forestgreen", width: "1.5rem"}}/>
+                                        </div>
+                                    </li>
+                                )) : 
+                                <li className={styles.item}>
+                                    <p>Chương này chưa có nội dung</p>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            ))}
+        </div>
+    );
+};
 
 export default ContentList;

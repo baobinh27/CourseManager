@@ -1,70 +1,104 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./CourseApprovalDetail.module.css";
 import AdminLayout from "./AdminLayout";
-import { FaCheck, FaPlayCircle, FaTags, FaUserCheck } from "react-icons/fa";
+import { FaCheck, FaPlayCircle, FaTags, FaUserCheck, FaSpinner } from "react-icons/fa";
 import TagsList from "../../elements/TagsList";
 import ContentList from "../../elements/ContentList";
 import CoursePreview from "../../elements/CoursePreview";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import mockCourses from "../../../mock_data/courses";
+import useGetDraftCourse from "../../hooks/draft_courses/useGetDraftCourse";
+import useApproveDraftCourse from "../../hooks/draft_courses/useApproveDraftCourse";
+import useRejectDraftCourse from "../../hooks/draft_courses/useRejectDraftCourse";
 
 const CourseApprovalDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [draftCourse, setDraftCourse] = useState(null);
-  const [approving, setApproving] = useState(false);
-  const [rejecting, setRejecting] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
   useDocumentTitle("Admin - Duyệt khóa học");
 
+  // Sử dụng skipInitialFetch để kiểm soát việc fetch dữ liệu
+  const [skipFetch, setSkipFetch] = useState(false);
+  
+  // Sử dụng hooks để tương tác với API
+  const { draft, loading, error, fetchDraft } = useGetDraftCourse(id, skipFetch);
+  const { approveCourse, loading: approving, error: approveError, success: approveSuccess } = useApproveDraftCourse();
+  const { rejectCourse, loading: rejecting, error: rejectError, success: rejectSuccess } = useRejectDraftCourse();
+  
+  const [draftCourse, setDraftCourse] = useState(null);
+
+  // Cập nhật draftCourse khi draft thay đổi
   useEffect(() => {
-    // Lấy khóa học từ mock data và kiểm tra trạng thái từ localStorage
-    const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
-    const course = mockCourses.find(course => course._id === id);
+    if (!draft) return;
     
-    if (course) {
-      // Kiểm tra xem khóa học đã được xử lý trước đó chưa
-      const status = processedCourses[id] || 'pending';
-      
-      setDraftCourse({
-        ...course,
-        courseId: course._id,
-        status
-      });
+    // Kiểm tra localStorage để xem có khóa học nào đã được xử lý trước đó không
+    const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
+    
+    // Kiểm tra xem khóa học đã được xử lý trước đó chưa
+    const status = processedCourses[id] || 'pending';
+    
+    setDraftCourse({
+      ...draft,
+      status
+    });
+  }, [draft, id]);
+
+  // Tạo hàm để load lại dữ liệu
+  const refreshData = useCallback(() => {
+    if (id) {
+      setSkipFetch(false);
+      fetchDraft();
     }
-  }, [id]);
+  }, [id, fetchDraft]);
 
-  const handleApproveCourse = () => {
-    setApproving(true);
-    
-    // Cập nhật trạng thái trong localStorage
-    const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
-    processedCourses[id] = 'approved';
-    localStorage.setItem('processedCourses', JSON.stringify(processedCourses));
-    
-    // Giả lập gọi API để duyệt khóa học
-    setTimeout(() => {
+  // Theo dõi kết quả của việc approve/reject
+  useEffect(() => {
+    if (approveSuccess || rejectSuccess) {
+      // Delay navigation để người dùng thấy thông báo
+      const timer = setTimeout(() => {
+        navigate("/admin/course-approval", { replace: true });
+      }, 1500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [approveSuccess, rejectSuccess, navigate]);
+
+  const handleApproveCourse = async () => {
+    try {
+      await approveCourse(id);
+      
+      // Cập nhật trạng thái trong localStorage
+      const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
+      processedCourses[id] = 'approved';
+      localStorage.setItem('processedCourses', JSON.stringify(processedCourses));
+      
+      // Thông báo thành công - navigation sẽ được xử lý trong useEffect
       alert("Khóa học đã được duyệt thành công");
-      navigate("/admin/course-approval");
-    }, 1000);
+    } catch (err) {
+      console.error("Error approving course:", err);
+    }
   };
 
-  const handleRejectCourse = () => {
-    setRejecting(true);
-    
-    // Cập nhật trạng thái trong localStorage
-    const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
-    processedCourses[id] = 'rejected';
-    localStorage.setItem('processedCourses', JSON.stringify(processedCourses));
-    
-    // Giả lập gọi API để từ chối khóa học
-    setTimeout(() => {
+  const handleRejectCourse = async () => {
+    try {
+      await rejectCourse(id);
+      
+      // Cập nhật trạng thái trong localStorage
+      const processedCourses = JSON.parse(localStorage.getItem('processedCourses') || '{}');
+      processedCourses[id] = 'rejected';
+      localStorage.setItem('processedCourses', JSON.stringify(processedCourses));
+      
+      // Thông báo thành công - navigation sẽ được xử lý trong useEffect
       alert("Đã từ chối khóa học");
-      navigate("/admin/course-approval");
-    }, 1000);
+    } catch (err) {
+      console.error("Error rejecting course:", err);
+    }
   };
+
+  const handleBackToList = useCallback(() => {
+    navigate("/admin/course-approval");
+  }, [navigate]);
 
   const handlePreviewCourse = () => {
     setShowPreview(true);
@@ -74,6 +108,51 @@ const CourseApprovalDetail = () => {
     setShowPreview(false);
   };
 
+  // Xử lý khi component mount, đảm bảo fetch dữ liệu ngay từ đầu
+  useEffect(() => {
+    refreshData();
+  }, [refreshData]);
+
+  if (loading) {
+    return (
+      <AdminLayout>
+        <div className={styles.container}>
+          <div className={styles.loading}>
+            <FaSpinner className={styles.spinner} />
+            <p>Đang tải thông tin khóa học...</p>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
+  if (error) {
+    return (
+      <AdminLayout>
+        <div className={styles.container}>
+          <div className={styles.error}>
+            <h2>Có lỗi xảy ra</h2>
+            <p>{error}</p>
+            <div className={styles.errorActions}>
+              <button 
+                className={styles.retryButton} 
+                onClick={refreshData}
+              >
+                Thử lại
+              </button>
+              <button 
+                className={styles.backButton} 
+                onClick={handleBackToList}
+              >
+                &larr; Quay lại danh sách
+              </button>
+            </div>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   if (!draftCourse) {
     return (
       <AdminLayout>
@@ -81,7 +160,7 @@ const CourseApprovalDetail = () => {
           <h1>Không tìm thấy khóa học</h1>
           <button 
             className={styles.backButton} 
-            onClick={() => navigate("/admin/course-approval")}
+            onClick={handleBackToList}
           >
             &larr; Quay lại danh sách
           </button>
@@ -99,7 +178,7 @@ const CourseApprovalDetail = () => {
         <div className={styles.header}>
           <button 
             className={styles.backButton} 
-            onClick={() => navigate("/admin/course-approval")}
+            onClick={handleBackToList}
           >
             &larr; Quay lại danh sách
           </button>
@@ -177,6 +256,19 @@ const CourseApprovalDetail = () => {
                   </>
                 )}
               </div>
+              
+              {(approveError || rejectError) && (
+                <div className={styles.apiError}>
+                  {approveError || rejectError}
+                </div>
+              )}
+
+              {(approveSuccess || rejectSuccess) && (
+                <div className={styles.apiSuccess}>
+                  {approveSuccess ? "Duyệt khóa học thành công!" : "Từ chối khóa học thành công!"}
+                  <p>Đang chuyển hướng về danh sách khóa học...</p>
+                </div>
+              )}
             </div>
             
             <div className={styles.reviewNotes}>
