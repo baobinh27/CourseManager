@@ -20,16 +20,21 @@ const updateCourseReviewStats = async (courseId) => {
   ]);
 
   if (stats.length > 0) {
-    await Course.findByIdAndUpdate(courseId, {
-      averageRating: stats[0].averageRating,
-      reviewCount: stats[0].reviewCount
-    });
+    await Course.findOneAndUpdate(
+      { courseId: new mongoose.Types.ObjectId(courseId) }, // truy vấn bằng courseId riêng
+      {
+        averageRating: stats[0].averageRating,
+        reviewCount: stats[0].reviewCount
+      }
+    );
   } else {
-    // Nếu không còn đánh giá nào
-    await Course.findByIdAndUpdate(courseId, {
-      averageRating: 0,
-      reviewCount: 0
-    });
+    await Course.findOneAndUpdate(
+      { courseId: new mongoose.Types.ObjectId(courseId) },
+      {
+        averageRating: 0,
+        reviewCount: 0
+      }
+    );
   }
 };
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const Courses = require("../../models/CourseModel");
 const Orders = require("../../models/OrderModel");
 const Users = require("../../models/UserModel");
-
+const mongoose = require('mongoose');
 
 const authMiddleware = require("../authMiddleware");
 const Authentication = require("../auth/Authentication");
@@ -174,9 +174,10 @@ router.post("/process/:orderId", authMiddleware, async (req, res) => {
             });
 
             // Increment the enrollCount in the course
-            await Courses.findByIdAndUpdate(order.courseId, {
-                $inc: { enrollCount: 1 }
-            });
+            await Courses.findOneAndUpdate(
+                { courseId: new mongoose.Types.ObjectId(order.courseId) },
+                { $inc: { enrollCount: 1 } }
+            );
         }
 
         // Populate for response
