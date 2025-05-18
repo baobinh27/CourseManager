@@ -43,7 +43,7 @@ router.get("/search", async (req, res) => {
         // if (!query || query.trim().length === 0) {
         //     return res.status(400).json({ message: "Missing search query." });
         // }
-        const regex = new RegExp(query.trim(), 'i');
+        const regex = new RegExp(query?.trim() || "", 'i');
 
         // let courses = await Courses.find({
         //     $or: [
@@ -89,8 +89,10 @@ router.get("/search", async (req, res) => {
             queryBuilder = queryBuilder.sort({ price: -1 });
         } else if (sort === "enroll_desc") {
             queryBuilder = queryBuilder.sort({ enrollCount: -1 });
-        } else {
-            queryBuilder = queryBuilder.sort({ createdAt: -1 }); // Default sort
+        } else if (sort === "created_asc") {
+            queryBuilder = queryBuilder.sort({ lastModified: 1 });
+        } else if (sort === "created_desc") {
+            queryBuilder = queryBuilder.sort({ lastModified: -1 }); // Default sort
         }
 
         if (limit) {

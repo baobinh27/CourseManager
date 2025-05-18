@@ -1,0 +1,120 @@
+.container {
+    padding: 2rem;
+    /* background-color: #ffffff; */
+    color: #1b5e20;
+    /* forestgreen */
+}
+
+.section {
+    width: calc(100% - 4rem);
+    margin: 2rem 0.5rem;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.sectionTitle {
+    color: #2e7d32;
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.title {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: #1b5e20;
+}
+
+.noOrders {
+    font-size: 1rem;
+    color: gray;
+}
+
+.ordersList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.orderCard {
+    border: 1px solid #1b5e20;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #f9fff9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.courseInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: calc(100% - 19rem);
+    margin-bottom: 1rem;
+}
+
+.courseBanner {
+    width: 120px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.courseDetails {
+    flex: 1;
+}
+
+.courseName {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1b5e20;
+    margin: 0;
+}
+
+.createdAt {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.orderDetails p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0.5rem;
+    }
+
+    .section {
+        margin: 1rem;
+        padding: 1rem;
+    }
+
+    .orderCard {
+        border: 1px solid #1b5e20;
+        border-radius: 8px;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: #f9fff9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .courseInfo {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}

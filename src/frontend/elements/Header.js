@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import styles from "./Header.module.css";
-import { FaAngleDown, FaAngleRight, FaAngleUp, FaBook, FaChalkboard, FaHome, FaUserCircle } from "react-icons/fa";
+import { FaAngleDown, FaAngleRight, FaAngleUp, FaBook, FaChalkboard, FaHome, FaShoppingCart, FaUserCircle } from "react-icons/fa";
 import { useAuth } from '../api/auth';
 import { FiLogOut } from "react-icons/fi";
 import { ImProfile } from "react-icons/im";
@@ -124,6 +124,10 @@ function Header() {
                                 <FaBook />
                                 Khoá học của bạn
                             </button>
+                            <button onClick={() => { handleToggleMenu(); navigate(`/my-orders`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
+                                <FaShoppingCart />
+                                Thông tin đơn hàng
+                            </button>
                         </div>
                         <div className={styles["menu-section"]}>
                             {/* <button onClick={() => { handleToggleMenu(); navigate(`/explore`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
@@ -226,7 +230,10 @@ function Header() {
                                 <FaBook />
                                 Khoá học của bạn
                             </button>
-
+                            <button onClick={() => { handleToggleMenu(); navigate(`/my-orders`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
+                                <FaShoppingCart />
+                                Thông tin đơn hàng
+                            </button>
                         </div>
                         {/* <button onClick={() => { handleToggleMenu(); navigate(`/settings`); }} className={`${styles["menu-btn"]} h5 bold flex-row align-center`}>
                             <IoMdSettings />
