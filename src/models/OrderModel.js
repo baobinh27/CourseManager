@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const OrderSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },  
-    courseId: { type: Schema.Types.ObjectId, ref: 'Course', required: true }, 
+    courseId: { type: Schema.Types.ObjectId, ref: 'course', required: true }, 
     amount: { type: Number, required: true },
     paymentMethod: { type: String, 
         enum: ['bank_tranfer', 'momo', 'zalo_pay'], 

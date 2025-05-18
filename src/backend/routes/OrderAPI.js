@@ -18,38 +18,38 @@ const test_api = require('../test_api');
 // admin process order: POST /approve/:orderId
 
 // enroll a course
-// router.post("/enroll", authMiddleware, async (req, res) => {
-//     try {
-//         const userId = req.user._id; 
-//         const { courseId, amount, paymentMethod, paymentProof, note } = req.body;
-//         // Check if the course exists
-//         const course = await Courses.findOne({ courseId });
-//         if (!course) {
-//             return res.status(404).json({ message: "Course not found" });
-//         }
+router.post("/enroll", authMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id; 
+        const { courseId, amount, paymentMethod, paymentProof, note } = req.body;
+        // Check if the course exists
+        const course = await Courses.findOne({ courseId });
+        if (!course) {
+            return res.status(404).json({ message: "Course not found" });
+        }
 
-//         // Create a new order
-//         const newOrder = new Orders({
-//             userId,
-//             courseId,
-//             amount,
-//             paymentMethod,
-//             paymentProof,
-//             note,
-//         });
+        // Create a new order
+        const newOrder = new Orders({
+            userId,
+            courseId,
+            amount,
+            paymentMethod,
+            paymentProof,
+            note,
+        });
 
-//         await newOrder.save();
-//         res.status(201).json({ message: "Order created successfully", order: newOrder });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: "Server error" });
-//     }
-// });
+        await newOrder.save();
+        res.status(201).json({ message: "Order created successfully", order: newOrder });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error" });
+    }
+});
 
 // get my orders
 router.get("/my-orders", authMiddleware, async (req, res) => {
     try {
-        const userId = req.user._id; 
+        const userId = req.user.id; 
         const orders = await Orders.find({ userId }).populate("courseId", "name price banner").sort({ createdAt: -1 });
         res.status(200).json(orders);
     } catch (error) {      

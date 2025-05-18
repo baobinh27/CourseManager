@@ -29,6 +29,7 @@ import UserManagement from "./frontend/pages/admin/UserManagement.js";
 import ForgotPassword from "./frontend/pages/ForgotPassword.js";
 import ResetPassword from "./frontend/pages/ResetPassword.js";
 import ChangePassword from "./frontend/pages/ChangePassword.js";
+import MyOrders from "./frontend/pages/MyOrders.js";
 
 function App() {
   return <>
@@ -49,6 +50,10 @@ function App() {
         <Route path="/my-courses" element={<>
           <Header />
           <MyCourses />
+        </>} />
+        <Route path="/my-orders" element={<>
+          <Header />
+          <MyOrders />
         </>} />
         <Route path="/course/:id" element={<>
           <Header />

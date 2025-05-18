@@ -9,7 +9,7 @@ const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20, p
     const [currentIndex, setCurrentIndex] = useState(0);
 
     useEffect(() => {
-        if (items.length > visibleCount) {
+        if (items && items.length > visibleCount) {
             setShowLeftScrollBtn(currentIndex > 0);
             setShowRightScrollBtn(currentIndex < items.length - visibleCount);
         }
@@ -25,7 +25,7 @@ const ScrollList = ({ items, visibleCount = 4, type = 'not-owned', scale = 20, p
         }
     };
 
-    if (items.length === 0) return <div className="h4" style={{padding: "2rem"}}>Không có khoá học nào.</div>
+    if (!items || items.length === 0) return <div className="h4" style={{padding: "2rem"}}>Không có khoá học nào.</div>
 
     return <>
         <div className={`${styles["flex-row"]} ${styles.track}`} style={{width: `${(scale + 1) * visibleCount + 6}rem`}}>

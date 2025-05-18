@@ -34,7 +34,7 @@ const PaginatedCourseList = ({courses, columns = 4, type = 'not-owned', maxItemP
     const startIndex = (currentPage - 1) * maxItemPerPage;
     const currentCourses = courses?.slice(startIndex, startIndex + maxItemPerPage);
 
-    if (courses.length === 0) return <div className="h4" style={{padding: "2rem"}}>Không có khoá học nào.</div>
+    if (!courses || courses.length === 0) return <div className="h4" style={{padding: "2rem"}}>Không có khoá học nào.</div>
 
     return <>
         <div style={{display: "grid", gridTemplateColumns: `repeat(${columns}, 1fr)`, rowGap: "2rem", columnGap: "1rem"}}>
