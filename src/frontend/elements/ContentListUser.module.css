@@ -1,0 +1,43 @@
+.gap {
+    gap: 1rem;
+}
+
+.justify-center {
+    align-items: center;
+}
+
+.section {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: forestgreen;
+    background-color: #eee;
+    font-weight: bold;
+    border: 0;
+    cursor: pointer;
+}
+
+.section:hover {
+    background-color: #ddd;
+}
+
+.item {
+    padding: 0.5rem 1rem;
+    background-color: #f7f7f7;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+
+@media (max-width: 768px) {
+    .gap {
+        gap: 0.25rem;
+    }
+
+    .item {
+        padding: 0.5rem 0.5rem;
+    }
+}

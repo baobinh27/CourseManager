@@ -91,15 +91,15 @@ const Login = () => {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            // Implement Google OAuth login
-            window.location.href = `${BASE_API}/api/auth/google`;
-        } catch (err) {
-            setError('Google login failed. Please try again.');
-            console.error('Google login error:', err);
-        }
-    };
+    // const handleGoogleLogin = async () => {
+    //     try {
+    //         // Implement Google OAuth login
+    //         window.location.href = `${BASE_API}/api/auth/google`;
+    //     } catch (err) {
+    //         setError('Google login failed. Please try again.');
+    //         console.error('Google login error:', err);
+    //     }
+    // };
 
     return (
         <div className={styles["login-container"]}>
@@ -169,7 +169,7 @@ const Login = () => {
                     <span>HOẶC</span>
                 </div>
 
-                <button 
+                {/* <button 
                     className={`${styles["button"]} ${styles["google-login"]}`}
                     onClick={handleGoogleLogin}
                 >
@@ -178,7 +178,7 @@ const Login = () => {
                         alt="Google logo"
                     />{' '}
                     Đăng nhập với Google
-                </button>
+                </button> */}
 
                 <Link to="/register" className={`${styles["button"]} ${styles["register-button"]}`}>
                     Đăng ký tài khoản mới

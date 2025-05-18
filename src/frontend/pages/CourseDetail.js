@@ -2,7 +2,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import TagsList from "../elements/TagsList";
 import styles from "./CourseDetail.module.css";
 import { FaCalendarCheck, FaCheck, FaStar, FaTags, FaUserCheck } from "react-icons/fa";
-import ContentList from "../elements/ContentList";
 import CourseRatings from "../elements/CourseRatings";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import useGetCourseDetail from "../hooks/useGetCourseDetail";
@@ -12,6 +11,7 @@ import { useAuth } from "../hooks/useAuth";
 import useGetUserDetail from "../hooks/useGetUserDetail";
 import useGetCourseReviews from "../hooks/reviews/useGetCourseReviews";
 import useIsMobile from "../hooks/useIsMobile";
+import ContentListUser from "../elements/ContentListUser";
 
 const CourseDetail = () => {
     const navigate = useNavigate();
@@ -101,7 +101,7 @@ const CourseDetail = () => {
                 </div>
 
                 <div className={styles["detail-box"]}>
-                    <ContentList content={course.content} />
+                    <ContentListUser content={course.content} />
                     <CourseRatings courseId={id} reviews={reviews} commentEnabled={user?.ownedCourses.some(course => course.courseId === id) || false} />
                 </div>
 
@@ -141,7 +141,7 @@ const CourseDetail = () => {
                 </div>
 
                 <div className={styles["detail-box"]}>
-                    <ContentList content={course.content} />
+                    <ContentListUser content={course.content} />
                     <CourseRatings courseId={id} reviews={reviews} commentEnabled={user?.ownedCourses.some(course => course.courseId === id) || false} />
                 </div>
 
