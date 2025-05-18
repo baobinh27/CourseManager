@@ -15,6 +15,9 @@ const UserManagement = () => {
   const [deletingUser, setDeletingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(10); // 10 users per page
   
   const navigate = useNavigate();
 
@@ -183,6 +186,11 @@ const UserManagement = () => {
       
       setDeletingUser(null);
       setError(null);
+      
+      // Adjust current page if necessary after deletion
+      if (currentUsers.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
     } catch (err) {
       console.error('Lỗi khi xóa người dùng:', err);
       setError(`Không thể xóa người dùng: ${err.message}`);
@@ -200,13 +208,15 @@ const UserManagement = () => {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+    setCurrentPage(1); // Reset to first page when search changes
   };
 
   const handleRoleFilterChange = (e) => {
     setRoleFilter(e.target.value);
+    setCurrentPage(1); // Reset to first page when filter changes
   };
 
-  // Lọc người dùng dựa trên các bộ lọc
+  // Filtered users based on search and role filter
   const filteredUsers = users.filter(user => {
     const matchesSearch = 
       user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -216,6 +226,31 @@ const UserManagement = () => {
     
     return matchesSearch && matchesRole;
   });
+
+  // Calculate current users to display
+  const indexOfLastUser = currentPage * usersPerPage;
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Go to next page
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Go to previous page
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const getRoleLabel = (role) => {
     switch(role) {
@@ -238,8 +273,10 @@ const UserManagement = () => {
 
   return (
     <AdminLayout>
-      <div className={styles.userManagement}>
-        <h1 className={styles.title}>Quản lý người dùng</h1>
+      <div className={styles.userManagementContainer}>
+        <div className={styles.headerSection}>
+          <h1>Quản lý người dùng</h1>
+        </div>
         
         {error && (
           <div className={styles.error}>
@@ -287,7 +324,7 @@ const UserManagement = () => {
           </div>
         ) : (
           <div className={styles.tableContainer}>
-            <table className={styles.usersTable}>
+            <table className={styles.courseTable}>
               <thead>
                 <tr>
                   <th>ID</th>
@@ -298,8 +335,8 @@ const UserManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredUsers.length > 0 ? (
-                  filteredUsers.map(user => (
+                {currentUsers.length > 0 ? (
+                  currentUsers.map(user => (
                     <tr key={user._id}>
                       <td>{user._id}</td>
                       <td>{user.username}</td>
@@ -310,16 +347,16 @@ const UserManagement = () => {
                         </span>
                       </td>
                       <td>
-                        <div className={styles.actionButtons}>
+                        <div className={styles.actions}>
                           <button 
-                            className={styles.editButton} 
+                            className={`${styles.actionButton} ${styles.editButton}`} 
                             onClick={() => handleEdit(user)}
                             title="Chỉnh sửa thông tin người dùng"
                           >
                             <FaEdit />
                           </button>
                           <button 
-                            className={styles.deleteButton} 
+                            className={`${styles.actionButton} ${styles.deleteButton}`} 
                             onClick={() => handleDelete(user)}
                             title="Xóa người dùng"
                           >
@@ -338,6 +375,44 @@ const UserManagement = () => {
                 )}
               </tbody>
             </table>
+            
+            {/* Pagination controls */}
+            {filteredUsers.length > 0 && (
+              <div className={styles.paginationContainer}>
+                <button 
+                  onClick={prevPage} 
+                  disabled={currentPage === 1} 
+                  className={styles.paginationButton}
+                >
+                  Trước
+                </button>
+                
+                <div className={styles.pageNumbers}>
+                  {Array.from({ length: totalPages }, (_, i) => (
+                    <button
+                      key={i + 1}
+                      onClick={() => paginate(i + 1)}
+                      className={`${styles.pageNumber} ${currentPage === i + 1 ? styles.activePage : ''}`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                </div>
+                
+                <button 
+                  onClick={nextPage} 
+                  disabled={currentPage === totalPages} 
+                  className={styles.paginationButton}
+                >
+                  Tiếp
+                </button>
+                
+                <span className={styles.pageInfo}>
+                  Trang {currentPage} / {totalPages} 
+                  (Hiển thị {currentUsers.length} trong tổng số {filteredUsers.length} người dùng)
+                </span>
+              </div>
+            )}
           </div>
         )}
         

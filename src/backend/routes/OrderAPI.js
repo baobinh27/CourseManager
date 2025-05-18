@@ -124,7 +124,7 @@ router.post("/process/:orderId", authMiddleware, async (req, res) => {
         const order = await Orders.findByIdAndUpdate(orderId, update, { new: true });
         if (!order) return res.status(404).json({ message: 'Order not found' });
         
-        // If approved, add to user's ownedCourses
+        // If approved, add to user's ownedCourses and increment course enrollCount
         if (action === 'approve') {
             await Users.findByIdAndUpdate(order.userId, {
                 $push: {
@@ -136,6 +136,11 @@ router.post("/process/:orderId", authMiddleware, async (req, res) => {
                         enrolledAt: new Date()
                     }
                 }
+            });
+            
+            // Increment the enrollCount in the course
+            await Courses.findByIdAndUpdate(order.courseId, {
+                $inc: { enrollCount: 1 }
             });
         }
         
