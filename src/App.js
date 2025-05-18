@@ -1,5 +1,5 @@
 // import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import React from "react";
 import './App.css';
 import Home from "./frontend/pages/Home.js";
@@ -23,6 +23,10 @@ import Purchase from "./frontend/pages/Purchase.js";
 import Explore from "./frontend/pages/Explore.js";
 import AdminRoute from "./AdminRoute.js";
 import UnAuthorized from "./frontend/pages/misc/UnAuthorized.js";
+import EditCourse from "./frontend/pages/admin/EditCourse.js";
+import UserManagement from "./frontend/pages/admin/UserManagement.js";
+import PaymentVerification from "./frontend/pages/admin/PaymentVerification.js";
+
 import ForgotPassword from "./frontend/pages/ForgotPassword.js";
 import ResetPassword from "./frontend/pages/ResetPassword.js";
 import ChangePassword from "./frontend/pages/ChangePassword.js";
@@ -104,6 +108,21 @@ function App() {
         <Route path="/admin/course-approval/:id" element={
           <AdminRoute>
             <CourseApprovalDetail />
+          </AdminRoute>
+        } />
+        <Route path="/admin/edit-course/:courseId" element={
+          <AdminRoute>
+            <EditCourse />
+          </AdminRoute>
+        } />
+        <Route path="/admin/user-management" element={
+          <AdminRoute>
+            <UserManagement />
+          </AdminRoute>
+        } />
+        <Route path="/admin/payment-verification" element={
+          <AdminRoute>
+            <PaymentVerification />
           </AdminRoute>
         } />
         <Route path="/unauthorized" element={<>

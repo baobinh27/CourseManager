@@ -1,0 +1,302 @@
+.editCourseContainer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.headerSection {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.headerSection h1 {
+  margin: 0 0 0 1rem;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.backButton:hover {
+  background-color: #e0e0e0;
+}
+
+.backButton svg {
+  margin-right: 0.5rem;
+}
+
+.loadingContainer, .errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  text-align: center;
+}
+
+.loadingIcon {
+  font-size: 2rem;
+  color: #4a90e2;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.errorContainer h2 {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.successMessage {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.courseForm {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.formControl {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.formControl:focus {
+  border-color: #4a90e2;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.25);
+}
+
+.bannerPreview {
+  margin-top: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  max-width: 300px;
+}
+
+.bannerPreview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.tagsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  background-color: #f0f5ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.removeTagButton {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.removeTagButton:hover {
+  color: #e74c3c;
+}
+
+.tagInputContainer {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.addTagButton {
+  padding: 0.75rem 1rem;
+  background-color: #e6f0ff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #1a73e8;
+  font-weight: 500;
+}
+
+.addTagButton:hover {
+  background-color: #cce0ff;
+}
+
+.sectionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.sectionTitle {
+  flex: 1;
+  font-size: 1.1rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.removeSectionButton, .removeVideoButton {
+  background-color: #fff0f0;
+  border: 1px solid #ffcccc;
+  color: #e74c3c;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.removeSectionButton:hover, .removeVideoButton:hover {
+  background-color: #ffe0e0;
+}
+
+.videosContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.videoItem {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: #fff;
+  border-radius: 4px;
+  border: 1px solid #eee;
+}
+
+.videoInput {
+  flex: 1;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.addVideoButton, .addSectionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #f0f8ff;
+  border: 1px dashed #99ccff;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #1a73e8;
+  font-weight: 500;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.addVideoButton:hover, .addSectionButton:hover {
+  background-color: #e6f2ff;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.cancelButton {
+  padding: 0.75rem 1.5rem;
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+}
+
+.cancelButton:hover {
+  background-color: #e0e0e0;
+}
+
+.submitButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: #4a90e2;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  color: white;
+}
+
+.submitButton:hover {
+  background-color: #3a7fcf;
+}
+
+.submitButton:disabled {
+  background-color: #a0c0e8;
+  cursor: not-allowed;
+} 

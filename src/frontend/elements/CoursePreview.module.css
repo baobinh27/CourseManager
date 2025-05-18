@@ -51,10 +51,11 @@
 }
 
 .sidebar {
-    width: 340px;
+    width: 360px;
     background-color: white;
     overflow-y: auto;
     border-right: 1px solid #e1e4e8;
+    overflow-x: hidden;
 }
 
 .sidebarTitle {
@@ -105,12 +106,14 @@
 }
 
 .videoItem {
-    padding: 0.75rem 1rem 0.75rem 2rem;
+    padding: 0.75rem 0.75rem 0.75rem 1.5rem;
     cursor: pointer;
     transition: background-color 0.2s;
     border-bottom: 1px solid #f0f2f5;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    width: 100%;
+    overflow: hidden;
 }
 
 .videoItem:hover {
@@ -123,18 +126,34 @@
 
 .videoInfo {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+    overflow: hidden;
 }
 
 .playIcon {
     color: #ff6b00;
     font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
 }
 
 .videoTitle {
     font-size: 0.9rem;
     color: #333;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
+}
+
+.videoIndex {
+    font-weight: 600;
+    margin-right: 3px;
 }
 
 .content {
@@ -213,4 +232,62 @@
     align-items: center;
     font-size: 1.2rem;
     color: #666;
+}
+
+.errorMessage {
+    margin: 0.5rem 2rem;
+    padding: 0.75rem;
+    background-color: #ffebee;
+    color: #c62828;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.emptyContent {
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.emptyVideoList {
+    padding: 1rem 1rem 1rem 2rem;
+    color: #666;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+.invalidVideo {
+    opacity: 0.7;
+    background-color: #ffeeee;
+    position: relative;
+}
+
+.invalidVideo:hover {
+    background-color: #ffe8e8;
+}
+
+.invalidTag {
+    color: #d32f2f;
+    font-style: italic;
+    font-size: 0.8rem;
+}
+
+.invalidVideoTooltip {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: white;
+    background-color: #d32f2f;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-weight: bold;
 } 

@@ -1,11 +1,21 @@
 import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./AdminLayout.module.css"; // Use a new CSS module for the layout
+import { useAuth } from "../../api/auth";
+import { FaChartBar, FaCreditCard, FaBook, FaUsers, FaGraduationCap, FaSignOutAlt, FaUserCog } from 'react-icons/fa';
 
 const AdminLayout = ({ children }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -14,12 +24,26 @@ const AdminLayout = ({ children }) => {
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>Admin Panel</div>
         <nav className={styles.nav}>
-          <a href="/admin/dashboard" className={styles.navItem}>📊 Dashboard</a>
-          <a href="/admin/payment-verification" className={styles.navItem}>💳 Xác thực thanh toán</a>
-          <a href="/admin/course-approval" className={styles.navItem}>📚 Kiểm duyệt khóa học</a>
-          <a href="/admin/reports" className={styles.navItem}>🚨 Xử lý báo cáo</a>
-          <a href="/admin/user-management" className={styles.navItem}>👥 Quản lý người dùng</a>
-          <a href="/admin/course-management" className={styles.navItem}>📝 Quản lý khóa học</a>
+          <Link to="/admin" className={styles.navItem}>
+            <FaChartBar className={styles.navIcon} />
+            <span>Dashboard</span>
+          </Link>
+          <Link to="/admin/payment-verification" className={styles.navItem}>
+            <FaCreditCard className={styles.navIcon} />
+            <span>Xác thực thanh toán</span>
+          </Link>
+          <Link to="/admin/course-approval" className={styles.navItem}>
+            <FaBook className={styles.navIcon} />
+            <span>Kiểm duyệt khóa học</span>
+          </Link>
+          <Link to="/admin/user-management" className={styles.navItem}>
+            <FaUsers className={styles.navIcon} />
+            <span>Quản lý người dùng</span>
+          </Link>
+          <Link to="/admin/course-management" className={styles.navItem}>
+            <FaGraduationCap className={styles.navIcon} />
+            <span>Quản lý khóa học</span>
+          </Link>
         </nav>
       </aside>
 
@@ -30,11 +54,14 @@ const AdminLayout = ({ children }) => {
           <div className={styles.headerContent}>
             <button onClick={toggleMenu} className={styles.profileButton}>
               <span>Admin</span>
-              <div className={styles.profileIcon}>A</div>
+              <div className={styles.profileIcon}><FaUserCog /></div>
             </button>
             {menuOpen && (
               <div className={styles.dropdownMenu}>
-                <a href="/logout" className={styles.dropdownItem}>Đăng xuất</a> {/* Assuming a logout route */}
+                <button onClick={handleLogout} className={styles.dropdownItem}>
+                  <FaSignOutAlt className={styles.dropdownIcon} />
+                  <span>Đăng xuất</span>
+                </button>
               </div>
             )}
           </div>

@@ -140,3 +140,85 @@
   gap: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
+/* Loading and error states */
+.loading, .error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  margin: 2rem auto;
+  width: 100%;
+  max-width: 500px;
+}
+
+.loading p, .error p {
+  margin: 1rem 0;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  font-size: 2rem;
+  color: #005fff;
+  margin-bottom: 1rem;
+}
+
+.error h2 {
+  color: #e53935;
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  background-color: #005fff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.retryButton:hover {
+  background-color: #0046cc;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.refreshButton {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  transition: background-color 0.2s;
+}
+
+.refreshButton:hover {
+  background-color: #e0e0e0;
+}
+
+.refreshIcon {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.refreshButton:hover .refreshIcon {
+  transform: rotate(180deg);
+}

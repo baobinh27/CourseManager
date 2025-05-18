@@ -10,10 +10,12 @@ import { useNavigate } from "react-router-dom";
 import useIsMobile from "../hooks/useIsMobile";
 import PaginatedCourseList from "../elements/PaginatedCourseList";
 import VerticalCourseList from "../elements/VerticalCourseList";
+import { useAuth } from '../api/auth';
 import useGetSearchResult from "../hooks/useGetSearchResult";
 
 function Home() {
     useDocumentTitle("Online Learning");
+    const { user } = useAuth();
 
     // eslint-disable-next-line
     const navigate = useNavigate();
@@ -26,6 +28,12 @@ function Home() {
     const isDesktop = useIsMobile('(max-width: 1450px)');
     const isTablet = useIsMobile('(max-width: 1024px)');
     const isMobile = useIsMobile('(max-width: 768px)');
+
+    useEffect(() => {
+        if (user?.role === 'admin') {
+            navigate('/admin');
+        }
+    }, [user, navigate]);
 
     const handleExploreClick = () => {
         window.scrollTo({ top: 500, behavior: "smooth" });
